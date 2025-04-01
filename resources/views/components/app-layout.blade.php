@@ -23,6 +23,7 @@
     <body class="font-sans antialiased">
         <x-header/>
         {{$slot}}
+        @yield('script')
     </body>
 
 </html>
