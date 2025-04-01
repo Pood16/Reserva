@@ -1,8 +1,18 @@
 <x-app-layout>
     <div class="w-full bg-gray-50 py-12">
         <div class="w-11/12 max-w-md mx-auto px-8 py-10 bg-white rounded-lg shadow-[0px_5px_14px_0px_rgba(8,15,52,0.04)]">
-            <h2 class="text-center text-2xl font-semibold text-gray-900 mb-8">Create an Account</h2>
-            <form method="POST" action="{{ route('login.create') }}">
+            @if (session('success'))
+                <div class="mb-6 text-sm text-green-600 text-center">
+                    {{ session('success') }}
+                </div>
+            @endif
+            @error('attempt')
+                <div class="mb-4 text-sm text-red-600 text-center">
+                    {{ $message }}
+                </div>
+            @enderror
+            <h2 class="text-center text-2xl font-semibold text-gray-900 mb-8">Sign in</h2>
+            <form method="POST" action="{{ route('login.handle') }}">
                 @csrf
 
                 <div class="space-y-5">

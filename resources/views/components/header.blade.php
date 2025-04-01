@@ -4,7 +4,7 @@
             <div class="text-center justify-center text-amber-500 text-4xl font-normal font-['Architects_Daughter'] leading-10">Reserva</div>
         </div>
         <!-- search input -->
-        <div data-state="default" data-type="icon" class="w-96 self-stretch px-4 py-3 bg-color-gray-10 rounded-lg outline-1 outline-offset-[-1px] outline-stone-300 outline-opacity-50 flex justify-center items-center gap-2.5">
+        <div data-state="default" data-type="icon" class="w-96 self-stretch px-4 py-3 bg-color-gray-10 rounded-lg outline-1 outline-offset-[-1px] outline-stone-300 outline-opacity-50 flex justify-center items-center gap-2.5 border">
             <input type="text" class="flex-1 justify-center text-color-gray-40 text-xs font-normal bg-transparent border-none focus:outline-none" placeholder="Search restaurant and cuisines...">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -52,7 +52,7 @@
                     Register
                 </a>
                 <!-- Login button -->
-                <a href="{{ route('login.create') }}" class="px-5 py-3 bg-yellow-500 rounded-lg text-gray-900 font-medium text-sm hover:bg-yellow-600 transition-colors duration-300">
+                <a href="{{ route('login.show') }}" class="px-5 py-3 bg-yellow-500 rounded-lg text-gray-900 font-medium text-sm hover:bg-yellow-600 transition-colors duration-300">
                     Login
                 </a>
             </div>

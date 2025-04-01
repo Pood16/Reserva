@@ -5,7 +5,7 @@
 
 
 
-        <form method="POST" action="{{ route('register.create') }}">
+        <form method="POST" action="{{ route('register.handle') }}">
             @csrf
 
             <div class="space-y-5">
@@ -55,7 +55,7 @@
         <div class="mt-6 text-center">
             <p class="text-sm text-gray-600">
                 Already have an account?
-                <a href="{{ route('login') }}" class="text-amber-500 hover:text-amber-600 font-medium">Sign in</a>
+                <a href="{{ route('login.show') }}" class="text-amber-500 hover:text-amber-600 font-medium">Sign in</a>
             </p>
         </div>
     </div>
