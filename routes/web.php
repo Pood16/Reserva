@@ -18,6 +18,8 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'handleRegister'])->name('register.handle');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login.show');
 Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
+Route::get('/logout', [AuthController::class, 'handleLogout'])->middleware('auth')->name('logout.handle');
+
 
 
 
