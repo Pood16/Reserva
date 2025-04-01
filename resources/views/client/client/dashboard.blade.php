@@ -1,3 +1,0 @@
-<div>
-    client
-</div>

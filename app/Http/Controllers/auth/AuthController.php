@@ -49,7 +49,7 @@ class AuthController extends Controller
         $user = Auth::user();
         return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
-            'restaurant-manager' => redirect()->route('restaurant.dashboard'),
+            'manager' => redirect()->route('restaurant.dashboard'),
             'client' => redirect()->route('client.dashboard'),
             default => redirect()->route('welcome'),
         };
