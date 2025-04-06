@@ -37,13 +37,13 @@
             </div>
             @else
             <div class="flex items-center gap-x-2">
-                <!-- Register button -->
-                <a href="{{ route('register.show') }}" class="px-5 py-3 bg-white rounded-lg text-gray-900 font-medium text-sm border border-yellow-500 hover:bg-yellow-50 transition-colors duration-300">
-                    Register
-                </a>
                 <!-- Login button -->
-                <a href="{{ route('login.show') }}" class="px-5 py-3 bg-yellow-500 rounded-lg text-gray-900 font-medium text-sm hover:bg-yellow-600 transition-colors duration-300">
+                <a href="{{ route('login.show') }}" class="px-5 py-3 bg-white border-yellow-500 hover:bg-yellow-50 rounded-lg text-gray-900 font-medium text-sm transition-colors duration-300">
                     Login
+                </a>
+                <!-- Register button -->
+                <a href="{{ route('register.show') }}" class="px-5 py-3 rounded-lg text-gray-900 font-medium text-sm bg-yellow-500 border transition-colors duration-300">
+                    Register
                 </a>
             </div>
             @endauth

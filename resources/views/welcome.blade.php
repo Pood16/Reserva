@@ -1,5 +1,7 @@
 <x-app-layout>
 
+    <x-header/>
+
     @if(session('unauthorized'))
         <x-flash-error message="{{session('unauthorized')}}"/>
     @endif

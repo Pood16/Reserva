@@ -22,7 +22,7 @@
     </head>
 
     <body class="font-sans antialiased">
-        <x-header/>
+        {{-- <x-header/> --}}
         {{$slot}}
         @yield('script')
     </body>
