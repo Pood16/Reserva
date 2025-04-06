@@ -11,14 +11,10 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'slug',
-        'description',
-        'is_active'
+       'description',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+
 
     public function restaurants()
     {
