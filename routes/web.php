@@ -4,9 +4,7 @@ use App\Http\Controllers\auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\RestaurantController::class, 'index'])->name('welcome');
 
 Route::get('/unauthorized', function () {
     return view('unauthorized');

@@ -3,7 +3,9 @@
     @if(session('unauthorized'))
         <x-flash-error message="{{session('unauthorized')}}"/>
     @endif
+
     <!-- client page -->
+    <x-profile-header :user="Auth::user()"/>
 
 
     <!-- js section -->

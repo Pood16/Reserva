@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text('description');
             $table->string('address');
             $table->string('city');
-            $table->string('postal_code');
             $table->string('phone');
             $table->string('email')->unique();
             $table->string('website')->nullable();

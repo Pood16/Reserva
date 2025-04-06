@@ -26,11 +26,16 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:4',
         ]);
+
+        // first user is admin
+        $role = User::count() === 0 ? 'admin' : 'client';
+
         // register the user
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'role' => $role,
         ]);
         return redirect()->route('login.show')->with('success', 'Registration successful! Please log in.');
     }
@@ -50,7 +55,7 @@ class AuthController extends Controller
         return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'manager' => redirect()->route('restaurant.dashboard'),
-            'client' => redirect()->route('client.dashboard'),
+            'client' => redirect()->route('welcome'),
             default => redirect()->route('welcome'),
         };
     }
@@ -65,7 +70,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-  
+
         return redirect()->route('login.show')->with('success', 'Logout successful!');
     }
 }
