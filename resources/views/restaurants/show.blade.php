@@ -14,22 +14,49 @@
         <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 md:p-6">
             <div class="max-w-7xl mx-auto">
                 <h1 class="text-white text-2xl md:text-4xl font-bold">{{ $restaurant->name }}</h1>
-                <div class="flex items-center mt-2 text-white">
-                    <span class="bg-green-600 text-white text-sm px-2 py-1 rounded mr-2">{{ number_format($avgRating, 1) }}</span>
-                    <div class="flex">
-                        @for ($i = 1; $i <= 5; $i++)
-                            @if ($i <= round($avgRating))
-                                <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                </svg>
-                            @else
-                                <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                </svg>
-                            @endif
-                        @endfor
+                <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center text-white">
+                        <span class="bg-green-600 text-white text-sm px-2 py-1 rounded mr-2">{{ number_format($avgRating, 1) }}</span>
+                        <div class="flex">
+                            @for ($i = 1; $i <= 5; $i++)
+                                @if ($i <= round($avgRating))
+                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                @else
+                                    <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                                    </svg>
+                                @endif
+                            @endfor
+                        </div>
+                        <span class="ml-2 text-sm">{{ $restaurant->reviews->count() }} reviews</span>
                     </div>
-                    <span class="ml-2 text-sm">{{ $restaurant->reviews->count() }} reviews</span>
+                    
+                    <!-- Favorite Button -->
+                    @auth
+                    <button id="favorite-button" 
+                            class="flex items-center bg-white bg-opacity-90 px-3 py-1.5 rounded-full shadow-sm transition duration-200 hover:bg-opacity-100"
+                            data-restaurant-id="{{ $restaurant->id }}"
+                            data-is-favorited="{{ $isFavorited ? 'true' : 'false' }}">
+                        <svg id="favorite-icon" class="{{ $isFavorited ? 'text-red-500' : 'text-gray-400' }} w-5 h-5 mr-1.5 transition duration-200" 
+                             fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <span id="favorite-text" class="text-sm font-medium {{ $isFavorited ? 'text-red-500' : 'text-gray-700' }}">
+                            {{ $isFavorited ? 'Favorited' : 'Add to Favorites' }}
+                        </span>
+                        <span id="favorites-count" class="ml-1.5 text-xs text-gray-500">{{ $favoritesCount }}</span>
+                    </button>
+                    @else
+                    <a href="{{ route('login.show') }}" class="flex items-center bg-white bg-opacity-90 px-3 py-1.5 rounded-full shadow-sm transition duration-200 hover:bg-opacity-100">
+                        <svg class="text-gray-400 w-5 h-5 mr-1.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-700">Add to Favorites</span>
+                        <span class="ml-1.5 text-xs text-gray-500">{{ $favoritesCount }}</span>
+                    </a>
+                    @endauth
                 </div>
             </div>
         </div>
@@ -72,7 +99,7 @@
                             @if($restaurant->website)
                             <div class="flex items-center mb-2">
                                 <svg class="w-5 h-5 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9-3-9m-9 9a9 9 0 019-9"></path>
                                 </svg>
                                 <a href="{{ $restaurant->website }}" target="_blank" class="text-blue-600 hover:underline">{{ $restaurant->website }}</a>
                             </div>
@@ -82,13 +109,66 @@
                         <div>
                             <h3 class="text-lg font-semibold mb-2">Opening Hours</h3>
                             <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div class="text-gray-600">Days:</div>
-                                    <div>{{ $openingDays }}</div>
+                                @php
+                                    // Default days of the week
+                                    $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-                                    <div class="text-gray-600">Hours:</div>
-                                    <div>{{ $restaurant->opening_time->format('g:i A') }} - {{ $restaurant->closing_time->format('g:i A') }}</div>
+                                    // Format time once for reuse
+                                    $openTime = $restaurant->opening_time->format('g:i A');
+                                    $closeTime = $restaurant->closing_time->format('g:i A');
+
+                                    // Set default values for each day (closed by default)
+                                    $schedule = array_fill_keys($weekDays, false);
+
+                                    // Handle various formats that might be in the database
+                                    if (!empty($restaurant->opening_days)) {
+                                        if (is_array($restaurant->opening_days)) {
+                                            // If it's already an array
+                                            foreach ($restaurant->opening_days as $day) {
+                                                // Find matching day regardless of case
+                                                foreach ($weekDays as $weekDay) {
+                                                    if (strtolower($day) === strtolower($weekDay)) {
+                                                        $schedule[$weekDay] = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        } elseif (is_string($restaurant->opening_days)) {
+                                            // If it's a string (comma-separated or JSON string)
+                                            $daysList = explode(',', str_replace(['"', '[', ']', ' '], '', $restaurant->opening_days));
+                                            foreach ($daysList as $day) {
+                                                // Find matching day regardless of case
+                                                foreach ($weekDays as $weekDay) {
+                                                    if (strtolower($day) === strtolower($weekDay)) {
+                                                        $schedule[$weekDay] = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                @endphp
+
+                                <div class="border-b border-gray-200 pb-2 mb-2">
+                                    <div class="text-gray-700 font-medium">Hours of Operation</div>
                                 </div>
+
+                                <table class="w-full">
+                                    <tbody>
+                                        @foreach($weekDays as $day)
+                                            <tr class="border-b border-gray-100 last:border-0">
+                                                <td class="py-1.5 pr-2 text-gray-600 font-medium w-1/3">{{ $day }}</td>
+                                                <td class="py-1.5">
+                                                    @if($schedule[$day])
+                                                        <span class="text-gray-800">{{ $openTime }} - {{ $closeTime }}</span>
+                                                    @else
+                                                        <span class="text-gray-400">Closed</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
 
                                 <div class="mt-4">
                                     <div class="flex items-center text-green-600">
@@ -315,6 +395,79 @@
 
         bookingTimeInput.addEventListener('change', validateTimeRange);
         endTimeInput.addEventListener('change', validateTimeRange);
+        
+        // Favorite button functionality
+        const favoriteButton = document.getElementById('favorite-button');
+        if (favoriteButton) {
+            favoriteButton.addEventListener('click', function() {
+                const restaurantId = this.dataset.restaurantId;
+                const isFavorited = this.dataset.isFavorited === 'true';
+                const favoriteIcon = document.getElementById('favorite-icon');
+                const favoriteText = document.getElementById('favorite-text');
+                const favoritesCount = document.getElementById('favorites-count');
+                
+                // Send AJAX request to toggle favorite status
+                fetch(`/restaurants/${restaurantId}/favorite`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Update the button's appearance based on the new favorite status
+                    if (data.isFavorited) {
+                        favoriteIcon.classList.remove('text-gray-400');
+                        favoriteIcon.classList.add('text-red-500');
+                        favoriteText.classList.remove('text-gray-700');
+                        favoriteText.classList.add('text-red-500');
+                        favoriteText.textContent = 'Favorited';
+                        favoriteButton.dataset.isFavorited = 'true';
+                    } else {
+                        favoriteIcon.classList.remove('text-red-500');
+                        favoriteIcon.classList.add('text-gray-400');
+                        favoriteText.classList.remove('text-red-500');
+                        favoriteText.classList.add('text-gray-700');
+                        favoriteText.textContent = 'Add to Favorites';
+                        favoriteButton.dataset.isFavorited = 'false';
+                    }
+                    
+                    // Update favorites count
+                    favoritesCount.textContent = data.favoriteCount;
+                    
+                    // Show a temporary success message
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50';
+                    messageElement.innerHTML = `<span class="block sm:inline">${data.message}</span>`;
+                    document.body.appendChild(messageElement);
+                    
+                    // Remove the message after 3 seconds
+                    setTimeout(() => {
+                        messageElement.remove();
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Show error message
+                    const messageElement = document.createElement('div');
+                    messageElement.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
+                    messageElement.innerHTML = `<span class="block sm:inline">An error occurred. Please try again.</span>`;
+                    document.body.appendChild(messageElement);
+                    
+                    setTimeout(() => {
+                        messageElement.remove();
+                    }, 3000);
+                });
+            });
+        }
     });
 </script>
 @endpush

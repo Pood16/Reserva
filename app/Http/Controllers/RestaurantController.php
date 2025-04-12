@@ -30,8 +30,17 @@ class RestaurantController extends Controller
         $openingDays = is_array($restaurant->opening_days) ?
             implode(', ', $restaurant->opening_days) :
             $restaurant->opening_days;
+            
+        // Check if the restaurant is favorited by the logged-in user
+        $isFavorited = false;
+        if (auth()->check()) {
+            $isFavorited = auth()->user()->hasFavorited($restaurant);
+        }
+        
+        // Get the total number of favorites for this restaurant
+        $favoritesCount = $restaurant->favoritedByUsers()->count();
 
-        return view('restaurants.show', compact('restaurant', 'avgRating', 'openingDays'));
+        return view('restaurants.show', compact('restaurant', 'avgRating', 'openingDays', 'isFavorited', 'favoritesCount'));
     }
 
     /**
@@ -77,5 +86,42 @@ class RestaurantController extends Controller
 
         return redirect()->route('restaurants.show', $validated['restaurant_id'])
             ->with('success', 'Your reservation has been submitted and is awaiting confirmation.');
+    }
+
+    /**
+     * Toggle the favorite status of a restaurant for the authenticated user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function toggleFavorite($id)
+    {
+        $restaurant = Restaurant::findOrFail($id);
+        $user = auth()->user();
+        
+        if (!$user) {
+            return response()->json(['error' => 'User must be logged in to favorite restaurants'], 401);
+        }
+        
+        // Check if the restaurant is already favorited
+        $isFavorited = $user->hasFavorited($restaurant);
+        
+        if ($isFavorited) {
+            // If already favorited, remove the favorite
+            $user->favoriteRestaurants()->detach($restaurant->id);
+            $isFavorited = false;
+            $message = 'Restaurant removed from favorites';
+        } else {
+            // If not favorited, add the favorite
+            $user->favoriteRestaurants()->attach($restaurant->id);
+            $isFavorited = true;
+            $message = 'Restaurant added to favorites';
+        }
+        
+        return response()->json([
+            'isFavorited' => $isFavorited,
+            'message' => $message,
+            'favoriteCount' => $restaurant->favoritedByUsers()->count()
+        ]);
     }
 }

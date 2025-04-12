@@ -40,3 +40,4 @@ Route::middleware(['manager'])->group(function () {
 // Restaurant routes
 Route::get('/restaurants/{id}', [App\Http\Controllers\RestaurantController::class, 'show'])->name('restaurants.show');
 Route::post('/reservations', [App\Http\Controllers\RestaurantController::class, 'storeReservation'])->middleware('auth')->name('reservations.store');
+Route::post('/restaurants/{id}/favorite', [App\Http\Controllers\RestaurantController::class, 'toggleFavorite'])->middleware('auth')->name('restaurants.favorite');

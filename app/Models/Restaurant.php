@@ -58,6 +58,14 @@ class Restaurant extends Model
     {
         return $this->hasMany(RestaurantImage::class);
     }
+    
+    /**
+     * Get all of the users that have favorited this restaurant.
+     */
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
 }
 
 

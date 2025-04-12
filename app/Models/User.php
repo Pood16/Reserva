@@ -31,4 +31,23 @@ class User extends Authenticatable
     {
         return $this->hasOne(Customer::class);
     }
+
+    /**
+     * Get all of the restaurants that the user has favorited.
+     */
+    public function favoriteRestaurants()
+    {
+        return $this->belongsToMany(Restaurant::class, 'favorites')->withTimestamps();
+    }
+
+    /**
+     * Determine if the user has favorited the given restaurant.
+     *
+     * @param  \App\Models\Restaurant  $restaurant
+     * @return bool
+     */
+    public function hasFavorited(Restaurant $restaurant)
+    {
+        return $this->favoriteRestaurants()->where('restaurant_id', $restaurant->id)->exists();
+    }
 }
