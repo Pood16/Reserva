@@ -36,3 +36,7 @@ Route::middleware(['manager'])->group(function () {
         return view('manager.dashboard');
     })->name('manager.dashboard');
 });
+
+// Restaurant routes
+Route::get('/restaurants/{id}', [App\Http\Controllers\RestaurantController::class, 'show'])->name('restaurants.show');
+Route::post('/reservations', [App\Http\Controllers\RestaurantController::class, 'storeReservation'])->middleware('auth')->name('reservations.store');

@@ -79,7 +79,7 @@
                 @foreach($restaurants as $restaurant)
                     <div class="bg-white rounded-lg overflow-hidden shadow">
                         <div class="relative">
-                            <a href="#" class="cursor-pointer">
+                            <a href="{{ route('restaurants.show', $restaurant->id) }}" class="cursor-pointer">
                                 <img src="{{ $restaurant->cover_image ?? asset('images/placeholder-300x200.jpg') }}"
                                      alt="{{ $restaurant->name }}"
                                      class="w-full h-32 object-cover"
@@ -90,7 +90,7 @@
                             </div>
                         </div>
                         <div class="p-2">
-                            <a href="#" class="font-medium text-sm hover:text-green-600 cursor-pointer transition duration-200">{{ $restaurant->name }}</a>
+                            <a href="{{ route('restaurants.show', $restaurant->id) }}" class="font-medium text-sm hover:text-green-600 cursor-pointer transition duration-200">{{ $restaurant->name }}</a>
                             <p class="text-xs text-gray-600">{{ $restaurant->city }}</p>
                             <span class="text-xs text-gray-500 mt-1">{{ Str::limit($restaurant->description, 50) }}</span>
                         </div>
