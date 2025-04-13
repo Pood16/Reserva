@@ -32,21 +32,20 @@
                         </div>
                         <span class="ml-2 text-sm">{{ $restaurant->reviews->count() }} reviews</span>
                     </div>
-                    
+
                     <!-- Favorite Button -->
                     @auth
-                    <button id="favorite-button" 
+                    <button id="favorite-button"
                             class="flex items-center bg-white bg-opacity-90 px-3 py-1.5 rounded-full shadow-sm transition duration-200 hover:bg-opacity-100"
                             data-restaurant-id="{{ $restaurant->id }}"
                             data-is-favorited="{{ $isFavorited ? 'true' : 'false' }}">
-                        <svg id="favorite-icon" class="{{ $isFavorited ? 'text-red-500' : 'text-gray-400' }} w-5 h-5 mr-1.5 transition duration-200" 
+                        <svg id="favorite-icon" class="{{ $isFavorited ? 'text-red-500' : 'text-gray-400' }} w-5 h-5 mr-1.5 transition duration-200"
                              fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
                         <span id="favorite-text" class="text-sm font-medium {{ $isFavorited ? 'text-red-500' : 'text-gray-700' }}">
                             {{ $isFavorited ? 'Favorited' : 'Add to Favorites' }}
                         </span>
-                        <span id="favorites-count" class="ml-1.5 text-xs text-gray-500">{{ $favoritesCount }}</span>
                     </button>
                     @else
                     <a href="{{ route('login.show') }}" class="flex items-center bg-white bg-opacity-90 px-3 py-1.5 rounded-full shadow-sm transition duration-200 hover:bg-opacity-100">
@@ -54,7 +53,6 @@
                             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                         </svg>
                         <span class="text-sm font-medium text-gray-700">Add to Favorites</span>
-                        <span class="ml-1.5 text-xs text-gray-500">{{ $favoritesCount }}</span>
                     </a>
                     @endauth
                 </div>
@@ -395,25 +393,26 @@
 
         bookingTimeInput.addEventListener('change', validateTimeRange);
         endTimeInput.addEventListener('change', validateTimeRange);
-        
+
         // Favorite button functionality
         const favoriteButton = document.getElementById('favorite-button');
         if (favoriteButton) {
             favoriteButton.addEventListener('click', function() {
+                console.log('llllllllllllll')
                 const restaurantId = this.dataset.restaurantId;
                 const isFavorited = this.dataset.isFavorited === 'true';
                 const favoriteIcon = document.getElementById('favorite-icon');
                 const favoriteText = document.getElementById('favorite-text');
-                const favoritesCount = document.getElementById('favorites-count');
-                
+
                 // Send AJAX request to toggle favorite status
                 fetch(`/restaurants/${restaurantId}/favorite`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Accept': 'application/json'
                     },
-                    body: JSON.stringify({})
+                    credentials: 'same-origin'
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -438,16 +437,13 @@
                         favoriteText.textContent = 'Add to Favorites';
                         favoriteButton.dataset.isFavorited = 'false';
                     }
-                    
-                    // Update favorites count
-                    favoritesCount.textContent = data.favoriteCount;
-                    
+
                     // Show a temporary success message
                     const messageElement = document.createElement('div');
                     messageElement.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50';
                     messageElement.innerHTML = `<span class="block sm:inline">${data.message}</span>`;
                     document.body.appendChild(messageElement);
-                    
+
                     // Remove the message after 3 seconds
                     setTimeout(() => {
                         messageElement.remove();
@@ -455,13 +451,13 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    
+
                     // Show error message
                     const messageElement = document.createElement('div');
                     messageElement.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
                     messageElement.innerHTML = `<span class="block sm:inline">An error occurred. Please try again.</span>`;
                     document.body.appendChild(messageElement);
-                    
+
                     setTimeout(() => {
                         messageElement.remove();
                     }, 3000);
