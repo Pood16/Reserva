@@ -84,8 +84,28 @@ class RestaurantController extends Controller
         // Create the reservation
         $reservation = \App\Models\Reservation::create($reservationData);
 
+        // Load related data for the modal
+        $reservation->load(['restaurant', 'table', 'user']);
+
+        // Format dates for display
+        $formattedReservation = [
+            'id' => $reservation->id,
+            'restaurant_name' => $reservation->restaurant->name,
+            'table_name' => $reservation->table->name,
+            'table_location' => $reservation->table->location,
+            'table_capacity' => $reservation->table->capacity,
+            'booking_date' => $reservation->booking_date->format('l, F j, Y'),
+            'booking_time' => $reservation->booking_date->format('g:i A'),
+            'end_time' => $reservation->end_time->format('g:i A'),
+            'guests_number' => $reservation->guests_number,
+            'special_requests' => $reservation->special_requests,
+            'status' => ucfirst($reservation->status),
+            'reference_number' => strtoupper(substr(md5($reservation->id), 0, 8))
+        ];
+
         return redirect()->route('restaurants.show', $validated['restaurant_id'])
-            ->with('success', 'Your reservation has been submitted and is awaiting confirmation.');
+            ->with('reservation_details', $formattedReservation)
+            ->with('show_confirmation_modal', true);
     }
 
     /**
