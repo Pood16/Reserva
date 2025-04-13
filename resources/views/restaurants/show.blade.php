@@ -106,6 +106,40 @@
     </div>
     @endif
 
+    <!-- Custom Notification Popup -->
+    <div id="notification-popup" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div id="notification-icon" class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <!-- Icon will be inserted here dynamically -->
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="notification-title">
+                                Notification
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500" id="notification-message">
+                                    <!-- Message will be inserted here dynamically -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="notification-close-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Restaurant Header - Cover Image -->
     <div class="relative h-64 sm:h-80 md:h-96 w-full bg-gray-300">
         <img src="{{ $restaurant->cover_image ? asset($restaurant->cover_image) : asset('images/restaurant-placeholder-cover.jpg') }}"
@@ -470,7 +504,7 @@
                 const guestsNumber = parseInt(guestsSelect.value);
 
                 if (guestsNumber > tableCapacity) {
-                    alert(`This table can only accommodate ${tableCapacity} guests. Please select a different table or reduce the number of guests.`);
+                    showNotification('Error', `This table can only accommodate ${tableCapacity} guests. Please select a different table or reduce the number of guests.`, 'error');
                     tableSelect.value = '';
                 }
             }
@@ -503,7 +537,7 @@
                 const maxTime = "{{ $restaurant->closing_time->format('H:i') }}";
                 if (endTimeInput.value > maxTime) {
                     endTimeInput.value = maxTime;
-                    alert(`The restaurant closes at ${maxTime.split(':')[0]}:${maxTime.split(':')[1]}. Your end time has been adjusted accordingly.`);
+                    showNotification('Error', `The restaurant closes at ${maxTime.split(':')[0]}:${maxTime.split(':')[1]}. Your end time has been adjusted accordingly.`, 'error');
                 }
             }
         }
@@ -519,13 +553,13 @@
                 const diffMinutes = endTotalMinutes - startTotalMinutes;
 
                 if (diffMinutes <= 0) {
-                    alert('End time must be after start time');
+                    showNotification('Error', 'End time must be after start time', 'error');
                     calculateEndTime(); // Reset to valid end time
                     return false;
                 }
 
                 if (diffMinutes < 120) {
-                    alert('Reservation must be at least 2 hours long');
+                    showNotification('Error', 'Reservation must be at least 2 hours long', 'error');
                     calculateEndTime(); // Reset to valid end time
                     return false;
                 }
@@ -638,31 +672,48 @@
                     }
 
                     // Show a temporary success message
-                    const messageElement = document.createElement('div');
-                    messageElement.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50';
-                    messageElement.innerHTML = `<span class="block sm:inline">${data.message}</span>`;
-                    document.body.appendChild(messageElement);
-
-                    // Remove the message after 3 seconds
-                    setTimeout(() => {
-                        messageElement.remove();
-                    }, 3000);
+                    showNotification('Success', data.message, 'success');
                 })
                 .catch(error => {
                     console.error('Error:', error);
 
                     // Show error message
-                    const messageElement = document.createElement('div');
-                    messageElement.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
-                    messageElement.innerHTML = `<span class="block sm:inline">An error occurred. Please try again.</span>`;
-                    document.body.appendChild(messageElement);
-
-                    setTimeout(() => {
-                        messageElement.remove();
-                    }, 3000);
+                    showNotification('Error', 'An error occurred. Please try again.', 'error');
                 });
             });
         }
+
+        // Custom notification popup functionality
+        const notificationPopup = document.getElementById('notification-popup');
+        const notificationTitle = document.getElementById('notification-title');
+        const notificationMessage = document.getElementById('notification-message');
+        const notificationIcon = document.getElementById('notification-icon');
+        const notificationCloseButton = document.getElementById('notification-close-button');
+
+        function showNotification(title, message, type) {
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+
+            // Set icon and background color based on type
+            notificationIcon.innerHTML = '';
+            notificationIcon.className = 'mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full sm:mx-0 sm:h-10 sm:w-10';
+            if (type === 'success') {
+                notificationIcon.classList.add('bg-green-100');
+                notificationIcon.innerHTML = '<svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+            } else if (type === 'error') {
+                notificationIcon.classList.add('bg-red-100');
+                notificationIcon.innerHTML = '<svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+            } else {
+                notificationIcon.classList.add('bg-yellow-100');
+                notificationIcon.innerHTML = '<svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path></svg>';
+            }
+
+            notificationPopup.classList.remove('hidden');
+        }
+
+        notificationCloseButton.addEventListener('click', function() {
+            notificationPopup.classList.add('hidden');
+        });
     });
 </script>
 @endpush
