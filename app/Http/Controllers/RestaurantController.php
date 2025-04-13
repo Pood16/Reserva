@@ -30,13 +30,13 @@ class RestaurantController extends Controller
         $openingDays = is_array($restaurant->opening_days) ?
             implode(', ', $restaurant->opening_days) :
             $restaurant->opening_days;
-            
+
         // Check if the restaurant is favorited by the logged-in user
         $isFavorited = false;
         if (auth()->check()) {
             $isFavorited = auth()->user()->hasFavorited($restaurant);
         }
-        
+
         // Get the total number of favorites for this restaurant
         $favoritesCount = $restaurant->favoritedByUsers()->count();
 
@@ -98,14 +98,14 @@ class RestaurantController extends Controller
     {
         $restaurant = Restaurant::findOrFail($id);
         $user = auth()->user();
-        
+
         if (!$user) {
             return response()->json(['error' => 'User must be logged in to favorite restaurants'], 401);
         }
-        
+
         // Check if the restaurant is already favorited
         $isFavorited = $user->hasFavorited($restaurant);
-        
+
         if ($isFavorited) {
             // If already favorited, remove the favorite
             $user->favoriteRestaurants()->detach($restaurant->id);
@@ -117,7 +117,7 @@ class RestaurantController extends Controller
             $isFavorited = true;
             $message = 'Restaurant added to favorites';
         }
-        
+
         return response()->json([
             'isFavorited' => $isFavorited,
             'message' => $message,
