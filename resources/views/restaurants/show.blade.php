@@ -383,9 +383,10 @@
                                 <label for="booking_time" class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
                                 <input type="time" id="booking_time" name="booking_time"
                                     min="{{ $restaurant->opening_time->format('H:i') }}"
-                                    max="{{ $restaurant->closing_time->subHours(1)->format('H:i') }}"
+                                    max="{{ $restaurant->closing_time->subHours(2)->format('H:i') }}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                     required>
+                                <p class="text-xs text-gray-500 mt-1">Available from {{ $restaurant->opening_time->format('g:i A') }} to {{ $restaurant->closing_time->subHours(2)->format('g:i A') }}</p>
                                 @error('booking_time')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -394,10 +395,11 @@
                             <div>
                                 <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">End Time</label>
                                 <input type="time" id="end_time" name="end_time"
-                                    min="{{ $restaurant->opening_time->addHour()->format('H:i') }}"
+                                    min="{{ $restaurant->opening_time->addHours(2)->format('H:i') }}"
                                     max="{{ $restaurant->closing_time->format('H:i') }}"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                                     required>
+                                <p class="text-xs text-gray-500 mt-1">Minimum 2-hour reservation</p>
                                 @error('end_time')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -477,20 +479,65 @@
         guestsSelect.addEventListener('change', validateCapacity);
         tableSelect.addEventListener('change', validateCapacity);
 
-        // Ensure end time is after start time
+        // Ensure end time is after start time with a 2-hour minimum
         const bookingTimeInput = document.getElementById('booking_time');
         const endTimeInput = document.getElementById('end_time');
 
-        function validateTimeRange() {
-            if (bookingTimeInput.value && endTimeInput.value) {
-                if (endTimeInput.value <= bookingTimeInput.value) {
-                    alert('End time must be after start time');
-                    endTimeInput.value = '';
+        function calculateEndTime() {
+            if (bookingTimeInput.value) {
+                // Parse the start time
+                const [startHours, startMinutes] = bookingTimeInput.value.split(':').map(Number);
+
+                // Calculate end time (start time + 2 hours)
+                let endHours = startHours + 2;
+                const endMinutes = startMinutes;
+
+                // Format end time properly with leading zeros
+                const formattedEndHours = endHours.toString().padStart(2, '0');
+                const formattedEndMinutes = endMinutes.toString().padStart(2, '0');
+
+                // Set the end time value
+                endTimeInput.value = `${formattedEndHours}:${formattedEndMinutes}`;
+
+                // Validate that the end time isn't past closing
+                const maxTime = "{{ $restaurant->closing_time->format('H:i') }}";
+                if (endTimeInput.value > maxTime) {
+                    endTimeInput.value = maxTime;
+                    alert(`The restaurant closes at ${maxTime.split(':')[0]}:${maxTime.split(':')[1]}. Your end time has been adjusted accordingly.`);
                 }
             }
         }
 
-        bookingTimeInput.addEventListener('change', validateTimeRange);
+        function validateTimeRange() {
+            if (bookingTimeInput.value && endTimeInput.value) {
+                // Calculate time difference in minutes
+                const [startHours, startMinutes] = bookingTimeInput.value.split(':').map(Number);
+                const [endHours, endMinutes] = endTimeInput.value.split(':').map(Number);
+
+                const startTotalMinutes = (startHours * 60) + startMinutes;
+                const endTotalMinutes = (endHours * 60) + endMinutes;
+                const diffMinutes = endTotalMinutes - startTotalMinutes;
+
+                if (diffMinutes <= 0) {
+                    alert('End time must be after start time');
+                    calculateEndTime(); // Reset to valid end time
+                    return false;
+                }
+
+                if (diffMinutes < 120) {
+                    alert('Reservation must be at least 2 hours long');
+                    calculateEndTime(); // Reset to valid end time
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Set up event listeners
+        bookingTimeInput.addEventListener('change', function() {
+            calculateEndTime();
+        });
+
         endTimeInput.addEventListener('change', validateTimeRange);
 
         // Reservation confirmation modal functionality
