@@ -1,17 +1,17 @@
 <div class="w-full px-4 bg-gray-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 bg-gray-10 shadow-[0px_5px_14px_0px_rgba(8,15,52,0.04)] flex flex-wrap justify-between items-center">
         <div class="flex justify-center items-center gap-2.5">
-            <a href="#" class="flex items-center">
+            <a href="{{ route('home') }}" class="flex items-center">
                 <div class="text-center text-amber-500 text-2xl sm:text-4xl font-normal font-['Architects_Daughter'] leading-10">QuickTable</div>
             </a>
         </div>
 
         <!-- Main Navigation -->
         <div class="hidden md:flex items-center space-x-6 text-gray-700 text-sm font-medium">
-            <a href="#" class="hover:text-amber-500 transition duration-200">Home</a>
-            <a href="#" class="hover:text-amber-500 transition duration-200">Find Restaurants</a>
-            <a href="#" class="hover:text-amber-500 transition duration-200">About Us</a>
-            <a href="#" class="hover:text-amber-500 transition duration-200">Contact</a>
+            <a href="{{ route('home') }}" class="hover:text-amber-500 transition duration-200">Home</a>
+            <a href="{{ route('restaurants.index') }}" class="hover:text-amber-500 transition duration-200">Find Restaurants</a>
+            <a href="{{ route('about') }}" class="hover:text-amber-500 transition duration-200">About Us</a>
+            <a href="{{ route('contact') }}" class="hover:text-amber-500 transition duration-200">Contact</a>
         </div>
 
         <div class="flex flex-wrap items-center gap-3 mt-4 sm:mt-0">
@@ -41,7 +41,7 @@
                         <div class="px-4 py-2 bg-red-100 text-red-700 rounded-lg mr-3 hidden md:block">
                             Admin
                         </div>
-                    @elseif(auth()->user()->role === 'restaurant_owner')
+                    @elseif(auth()->user()->role === 'manager')
                         <!-- Restaurant Owner Navigation -->
                         <div class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg mr-3 hidden md:block">
                             Restaurant Manager
@@ -69,31 +69,31 @@
                             <div class="py-1" role="none">
                                 <!-- Common user links -->
                                 <div class="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100">{{ auth()->user()->name }}</div>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Reservations</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Favorites</a>
+                                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
+                                <a href="{{ route('reservations.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Reservations</a>
+                                <a href="{{ route('favorites.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Favorites</a>
 
                                 @if(auth()->user()->role === 'admin')
                                     <!-- Admin specific links -->
                                     <div class="border-t border-gray-100 my-1"></div>
                                     <div class="px-4 py-1 text-xs text-gray-500">Admin</div>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Manage Users</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Manage Restaurants</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">System Settings</a>
+                                    <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Manage Users</a>
+                                    <a href="{{ route('admin.restaurants.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Manage Restaurants</a>
+                                    <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">System Settings</a>
                                 @endif
 
-                                @if(auth()->user()->role === 'restaurant_owner')
+                                @if(auth()->user()->role === 'manager')
                                     <!-- Restaurant owner specific links -->
                                     <div class="border-t border-gray-100 my-1"></div>
                                     <div class="px-4 py-1 text-xs text-gray-500">Restaurant Management</div>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Restaurants</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Incoming Reservations</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Table Management</a>
+                                    <a href="{{ route('restaurant_owner.restaurants.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Restaurants</a>
+                                    <a href="{{ route('restaurant_owner.reservations.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Incoming Reservations</a>
+                                    <a href="{{ route('restaurant_owner.tables.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Table Management</a>
                                 @endif
 
                                 <div class="border-t border-gray-100 my-1"></div>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile Settings</a>
-                                <form method="POST" action="#" role="menuitem">
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile Settings</a>
+                                <form method="POST" action="{{ route('logout') }}" role="menuitem">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</button>
                                 </form>
@@ -104,10 +104,10 @@
             @else
                 <!-- User is not logged in -->
                 <div class="flex items-center gap-x-2">
-                    <a href="#" class="px-5 py-2 bg-white border border-yellow-500 hover:bg-yellow-50 rounded-lg text-gray-900 font-medium text-sm transition-colors duration-300">
+                    <a href="{{ route('login.show') }}" class="px-5 py-2 bg-white border border-yellow-500 hover:bg-yellow-50 rounded-lg text-gray-900 font-medium text-sm transition-colors duration-300">
                         Login
                     </a>
-                    <a href="#" class="px-5 py-2 rounded-lg text-gray-900 font-medium text-sm bg-yellow-500 hover:bg-yellow-600 transition-colors duration-300">
+                    <a href="{{ route('register.show') }}" class="px-5 py-2 rounded-lg text-gray-900 font-medium text-sm bg-yellow-500 hover:bg-yellow-600 transition-colors duration-300">
                         Register
                     </a>
                 </div>
