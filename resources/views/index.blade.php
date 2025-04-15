@@ -1,6 +1,69 @@
 <x-app-layout>
     <x-header/>
 
+    <!-- Introduction Section -->
+    <div class="bg-gradient-to-r from-yellow-50 to-amber-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-4xl font-bold text-gray-900 mb-6">Welcome to QuickTable</h1>
+                    <p class="text-lg text-gray-700 mb-6">
+                        QuickTable is the premier restaurant reservation platform connecting food enthusiasts with their favorite dining establishments. We simplify the dining experience by providing a seamless booking system that benefits both diners and restaurant owners.
+                    </p>
+                    <p class="text-lg text-gray-700 mb-8">
+                        Founded in 2023, our mission is to transform the way people discover, book, and experience restaurants. With QuickTable, you can browse top-rated restaurants, view real customer reviews, and secure your table in seconds — all in one place.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="{{ route('restaurants.index') }}" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300 inline-block text-center">
+                            Find Your Table
+                        </a>
+                        <a href="{{ route('about') }}" class="px-6 py-3 border border-yellow-500 text-yellow-600 hover:bg-yellow-50 font-semibold rounded-md transition duration-300 inline-block text-center">
+                            Learn More About Us
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="rounded-lg overflow-hidden shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80"
+                             alt="Restaurant dining experience"
+                             class="w-full h-auto object-cover">
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
+                        <div class="flex items-center">
+                            <div class="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center mr-4">
+                                <span class="text-xl font-bold">4.8</span>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-900">Trusted by diners</p>
+                                <p class="text-sm text-gray-600">Over 10,000 reservations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key stats/features -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">500+</div>
+                    <div class="text-gray-700">Partner Restaurants</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">25K+</div>
+                    <div class="text-gray-700">Happy Diners</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">50+</div>
+                    <div class="text-gray-700">Cities Covered</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">4.8</div>
+                    <div class="text-gray-700">Average Rating</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- How It Works Section -->
     <div class="max-w-7xl mx-auto p-4 py-16">
         <div class="text-center mb-12">

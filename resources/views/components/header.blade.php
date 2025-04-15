@@ -1,5 +1,5 @@
-<div class="w-full px-4 bg-gray-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 bg-gray-10 shadow-[0px_5px_14px_0px_rgba(8,15,52,0.04)] flex flex-wrap justify-between items-center">
+<div class="fixed top-0 w-full z-50 bg-white shadow-md transition-transform duration-300" id="navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-wrap justify-between items-center">
         <div class="flex justify-center items-center gap-2.5">
             <a href="{{ route('home') }}" class="flex items-center">
                 <div class="text-center text-amber-500 text-2xl sm:text-4xl font-normal font-['Architects_Daughter'] leading-10">QuickTable</div>
@@ -115,5 +115,47 @@
         </div>
     </div>
 </div>
+
+<!-- Add a spacer div to prevent content from being hidden under the fixed header -->
+<div id="header-spacer" class="h-[80px]"></div>
+
+<!-- Add JavaScript for scroll behavior -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navbar = document.getElementById('navbar');
+        const headerSpacer = document.getElementById('header-spacer');
+        let lastScrollY = window.scrollY;
+
+        // Update the header spacer height to match the navbar height
+        headerSpacer.style.height = navbar.offsetHeight + 'px';
+
+        window.addEventListener('scroll', function() {
+            const currentScrollY = window.scrollY;
+
+            // Show/hide navbar based on scroll direction
+            if (currentScrollY > lastScrollY && currentScrollY > navbar.offsetHeight) {
+                // Scrolling down - hide navbar
+                navbar.style.transform = 'translateY(-100%)';
+            } else {
+                // Scrolling up - show navbar
+                navbar.style.transform = 'translateY(0)';
+            }
+
+            // Add box shadow when scrolled
+            if (currentScrollY > 10) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+
+            lastScrollY = currentScrollY;
+        });
+
+        // Handle window resize to update spacer height
+        window.addEventListener('resize', function() {
+            headerSpacer.style.height = navbar.offsetHeight + 'px';
+        });
+    });
+</script>
 
 
