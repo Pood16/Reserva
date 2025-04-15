@@ -7,11 +7,12 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
 
 // Public routes
-Route::get('/', [RestaurantController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/unauthorized', function () {
     return view('unauthorized');
@@ -30,13 +31,8 @@ Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('re
 Route::post('/restaurants/{id}/favorite', [RestaurantController::class, 'toggleFavorite'])->middleware('auth')->name('restaurants.favorite');
 
 // Static pages
-Route::get('/about', function () {
-    return view('pages.about');
-})->name('about');
-
-Route::get('/contact', function () {
-    return view('pages.contact');
-})->name('contact');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 // Auth required routes
 Route::middleware(['auth'])->group(function () {

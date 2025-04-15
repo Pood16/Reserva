@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     /**
-     * Display the welcome/home page with featured restaurants
+     * Display the homepage with featured restaurants
      */
     public function index()
     {
@@ -22,7 +22,7 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('welcome', compact('restaurants'));
+        return view('index', compact('restaurants'));
     }
 
     /**
@@ -30,7 +30,7 @@ class HomeController extends Controller
      */
     public function about()
     {
-        return view('about');
+        return view('pages.about');
     }
 
     /**
@@ -38,6 +38,6 @@ class HomeController extends Controller
      */
     public function contact()
     {
-        return view('contact');
+        return view('pages.contact');
     }
 }

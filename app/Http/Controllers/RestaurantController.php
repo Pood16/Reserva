@@ -17,7 +17,7 @@ class RestaurantController extends Controller
     public function index()
     {
         $restaurants = Restaurant::select('id','name', 'cover_image', 'city', 'description')->get();
-        return view('welcome', compact('restaurants'));
+        return view('restaurants.explore-restaurants', compact('restaurants'));
     }
 
     /**
