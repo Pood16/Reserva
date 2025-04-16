@@ -55,8 +55,8 @@ class AuthController extends Controller
         return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
             'manager' => redirect()->route('restaurant.dashboard'),
-            'client' => redirect()->route('welcome'),
-            default => redirect()->route('welcome'),
+            'client' => redirect()->route('home'),
+            default => redirect()->route('home'),
         };
     }
     public function handleLogout(Request $request)
