@@ -16,22 +16,24 @@
 
         <div class="flex flex-wrap items-center gap-3 mt-4 sm:mt-0">
             <!-- Location drop down -->
-            <div data-label="on" class="px-3 py-2 bg-gray-10 rounded-lg outline-1 outline-offset-[-1px] outline-stone-300 outline-opacity-50 flex items-center gap-4 cursor-pointer">
+            <form id="location-filter-form" action="{{ route('restaurants.index') }}" method="GET" class="flex items-center gap-2 m-0 p-0">
                 <div class="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.314-2.686-6-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" />
                     </svg>
                     <div class="flex flex-col">
                         <div class="text-gray-90 text-[8px] font-normal leading-none">Your Location</div>
-                        <select class="text-gray-90 text-xs font-normal bg-transparent border-none focus:outline-none cursor-pointer">
-                            <option value="Nador">Nador</option>
-                            <option value="Casablanca">Casablanca</option>
-                            <option value="Rabat">Rabat</option>
-                            <option value="Marrakech">Marrakech</option>
+                        <select name="city" class="text-gray-90 text-xs font-normal bg-transparent border-none focus:outline-none cursor-pointer" onchange="document.getElementById('location-filter-form').submit()">
+                            <option value="">All Cities</option>
+                            @foreach(\App\Models\Restaurant::select('city')->distinct()->orderBy('city')->pluck('city') as $city)
+                                @if($city)
+                                    <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>{{ $city }}</option>
+                                @endif
+                            @endforeach
                         </select>
                     </div>
                 </div>
-            </div>
+            </form>
 
             @auth
                 <!-- User is logged in -->

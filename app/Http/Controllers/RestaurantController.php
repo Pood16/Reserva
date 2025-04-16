@@ -12,11 +12,16 @@ class RestaurantController extends Controller
     /**
      * Display a listing of restaurants.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $restaurants = Restaurant::select('id','name', 'cover_image', 'city', 'description')->get();
+        $query = Restaurant::select('id','name', 'cover_image', 'city', 'description');
+        if ($request->filled('city')) {
+            $query->where('city', $request->city);
+        }
+        $restaurants = $query->get();
         return view('restaurants.explore-restaurants', compact('restaurants'));
     }
 
