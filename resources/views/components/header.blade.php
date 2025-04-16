@@ -35,7 +35,7 @@
 
             @auth
                 <!-- User is logged in -->
-                <div class="relative group flex">
+                <div class="relative flex">
                     @if(auth()->user()->role === 'admin')
                         <!-- Admin Navigation -->
                         <div class="px-4 py-2 bg-red-100 text-red-700 rounded-lg mr-3 hidden md:block">
@@ -49,27 +49,29 @@
                     @endif
 
                     <!-- Notification Button -->
-                    <a href="#" class="w-10 h-10 p-2 bg-yellow-500 rounded-lg flex justify-center items-center hover:bg-yellow-600 cursor-pointer relative mx-1">
+                    <button type="button" class="w-10 h-10 p-2 bg-yellow-500 rounded-lg flex justify-center items-center hover:bg-yellow-600 cursor-pointer relative mx-1" id="notification-button">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405C18.79 14.79 18 13.42 18 12V8c0-3.314-2.686-6-6-6S6 4.686 6 8v4c0 1.42-.79 2.79-1.595 3.595L3 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">2</span>
-                    </a>
+                    </button>
 
                     <!-- User Dropdown -->
                     <div class="relative inline-block text-left">
-                        <button type="button" class="w-10 h-10 p-2 bg-yellow-500 rounded-lg flex justify-center items-center hover:bg-yellow-600 cursor-pointer group-hover:bg-yellow-600" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                        <button type="button" class="w-10 h-10 p-2 bg-yellow-500 rounded-lg flex justify-center items-center hover:bg-yellow-600 cursor-pointer" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </svg>
                         </button>
 
                         <!-- Dropdown menu -->
-                        <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden group-hover:block z-50" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                        <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50" id="user-dropdown-menu" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                             <div class="py-1" role="none">
                                 <!-- Common user links -->
                                 <div class="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100">{{ auth()->user()->name }}</div>
-                                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
+                                @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
+                                    <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
+                                @endif
                                 <a href="{{ route('reservations.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Reservations</a>
                                 <a href="{{ route('favorites.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Favorites</a>
 
@@ -128,6 +130,29 @@
 
         // Update the header spacer height to match the navbar height
         headerSpacer.style.height = navbar.offsetHeight + 'px';
+
+        // Dropdown logic
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdownMenu = document.getElementById('user-dropdown-menu');
+        const notificationButton = document.getElementById('notification-button');
+
+        // Prevent notification button from toggling user dropdown
+        notificationButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // You can add notification dropdown logic here if needed
+        });
+
+        userMenuButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            userDropdownMenu.classList.toggle('hidden');
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!userDropdownMenu.contains(e.target) && e.target !== userMenuButton) {
+                userDropdownMenu.classList.add('hidden');
+            }
+        });
 
         window.addEventListener('scroll', function() {
             const currentScrollY = window.scrollY;
