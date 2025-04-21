@@ -1,86 +1,103 @@
 <x-app-layout>
-    <div class="flex min-h-screen bg-gray-100 w-full">
-        <!-- Admin Sidebar -->
-        <div class="bg-white shadow-md w-64 fixed inset-y-0 left-0 transform transition duration-200 ease-in-out lg:translate-x-0 lg:static lg:inset-0"
-            id="sidebar" x-data="{ open: true }" :class="{'translate-x-0': open, '-translate-x-full': !open}">
-            {{-- <div class="flex items-center justify-between p-4 border-b border-gray-200">
-                <div class="flex items-center">
-                    <span class="text-amber-500 text-2xl font-semibold">Admin Panel</span>
+    <div class="flex h-screen bg-gray-100" x-data="{ open: true }">
+        <!-- Navbar -->
+        <div class="bg-white shadow-lg fixed inset-y-0 left-0 z-30 w-64 transition-transform duration-300 ease-in-out"
+             id="sidebar" :class="{'translate-x-0': open, '-translate-x-full': !open}">
+            <div class="flex items-center justify-between px-4 py-5 bg-amber-50 border-b border-gray-200">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-utensils text-amber-500 text-xl"></i>
+                    <span class="text-gray-800 text-lg font-semibold">QuickTable Admin</span>
                 </div>
-                <button @click="open = !open" class="lg:hidden">
-                    <i class="fas fa-times text-gray-600 hover:text-amber-500"></i>
+                <button @click="open = !open" class="lg:hidden text-gray-600 hover:text-amber-500">
+                    <i class="fas fa-times"></i>
                 </button>
-            </div> --}}
-            <nav class="mt-6">
-                <ul class="space-y-2 px-4">
-                    <li>
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.dashboard') ? 'bg-amber-100 text-amber-600' : '' }}">
-                            <i class="fas fa-tachometer-alt w-5 h-5 mr-3 text-gray-500"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <!-- User Management Section -->
-                    <li class="pt-4">
-                        <span class="px-2 text-xs font-semibold text-gray-400 uppercase">User Management</span>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.users.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.users.*') ? 'bg-amber-100 text-amber-600' : '' }}">
-                            <i class="fas fa-users w-5 h-5 mr-3 text-gray-500"></i>
-                            <span>Users</span>
-                        </a>
-                    </li>
-                    <!-- Restaurant Management Section -->
-                    <li class="pt-4">
-                        <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Restaurant Management</span>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.restaurants.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.restaurants.*') ? 'bg-amber-100 text-amber-600' : '' }}">
-                            <i class="fas fa-utensils w-5 h-5 mr-3 text-gray-500"></i>
-                            <span>Restaurants</span>
-                        </a>
-                    </li>
-                    <!-- System Settings Section -->
-                    <li class="pt-4">
-                        <span class="px-2 text-xs font-semibold text-gray-400 uppercase">System</span>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.settings') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.settings') ? 'bg-amber-100 text-amber-600' : '' }}">
-                            <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <!-- Return to Main Site -->
-                    <li class="pt-6">
-                        <a href="{{ route('home') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50">
-                            <i class="fas fa-arrow-left w-5 h-5 mr-3 text-gray-500"></i>
-                            <span>Return to Site</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+            </div>
+
+            <div class="h-full overflow-y-auto pb-20">
+                <nav class="mt-5">
+                    <ul class="space-y-2 px-4">
+                        <li>
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.dashboard') ? 'bg-amber-100 text-amber-600' : '' }}">
+                                <i class="fas fa-tachometer-alt w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <!-- User Management Section -->
+                        <li class="pt-4">
+                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">User Management</span>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.users.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.users.*') ? 'bg-amber-100 text-amber-600' : '' }}">
+                                <i class="fas fa-users w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
+                        <!-- Restaurant Management Section -->
+                        <li class="pt-4">
+                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Restaurant Management</span>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.restaurants.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.restaurants.*') ? 'bg-amber-100 text-amber-600' : '' }}">
+                                <i class="fas fa-utensils w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Restaurants</span>
+                            </a>
+                        </li>
+                        <!-- System Settings Section -->
+                        <li class="pt-4">
+                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">System</span>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.settings') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.settings') ? 'bg-amber-100 text-amber-600' : '' }}">
+                                <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <!-- Return to Main Site -->
+                        <li class="pt-6">
+                            <a href="{{ route('home') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50">
+                                <i class="fas fa-arrow-left w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Return to Site</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
 
-        <!-- Main Content -->
-        <div class=" lg:ml-64 mt-10 w-11/12 mx-auto">
-            <!-- Top Bar -->
-            {{-- <div class="bg-white shadow-sm sticky top-0 z-10">
-                <div class="flex items-center justify-between p-4">
-                    <button class="lg:hidden" onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full')">
-                        <i class="fas fa-bars text-gray-600 hover:text-amber-500"></i>
-                    </button>
-                    <div class="ml-auto flex items-center gap-4">
-                        <div class="relative">
-                            <button class="flex items-center text-gray-700 focus:outline-none">
-                                <span class="mr-2">{{ Auth::user()->name }}</span>
-                                <i class="fas fa-user-circle text-xl text-amber-500"></i>
+        <div class="flex flex-col flex-1 lg:ml-64">
+            <!-- Fixed Header -->
+            <header class="bg-white shadow-sm sticky top-0 z-20">
+                <div class="flex items-center justify-between px-6 py-3">
+                    <div class="flex items-center">
+                        <button class="mr-4 text-gray-600 hover:text-amber-500 lg:hidden" @click="open = !open">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h1 class="text-xl font-semibold text-gray-800">Admin Dashboard</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative" x-data="{ userMenuOpen: false }">
+                            <button @click="userMenuOpen = !userMenuOpen" class="flex items-center text-gray-700 hover:text-amber-500 focus:outline-none">
+                                <span class="mr-2 hidden sm:inline">{{ Auth::user()->name }}</span>
+                                <i class="fas fa-user-circle text-xl"></i>
                             </button>
+                            <div x-show="userMenuOpen" @click.away="userMenuOpen = false" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50">
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                    <i class="fas fa-user mr-2"></i> Profile
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div> --}}
+            </header>
 
-            <!-- Content -->
-            <div class="p-6">
+            <!-- Scrollable Main Content -->
+            <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
                 @if(session('success'))
                     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
@@ -100,9 +117,8 @@
                     </div>
                 @endif
 
-                <!-- Page Heading -->
+                <!-- Welcome Message -->
                 <div class="mb-6">
-                    {{-- <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1> --}}
                     <p class="text-gray-600">Welcome back, {{ Auth::user()->name }}!</p>
                 </div>
 
@@ -240,16 +256,19 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
     <script>
-        // Any additional JavaScript you need for the dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            // Any initialization scripts
+            // Add smooth scrolling to the main content
+            const mainContent = document.querySelector('main');
+            if (mainContent) {
+                mainContent.classList.add('scroll-smooth');
+            }
         });
     </script>
     @endpush

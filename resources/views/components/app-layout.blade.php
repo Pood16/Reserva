@@ -20,11 +20,11 @@
     </head>
 
     <body class="font-sans antialiased">
-        <x-header />
+
         {{$slot}}
         @yield('script')
         @stack('scripts')
-        <x-footer />
+
     </body>
 
 </html>
