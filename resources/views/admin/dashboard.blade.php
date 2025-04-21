@@ -1,68 +1,7 @@
 <x-app-layout>
     <div class="flex h-screen bg-gray-100">
         <!-- Navbar -->
-        <div class="bg-white shadow-lg fixed inset-y-0 left-0 z-30 w-64 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0"
-             id="sidebar">
-            <div class="flex items-center justify-between px-4 py-4 bg-amber-50 border-b border-gray-200">
-                <div class="flex items-center space-x-2">
-                    <i class="fas fa-utensils text-amber-500 text-xl"></i>
-                    <span class="text-gray-800 text-lg font-semibold">QuickTable Admin</span>
-                </div>
-                <button id="closeSidebar" class="lg:hidden text-gray-600 hover:text-amber-500">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="h-full overflow-y-auto pb-20">
-                <nav class="mt-5">
-                    <ul class="space-y-2 px-4">
-                        <li>
-                            <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.dashboard') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-tachometer-alt w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <!-- User Management Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">User Management</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.users.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.users.*') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-users w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Users</span>
-                            </a>
-                        </li>
-                        <!-- Restaurant Management Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Restaurant Management</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.restaurants.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.restaurants.*') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-utensils w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Restaurants</span>
-                            </a>
-                        </li>
-                        <!-- System Settings Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">System</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.settings') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.settings') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Settings</span>
-                            </a>
-                        </li>
-                        <!-- Return to Main Site -->
-                        <li class="pt-6">
-                            <a href="{{ route('home') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50">
-                                <i class="fas fa-arrow-left w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Return to Site</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        </div>
+        <x-admin-manager-nav />
 
         <div class="flex flex-col flex-1 lg:ml-64">
             <!-- Fixed Header -->
@@ -115,11 +54,6 @@
                         <p>{{ session('unauthorized') }}</p>
                     </div>
                 @endif
-
-                <!-- Welcome Message -->
-                <div class="mb-6">
-                    <p class="text-gray-600">Welcome back, {{ Auth::user()->name }}!</p>
-                </div>
 
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -197,11 +131,6 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="mt-4 text-center">
-                                    <a href="{{ route('admin.users.index') }}" class="text-amber-500 hover:text-amber-600 font-medium">
-                                        View All Users <i class="fas fa-arrow-right ml-1"></i>
-                                    </a>
-                                </div>
                             @else
                                 <p class="text-gray-500">No users found.</p>
                             @endif
@@ -243,11 +172,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="mt-4 text-center">
-                                    <a href="{{ route('admin.restaurants.index') }}" class="text-amber-500 hover:text-amber-600 font-medium">
-                                        View All Restaurants <i class="fas fa-arrow-right ml-1"></i>
-                                    </a>
                                 </div>
                             @else
                                 <p class="text-gray-500">No restaurants found.</p>
