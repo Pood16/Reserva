@@ -1,7 +1,5 @@
 <x-app-layout>
-    <x-header/>
-
-    <!-- Introduction Section -->
+    <!-- Hero section -->
     <div class="bg-gradient-to-r from-yellow-50 to-amber-100 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -11,7 +9,7 @@
                         QuickTable is the premier restaurant reservation platform connecting food enthusiasts with their favorite dining establishments. We simplify the dining experience by providing a seamless booking system that benefits both diners and restaurant owners.
                     </p>
                     <p class="text-lg text-gray-700 mb-8">
-                        Founded in 2023, our mission is to transform the way people discover, book, and experience restaurants. With QuickTable, you can browse top-rated restaurants, view real customer reviews, and secure your table in seconds — all in one place.
+                        Founded in 2025, our mission is to transform the way people discover, book, and experience restaurants. With QuickTable, you can browse top-rated restaurants, view real customer reviews, and secure your table in seconds — all in one place.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="{{ route('restaurants.index') }}" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300 inline-block text-center">
@@ -35,7 +33,7 @@
                             </div>
                             <div>
                                 <p class="font-medium text-gray-900">Trusted by diners</p>
-                                <p class="text-sm text-gray-600">Over 10,000 reservations</p>
+                                <p class="text-sm text-gray-600">Over 10 reservations</p>
                             </div>
                         </div>
                     </div>
@@ -45,15 +43,15 @@
             <!-- Key stats/features -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">500+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">5+</div>
                     <div class="text-gray-700">Partner Restaurants</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">25K+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">20+</div>
                     <div class="text-gray-700">Happy Diners</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">50+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">5+</div>
                     <div class="text-gray-700">Cities Covered</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
@@ -64,7 +62,7 @@
         </div>
     </div>
 
-    <!-- How It Works Section -->
+    <!-- How It Works  -->
     <div class="max-w-7xl mx-auto p-4 py-16">
         <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How QuickTable Works</h2>
@@ -109,7 +107,7 @@
         </div>
     </div>
 
-    <!-- Benefits Sections -->
+    <!-- Benefits  -->
     <div class="bg-gray-50 py-16">
         <div class="max-w-7xl mx-auto p-4">
             <div class="text-center mb-12">
@@ -229,7 +227,7 @@
         </div>
     </div>
 
-    <!-- Testimonials Section -->
+    <!-- Testimonials -->
     <div class="bg-gray-50 py-16">
         <div class="max-w-7xl mx-auto p-4">
             <div class="text-center mb-12">
@@ -244,10 +242,10 @@
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="flex items-center mb-4">
                         <div class="mr-4">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="rounded-full w-14 h-14 object-cover">
+                            <img src="{{asset('resources/images/default-profile.png')}}" alt="User" class="rounded-full w-14 h-14 object-cover">
                         </div>
                         <div>
-                            <h4 class="font-semibold text-gray-900">Michael Johnson</h4>
+                            <h4 class="font-semibold text-gray-900">Lahcen Ouirghane</h4>
                             <div class="flex text-yellow-400 mt-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -276,10 +274,10 @@
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="flex items-center mb-4">
                         <div class="mr-4">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="rounded-full w-14 h-14 object-cover">
+                            <img src="{{asset('resources/images/default-profile.png')}}" alt="User" class="rounded-full w-14 h-14 object-cover">
                         </div>
                         <div>
-                            <h4 class="font-semibold text-gray-900">Sophia Rodriguez</h4>
+                            <h4 class="font-semibold text-gray-900">Ouirghane Lahcen</h4>
                             <div class="flex text-yellow-400 mt-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -308,10 +306,10 @@
                 <div class="bg-white p-6 rounded-lg shadow-md">
                     <div class="flex items-center mb-4">
                         <div class="mr-4">
-                            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Restaurant Owner" class="rounded-full w-14 h-14 object-cover">
+                            <img src="{{ asset('resources/images/default-profile.png') }}" alt="Restaurant Owner" class="rounded-full w-14 h-14 object-cover">
                         </div>
                         <div>
-                            <h4 class="font-semibold text-gray-900">David Chen</h4>
+                            <h4 class="font-semibold text-gray-900">Lahcen Lahcen</h4>
                             <p class="text-sm text-gray-600">Restaurant Owner</p>
                         </div>
                     </div>
@@ -319,24 +317,6 @@
                         "Since joining QuickTable, our restaurant has seen a 30% increase in reservations. The platform is easy to manage and has helped us reduce no-shows significantly."
                     </p>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CTA Section -->
-    <div class="relative bg-yellow-500 py-16">
-        <div class="max-w-7xl mx-auto p-4 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Experience QuickTable?</h2>
-            <p class="text-lg text-white opacity-90 max-w-2xl mx-auto mb-8">
-                Join thousands of satisfied diners and restaurant owners. Sign up today and transform your dining experience!
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ route('restaurants.index') }}" class="px-8 py-3 bg-white hover:bg-gray-100 text-yellow-600 font-semibold rounded-md transition duration-300 text-lg">
-                    Find Restaurants
-                </a>
-                <a href="{{ route('register.show') }}" class="px-8 py-3 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-md transition duration-300 text-lg">
-                    Create Free Account
-                </a>
             </div>
         </div>
     </div>

@@ -15,36 +15,16 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-3 mt-4 sm:mt-0">
-            <!-- Location drop down -->
-            <form id="location-filter-form" action="{{ route('restaurants.index') }}" method="GET" class="flex items-center gap-2 m-0 p-0">
-                <div class="flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.314-2.686-6-6-6zm0 8a2 2 0 110-4 2 2 0 010 4z" />
-                    </svg>
-                    <div class="flex flex-col">
-                        <div class="text-gray-90 text-[8px] font-normal leading-none">Your Location</div>
-                        <select name="city" class="text-gray-90 text-xs font-normal bg-transparent border-none focus:outline-none cursor-pointer" onchange="document.getElementById('location-filter-form').submit()">
-                            <option value="">All Cities</option>
-                            @foreach(\App\Models\Restaurant::select('city')->distinct()->orderBy('city')->pluck('city') as $city)
-                                @if($city)
-                                    <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>{{ $city }}</option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-            </form>
-
             @auth
                 <!-- User is logged in -->
                 <div class="relative flex">
                     @if(auth()->user()->role === 'admin')
-                        <!-- Admin Navigation -->
+                        <!-- Admin  -->
                         <div class="px-4 py-2 bg-red-100 text-red-700 rounded-lg mr-3 hidden md:block">
                             Admin
                         </div>
                     @elseif(auth()->user()->role === 'manager')
-                        <!-- Restaurant Owner Navigation -->
+                        <!-- Restaurant Owner  -->
                         <div class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg mr-3 hidden md:block">
                             Restaurant Manager
                         </div>
@@ -60,43 +40,29 @@
 
                     <!-- User Dropdown -->
                     <div class="relative inline-block text-left">
-                        <button type="button" class="w-10 h-10 p-2 bg-yellow-500 rounded-lg flex justify-center items-center hover:bg-yellow-600 cursor-pointer" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                        <!-- User icon  -->
+                        <button id="user-menu-button" type="button" class="w-10 h-10 p-2 bg-yellow-500 rounded-lg flex justify-center items-center hover:bg-yellow-600 cursor-pointer"  aria-expanded="false" aria-haspopup="true">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                             </svg>
                         </button>
 
                         <!-- Dropdown menu -->
-                        <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50" id="user-dropdown-menu" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                        <div id="user-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50"  role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                             <div class="py-1" role="none">
-                                <!-- Common user links -->
+                                <!-- User name -->
                                 <div class="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100">{{ auth()->user()->name }}</div>
+
+                                <!-- admin or manager -->
                                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
                                     <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
-                                @endif
-                                <a href="{{ route('reservations.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Reservations</a>
-                                <a href="{{ route('favorites.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Favorites</a>
-
-                                @if(auth()->user()->role === 'admin')
-                                    <!-- Admin specific links -->
                                     <div class="border-t border-gray-100 my-1"></div>
-                                    <div class="px-4 py-1 text-xs text-gray-500">Admin</div>
-                                    <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Manage Users</a>
-                                    <a href="{{ route('admin.restaurants.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Manage Restaurants</a>
-                                    <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">System Settings</a>
                                 @endif
 
-                                @if(auth()->user()->role === 'manager')
-                                    <!-- Restaurant owner specific links -->
-                                    <div class="border-t border-gray-100 my-1"></div>
-                                    <div class="px-4 py-1 text-xs text-gray-500">Restaurant Management</div>
-                                    <a href="{{ route('restaurant_owner.restaurants.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Restaurants</a>
-                                    <a href="{{ route('restaurant_owner.reservations.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Incoming Reservations</a>
-                                    <a href="{{ route('restaurant_owner.tables.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Table Management</a>
-                                @endif
-
-                                <div class="border-t border-gray-100 my-1"></div>
+                                <!-- Common for all users -->
                                 <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile Settings</a>
+
+                                <!-- Logout -->
                                 <form method="POST" action="{{ route('logout') }}" role="menuitem">
                                     @csrf
                                     <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</button>
@@ -119,70 +85,24 @@
         </div>
     </div>
 </div>
-
-<!-- Add a spacer div to prevent content from being hidden under the fixed header -->
 <div id="header-spacer" class="h-[80px]"></div>
-
-<!-- Add JavaScript for scroll behavior -->
+@push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const navbar = document.getElementById('navbar');
-        const headerSpacer = document.getElementById('header-spacer');
-        let lastScrollY = window.scrollY;
-
-        // Update the header spacer height to match the navbar height
-        headerSpacer.style.height = navbar.offsetHeight + 'px';
-
-        // Dropdown logic
+        // user dropdown
         const userMenuButton = document.getElementById('user-menu-button');
         const userDropdownMenu = document.getElementById('user-dropdown-menu');
         const notificationButton = document.getElementById('notification-button');
-
-        // Prevent notification button from toggling user dropdown
+        // notification logic
         notificationButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            // You can add notification dropdown logic here if needed
         });
-
+        // toggle user dropdown
         userMenuButton.addEventListener('click', function(e) {
             e.stopPropagation();
             userDropdownMenu.classList.toggle('hidden');
         });
-
-        // Hide dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!userDropdownMenu.contains(e.target) && e.target !== userMenuButton) {
-                userDropdownMenu.classList.add('hidden');
-            }
-        });
-
-        window.addEventListener('scroll', function() {
-            const currentScrollY = window.scrollY;
-
-            // Show/hide navbar based on scroll direction
-            if (currentScrollY > lastScrollY && currentScrollY > navbar.offsetHeight) {
-                // Scrolling down - hide navbar
-                navbar.style.transform = 'translateY(-100%)';
-            } else {
-                // Scrolling up - show navbar
-                navbar.style.transform = 'translateY(0)';
-            }
-
-            // Add box shadow when scrolled
-            if (currentScrollY > 10) {
-                navbar.classList.add('shadow-lg');
-            } else {
-                navbar.classList.remove('shadow-lg');
-            }
-
-            lastScrollY = currentScrollY;
-        });
-
-        // Handle window resize to update spacer height
-        window.addEventListener('resize', function() {
-            headerSpacer.style.height = navbar.offsetHeight + 'px';
-        });
     });
 </script>
+@endpush
 
 
