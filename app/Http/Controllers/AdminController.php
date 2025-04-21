@@ -10,11 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
-    /**
-     * Display the admin dashboard.
-     *
-     * @return \Illuminate\View\View
-     */
+
     public function dashboard()
     {
         $userCount = User::count();
@@ -29,8 +25,8 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.dashboard', compact(
-            'userCount',
-            'restaurantCount',
+  'userCount',
+ 'restaurantCount',
             'reservationCount',
             'latestUsers',
             'latestRestaurants',
@@ -38,11 +34,6 @@ class AdminController extends Controller
         ));
     }
 
-    /**
-     * Display a listing of all users.
-     *
-     * @return \Illuminate\View\View
-     */
     public function userIndex()
     {
         $users = User::all();
