@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-header />
     <div class="max-w-7xl mx-auto p-4">
         <div class="flex flex-col md:flex-row gap-6">
             <!-- Side Search with Filters -->
@@ -103,4 +104,5 @@
             </div>
         </div>
     </div>
+    <x-footer />
 </x-app-layout>

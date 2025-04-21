@@ -1,14 +1,14 @@
 <x-app-layout>
-    <div class="flex h-screen bg-gray-100" x-data="{ open: true }">
+    <div class="flex h-screen bg-gray-100">
         <!-- Navbar -->
-        <div class="bg-white shadow-lg fixed inset-y-0 left-0 z-30 w-64 transition-transform duration-300 ease-in-out"
-             id="sidebar" :class="{'translate-x-0': open, '-translate-x-full': !open}">
-            <div class="flex items-center justify-between px-4 py-5 bg-amber-50 border-b border-gray-200">
+        <div class="bg-white shadow-lg fixed inset-y-0 left-0 z-30 w-64 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0"
+             id="sidebar">
+            <div class="flex items-center justify-between px-4 py-4 bg-amber-50 border-b border-gray-200">
                 <div class="flex items-center space-x-2">
                     <i class="fas fa-utensils text-amber-500 text-xl"></i>
                     <span class="text-gray-800 text-lg font-semibold">QuickTable Admin</span>
                 </div>
-                <button @click="open = !open" class="lg:hidden text-gray-600 hover:text-amber-500">
+                <button id="closeSidebar" class="lg:hidden text-gray-600 hover:text-amber-500">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -66,21 +66,20 @@
 
         <div class="flex flex-col flex-1 lg:ml-64">
             <!-- Fixed Header -->
-            <header class="bg-white shadow-sm sticky top-0 z-20">
+            <header class="bg-white shadow-sm sticky top-0 z-20 py-1">
                 <div class="flex items-center justify-between px-6 py-3">
                     <div class="flex items-center">
-                        <button class="mr-4 text-gray-600 hover:text-amber-500 lg:hidden" @click="open = !open">
+                        <button id="toggleSidebar" class="mr-4 text-gray-600 hover:text-amber-500 lg:hidden">
                             <i class="fas fa-bars"></i>
                         </button>
-                        <h1 class="text-xl font-semibold text-gray-800">Admin Dashboard</h1>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <div class="relative" x-data="{ userMenuOpen: false }">
-                            <button @click="userMenuOpen = !userMenuOpen" class="flex items-center text-gray-700 hover:text-amber-500 focus:outline-none">
+                        <div class="relative" id="userMenu">
+                            <button id="toggleUserMenu" class="flex items-center text-gray-700 hover:text-amber-500 focus:outline-none">
                                 <span class="mr-2 hidden sm:inline">{{ Auth::user()->name }}</span>
                                 <i class="fas fa-user-circle text-xl"></i>
                             </button>
-                            <div x-show="userMenuOpen" @click.away="userMenuOpen = false" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50">
+                            <div id="userMenuDropdown" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50 hidden">
                                 <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
                                     <i class="fas fa-user mr-2"></i> Profile
                                 </a>
@@ -96,7 +95,7 @@
                 </div>
             </header>
 
-            <!-- Scrollable Main Content -->
+            <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
                 @if(session('success'))
@@ -261,9 +260,37 @@
     </div>
 
     @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.min.js" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar toggle functionality
+            const sidebar = document.getElementById('sidebar');
+            const toggleSidebar = document.getElementById('toggleSidebar');
+            const closeSidebar = document.getElementById('closeSidebar');
+
+            toggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+
+            closeSidebar.addEventListener('click', function() {
+                sidebar.classList.add('-translate-x-full');
+            });
+
+            // User menu dropdown toggle
+            const toggleUserMenu = document.getElementById('toggleUserMenu');
+            const userMenuDropdown = document.getElementById('userMenuDropdown');
+
+            toggleUserMenu.addEventListener('click', function() {
+                userMenuDropdown.classList.toggle('hidden');
+            });
+
+            // Close user menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const userMenu = document.getElementById('userMenu');
+                if (!userMenu.contains(event.target)) {
+                    userMenuDropdown.classList.add('hidden');
+                }
+            });
+
             // Add smooth scrolling to the main content
             const mainContent = document.querySelector('main');
             if (mainContent) {

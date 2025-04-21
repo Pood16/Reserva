@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-header />
     <!-- Hero section -->
     <div class="bg-gradient-to-r from-yellow-50 to-amber-100 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -320,4 +321,5 @@
             </div>
         </div>
     </div>
+    <x-footer />
 </x-app-layout>
