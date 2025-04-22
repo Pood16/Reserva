@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class ManagerController extends Controller {
 
@@ -31,6 +32,34 @@ class ManagerController extends Controller {
 
         $myRestaurants = Restaurant::where('user_id', Auth::id())->get();
         return view('manager.restaurants', compact('myRestaurants'));
+    }
+
+
+    public function addRestaurant(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'address' => 'required|string|max:255',
+            'city' => 'required|string|max:100',
+            'phone' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'website' => 'nullable|url|max:255',
+            'opening_time' => 'required',
+            'closing_time' => 'required',
+            'opening_days' => 'required|array',
+            'cover_image' => 'nullable|image|max:2048',
+        ]);
+        $validated['user_id'] = Auth::id();
+        if ($request->hasFile('cover_image')) {
+            $path = $request->file('cover_image')->store('restaurants', 'public');
+            $validated['cover_image'] = $path;
+        } else {
+            $validated['cover_image'] = 'default_restaurant.jpg';
+        }
+        $validated['is_active'] = true;
+        $restaurant = Restaurant::create($validated);
+        return redirect()->back()->with('success', 'Restaurant created successfully.');
     }
 
 

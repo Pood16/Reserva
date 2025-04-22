@@ -26,9 +26,8 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login.show');
 Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
 Route::post('/logout', [AuthController::class, 'handleLogout'])->middleware('auth')->name('logout');
 
-// Manager routes
-Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('restaurant.dashboard');
-Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
+
+
 
 // Restaurant listing and details
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
@@ -62,7 +61,11 @@ Route::middleware(['auth'])->group(function () {
 
 // Restaurant owner routes
 Route::middleware(['auth', 'manager'])->group(function () {
-    Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
+    Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('restaurant.dashboard');
+    Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
+    Route::get('/manager/restaurant/add', [ManagerController::class, 'addRestaurant'])->name('manage.restaurants');
+
+    // Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
     Route::post('/restaurants', [RestaurantController::class, 'store'])->name('restaurant_owner.restaurants.store');
     Route::get('/restaurants/{id}/edit', [RestaurantController::class, 'edit'])->name('restaurant_owner.restaurants.edit');
