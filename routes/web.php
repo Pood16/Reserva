@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
-use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -24,6 +25,10 @@ Route::post('/register', [AuthController::class, 'handleRegister'])->name('regis
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login.show');
 Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
 Route::post('/logout', [AuthController::class, 'handleLogout'])->middleware('auth')->name('logout');
+
+// Manager routes
+Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('restaurant.dashboard');
+Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
 
 // Restaurant listing and details
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
@@ -57,7 +62,6 @@ Route::middleware(['auth'])->group(function () {
 
 // Restaurant owner routes
 Route::middleware(['auth', 'manager'])->group(function () {
-    Route::get('/manager/dashboard', [RestaurantController::class, 'dashboard'])->name('restaurant.dashboard');
     Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
     Route::post('/restaurants', [RestaurantController::class, 'store'])->name('restaurant_owner.restaurants.store');

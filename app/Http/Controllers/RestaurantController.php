@@ -12,22 +12,6 @@ class RestaurantController extends Controller
 
 
 
-    public function dashboard()
-    {
-        $user = Auth::user();
-        $restaurants = Restaurant::where('user_id', $user->id)->get();
-        $restaurantCount = $restaurants->count();
-        $tableCount = Table::whereIn('restaurant_id', $restaurants->pluck('id'))->count();
-        $activeRestaurants = $restaurants->where('is_active', true)->count();
-
-        return view('manager.dashboard', compact(
-            'user',
-            'restaurants',
-            'restaurantCount',
-            'tableCount',
-            'activeRestaurants'
-        ));
-    }
 
     public function index(Request $request)
     {

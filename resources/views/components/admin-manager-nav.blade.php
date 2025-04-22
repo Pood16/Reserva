@@ -64,19 +64,9 @@
                 <ul class="space-y-2 px-4">
                     <ul class="space-y-2 px-4">
                         <li>
-                            <a href="{{ route('admin.dashboard') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.dashboard') ? 'bg-amber-100 text-amber-600' : '' }}">
+                            <a href="{{ route('restaurant.dashboard') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('restaurant.dashboard') ? 'bg-amber-100 text-amber-600' : '' }}">
                                 <i class="fas fa-tachometer-alt w-5 h-5 mr-3 text-gray-500"></i>
                                 <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <!-- User Management Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">User Management</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.users.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.users.*') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-users w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Users</span>
                             </a>
                         </li>
                         <!-- Restaurant Management Section -->
@@ -84,19 +74,9 @@
                             <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Restaurant Management</span>
                         </li>
                         <li>
-                            <a href="{{ route('admin.restaurants.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.restaurants.*') ? 'bg-amber-100 text-amber-600' : '' }}">
+                            <a href="{{ route('manage.restaurants') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('manage.restaurants') ? 'bg-amber-100 text-amber-600' : '' }}">
                                 <i class="fas fa-utensils w-5 h-5 mr-3 text-gray-500"></i>
                                 <span>Restaurants</span>
-                            </a>
-                        </li>
-                        <!-- System Settings Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">System</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.settings') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.settings') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Settings</span>
                             </a>
                         </li>
                         <!-- Return to Main Site -->

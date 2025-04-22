@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\User;
 use App\Models\Reservation;
@@ -40,22 +41,13 @@ class AdminController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new user.
-     *
-     * @return \Illuminate\View\View
-     */
+
     public function userCreate()
     {
         return view('admin.users.create');
     }
 
-    /**
-     * Store a newly created user in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function userStore(Request $request)
     {
         $validated = $request->validate([
@@ -77,25 +69,14 @@ class AdminController extends Controller
             ->with('success', 'User created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified user.
-     *
-     * @param  int  $id
-     * @return \Illuminate\View\View
-     */
+
     public function userEdit($id)
     {
         $user = User::findOrFail($id);
         return view('admin.users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified user in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function userUpdate(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -124,12 +105,6 @@ class AdminController extends Controller
             ->with('success', 'User updated successfully.');
     }
 
-    /**
-     * Remove the specified user from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function userDestroy($id)
     {
         $user = User::findOrFail($id);
@@ -146,23 +121,13 @@ class AdminController extends Controller
             ->with('success', 'User deleted successfully.');
     }
 
-    /**
-     * Display a listing of all restaurants.
-     *
-     * @return \Illuminate\View\View
-     */
+
     public function restaurantIndex()
     {
         $restaurants = Restaurant::with('user')->get();
         return view('admin.restaurants.index', compact('restaurants'));
     }
 
-    /**
-     * Show the form for editing the specified restaurant.
-     *
-     * @param  int  $id
-     * @return \Illuminate\View\View
-     */
     public function restaurantEdit($id)
     {
         $restaurant = Restaurant::findOrFail($id);
@@ -171,13 +136,7 @@ class AdminController extends Controller
         return view('admin.restaurants.edit', compact('restaurant', 'managers'));
     }
 
-    /**
-     * Update the specified restaurant in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function restaurantUpdate(Request $request, $id)
     {
         $restaurant = Restaurant::findOrFail($id);
@@ -210,12 +169,7 @@ class AdminController extends Controller
             ->with('success', 'Restaurant updated successfully.');
     }
 
-    /**
-     * Remove the specified restaurant from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
+
     public function restaurantDestroy($id)
     {
         $restaurant = Restaurant::findOrFail($id);
@@ -227,39 +181,27 @@ class AdminController extends Controller
             ->with('success', 'Restaurant deleted successfully.');
     }
 
-    /**
-     * Display the system settings form.
-     *
-     * @return \Illuminate\View\View
-     */
+
     public function settings()
     {
         // Get settings from configuration or database
         $settings = [
             'site_name' => config('app.name'),
             'contact_email' => config('mail.from.address', 'contact@example.com'),
-            // Add more settings as needed
+
         ];
 
         return view('admin.settings', compact('settings'));
     }
 
-    /**
-     * Update the system settings.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function updateSettings(Request $request)
     {
         $validated = $request->validate([
             'site_name' => 'required|string|max:255',
             'contact_email' => 'required|email|max:255',
-            // Validate additional settings
         ]);
 
-        // Update settings in configuration file or database
-        // This would typically involve updating the .env file or a settings table
+
 
         return redirect()->route('admin.settings')
             ->with('success', 'Settings updated successfully.');
