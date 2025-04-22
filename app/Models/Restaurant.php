@@ -19,7 +19,6 @@ class Restaurant extends Model
         'website',
         'opening_time',
         'closing_time',
-        'opening_days',
         'user_id',
         'cover_image',
         'is_active',
@@ -27,7 +26,6 @@ class Restaurant extends Model
     ];
 
     protected $casts = [
-        'opening_days' => 'array',
         'is_active' => 'boolean',
         'opening_time' => 'datetime',
         'closing_time' => 'datetime',
@@ -59,12 +57,15 @@ class Restaurant extends Model
         return $this->hasMany(RestaurantImage::class);
     }
 
-    /**
-     * Get all of the users that have favorited this restaurant.
-     */
+
     public function favoritedByUsers()
     {
         return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
+
+    public function openingDays()
+    {
+        return $this->hasMany(OpeningDay::class);
     }
 }
 

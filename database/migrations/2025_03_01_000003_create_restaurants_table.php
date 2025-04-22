@@ -25,7 +25,7 @@ return new class extends Migration
             $table->json('opening_days')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('cover_image')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->boolean('is_active')->default(false);
             $table->integer('max_booking_days_ahead')->default(30);
             $table->timestamps();
         });

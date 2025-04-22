@@ -70,8 +70,8 @@
                                         <tr>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
-                                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hours</th>
+                                            {{-- <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th> --}}
+                                            {{-- <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hours</th> --}}
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                         </tr>
@@ -97,21 +97,7 @@
                                                     <div class="text-sm text-gray-900">{{ $restaurant->city }}</div>
                                                     <div class="text-sm text-gray-500">{{ $restaurant->address }}</div>
                                                 </td>
-                                                <td class="px-4 py-4">
-                                                    <div class="text-sm text-gray-900">{{ $restaurant->phone }}</div>
-                                                    <div class="text-sm text-gray-500">{{ $restaurant->email }}</div>
-                                                </td>
-                                                <td class="px-4 py-4">
-                                                    <div class="text-sm text-gray-900">{{ substr($restaurant->opening_time, 0, 5) }} - {{ substr($restaurant->closing_time, 0, 5) }}</div>
-                                                    <div class="text-sm text-gray-500">
-                                                        @php
-                                                            $days = json_decode($restaurant->opening_days);
-                                                            echo $days ? implode(', ', array_map(function($day) {
-                                                                return substr($day, 0, 3);
-                                                            }, $days)) : 'Not set';
-                                                        @endphp
-                                                    </div>
-                                                </td>
+
                                                 <td class="px-4 py-4">
                                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                                         {{ $restaurant->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
@@ -146,9 +132,6 @@
                         @else
                             <div class="text-center py-10">
                                 <div class="text-gray-500 mb-4">You haven't added any restaurants yet</div>
-                                <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded inline-flex items-center">
-                                    <i class="fas fa-plus mr-2"></i> Add Your First Restaurant
-                                </a>
                             </div>
                         @endif
                     </div>
@@ -255,9 +238,18 @@
                 </div>
 
                 <!-- Active Status -->
-                <div class="mt-6 flex items-center">
-                    <input type="checkbox" name="is_active" id="is_active" class="rounded border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50" checked>
-                    <label for="is_active" class="ml-2 text-sm text-gray-700">Restaurant Active?</label>
+                <div class="mt-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Restaurant Status</label>
+                    <div class="flex space-x-4">
+                        <div class="flex items-center">
+                            <input type="radio" name="is_active" id="is_active_yes" value="1" class="rounded-full border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50" checked>
+                            <label for="is_active_yes" class="ml-2 text-sm text-gray-700">Active</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" name="is_active" id="is_active_no" value="0" class="rounded-full border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                            <label for="is_active_no" class="ml-2 text-sm text-gray-700">Inactive</label>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Hidden User ID Field -->

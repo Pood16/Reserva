@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Table;
+use App\Models\OpeningDay;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -37,7 +38,6 @@ class ManagerController extends Controller {
 
     public function addRestaurant(Request $request)
     {
-        // dd($request);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -51,18 +51,28 @@ class ManagerController extends Controller {
             'closing_time' => 'required',
             'opening_days' => 'required|array',
             'cover_image' => 'nullable|image|max:2048',
+            'is_active' => 'nullable|boolean',
         ]);
+
+        //  extract opening days
+        $openingDays = $validated['opening_days'];
+        unset($validated['opening_days']);
+
         $validated['user_id'] = Auth::id();
         if ($request->hasFile('cover_image')) {
-            $path = $request->file('cover_image')->store('restaurants', 'public');
-            $validated['cover_image'] = $path;
+            $validated['cover_image']= $request->file('cover_image')->store('restaurants', 'public');
         } else {
             $validated['cover_image'] = 'default_restaurant.jpg';
         }
-        $validated['is_active'] = true;
+
         $restaurant = Restaurant::create($validated);
+        foreach ($openingDays as $day) {
+            OpeningDay::create([
+                'restaurant_id' => $restaurant->id,
+                'day_of_week' => $day
+            ]);
+        }
         return redirect()->back()->with('success', 'Restaurant created successfully.');
     }
-
 
 }
