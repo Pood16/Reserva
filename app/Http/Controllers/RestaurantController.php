@@ -18,8 +18,6 @@ class RestaurantController extends Controller
         $restaurants = Restaurant::where('user_id', $user->id)->get();
         $restaurantCount = $restaurants->count();
         $tableCount = Table::whereIn('restaurant_id', $restaurants->pluck('id'))->count();
-
-        // You could add more statistics here as needed
         $activeRestaurants = $restaurants->where('is_active', true)->count();
 
         return view('manager.dashboard', compact(

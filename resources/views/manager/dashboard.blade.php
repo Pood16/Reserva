@@ -59,34 +59,34 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <div class="flex items-center">
-                            <div class="bg-amber-100 p-3 rounded-full">
-                                <i class="fas fa-users text-amber-500"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-xl font-semibold text-gray-800">{{ $userCount ?? 0 }}</h3>
-                                <p class="text-gray-500">Total Users</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md p-6">
-                        <div class="flex items-center">
                             <div class="bg-green-100 p-3 rounded-full">
                                 <i class="fas fa-utensils text-green-500"></i>
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-xl font-semibold text-gray-800">{{ $restaurantCount ?? 0 }}</h3>
-                                <p class="text-gray-500">Restaurants</p>
+                                <p class="text-gray-500">Your Restaurants</p>
                             </div>
                         </div>
                     </div>
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <div class="flex items-center">
                             <div class="bg-blue-100 p-3 rounded-full">
-                                <i class="fas fa-calendar-check text-blue-500"></i>
+                                <i class="fas fa-chair text-blue-500"></i>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-xl font-semibold text-gray-800">{{ $reservationCount ?? 0 }}</h3>
-                                <p class="text-gray-500">Reservations</p>
+                                <h3 class="text-xl font-semibold text-gray-800">{{ $tableCount ?? 0 }}</h3>
+                                <p class="text-gray-500">Total Tables</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center">
+                            <div class="bg-amber-100 p-3 rounded-full">
+                                <i class="fas fa-check-circle text-amber-500"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold text-gray-800">{{ $activeRestaurants ?? 0 }}</h3>
+                                <p class="text-gray-500">Active Restaurants</p>
                             </div>
                         </div>
                     </div>
