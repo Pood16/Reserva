@@ -56,7 +56,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Restaurant owner routes
-Route::middleware(['auth', 'restaurant_owner'])->prefix('restaurant-owner')->group(function () {
+Route::middleware(['auth', 'manager'])->group(function () {
+    Route::get('/manager/dashboard', [RestaurantController::class, 'dashboard'])->name('restaurant.dashboard');
     Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
     Route::post('/restaurants', [RestaurantController::class, 'store'])->name('restaurant_owner.restaurants.store');

@@ -9,12 +9,28 @@ use Illuminate\Support\Facades\Auth;
 
 class RestaurantController extends Controller
 {
-    /**
-     * Display a listing of restaurants.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\View\View
-     */
+
+
+
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $restaurants = Restaurant::where('user_id', $user->id)->get();
+        $restaurantCount = $restaurants->count();
+        $tableCount = Table::whereIn('restaurant_id', $restaurants->pluck('id'))->count();
+
+        // You could add more statistics here as needed
+        $activeRestaurants = $restaurants->where('is_active', true)->count();
+
+        return view('manager.dashboard', compact(
+            'user',
+            'restaurants',
+            'restaurantCount',
+            'tableCount',
+            'activeRestaurants'
+        ));
+    }
+
     public function index(Request $request)
     {
         $query = Restaurant::select('id','name', 'cover_image', 'city', 'description');

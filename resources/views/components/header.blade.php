@@ -55,7 +55,7 @@
 
                                 <!-- admin or manager -->
                                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
-                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
+                                    <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('manager.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
                                     <div class="border-t border-gray-100 my-1"></div>
                                 @endif
 
