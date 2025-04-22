@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Table;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class ManagerController extends Controller {
 
@@ -37,6 +37,8 @@ class ManagerController extends Controller {
 
     public function addRestaurant(Request $request)
     {
+        // dd($request);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',

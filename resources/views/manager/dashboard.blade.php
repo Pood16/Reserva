@@ -185,6 +185,6 @@
 
 
     @push('scripts')
-    <script src="{{asset('resources/js/dashboardToggle.js')}}"></script>
+    <script src="{{asset('resources/js/manager.js')}}"></script>
     @endpush
 </x-app-layout>

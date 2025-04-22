@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'manager'])->group(function () {
     Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('restaurant.dashboard');
     Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
-    Route::get('/manager/restaurant/add', [ManagerController::class, 'addRestaurant'])->name('manage.restaurants');
+    Route::post('/manager/restaurant/add', [ManagerController::class, 'addRestaurant'])->name('restaurant.store');
 
     // Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
