@@ -31,7 +31,9 @@ class ManagerController extends Controller {
 
     public function restaurantsList(){
 
-        $myRestaurants = Restaurant::where('user_id', Auth::id())->get();
+        $myRestaurants = Restaurant::where('user_id', Auth::id())
+            ->with('reviews')
+            ->get();
         return view('manager.restaurants', compact('myRestaurants'));
     }
 

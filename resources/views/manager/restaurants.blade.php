@@ -70,8 +70,7 @@
                                         <tr>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                                            {{-- <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th> --}}
-                                            {{-- <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hours</th> --}}
+                                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reviews</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                         </tr>
@@ -81,9 +80,9 @@
                                             <tr class="hover:bg-gray-50">
                                                 <td class="px-4 py-4">
                                                     <div class="flex items-center">
-                                                        <div class="flex-shrink-0 h-10 w-10">
-                                                            <img class="h-10 w-10 rounded-full object-cover"
-                                                                src="{{ asset('storage/restaurants/' . $restaurant->cover_image)}}"
+                                                        <div class="flex-shrink-0 h-10 w-14">
+                                                            <img class="h-10 w-14 object-cover"
+                                                                src="{{ asset('storage/' . $restaurant->cover_image)}}"
                                                                 alt="{{ $restaurant->name }}"
                                                                 onerror="this.src='{{ asset('resources/images/default-profile.png') }}'">
                                                         </div>
@@ -97,6 +96,28 @@
                                                     <div class="text-sm text-gray-900">{{ $restaurant->city }}</div>
                                                     <div class="text-sm text-gray-500">{{ $restaurant->address }}</div>
                                                 </td>
+                                                <td class="px-4 py-4">
+                                                    <div class="flex items-center">
+                                                        @php
+                                                            $reviewCount = $restaurant->reviews->count();
+                                                            $averageRating = $reviewCount > 0 ? number_format($restaurant->reviews->avg('rating'), 1) : 'N/A';
+                                                        @endphp
+
+                                                        <div class="flex items-center">
+                                                            <div class="flex text-yellow-400">
+                                                                @for ($i = 1; $i <= 5; $i++)
+                                                                    @if ($averageRating != 'N/A' && $i <= $averageRating)
+                                                                        <i class="fas fa-star"></i>
+                                                                    @elseif ($averageRating != 'N/A' && $i - 0.5 <= $averageRating)
+                                                                        <i class="fas fa-star-half-alt"></i>
+                                                                    @else
+                                                                        <i class="far fa-star"></i>
+                                                                    @endif
+                                                                @endfor
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
 
                                                 <td class="px-4 py-4">
                                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
@@ -105,7 +126,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                                                    <div class="flex space-x-2">
+                                                    <div class="flex space-x-4">
                                                         <a href="#" class="text-blue-600 hover:text-blue-900" title="View details">
                                                             <i class="fas fa-eye"></i>
                                                         </a>

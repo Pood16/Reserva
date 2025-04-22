@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->time('opening_time');
             $table->time('closing_time');
-            $table->json('opening_days')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('cover_image')->nullable();
             $table->boolean('is_active')->default(false);
