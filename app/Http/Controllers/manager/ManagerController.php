@@ -77,4 +77,19 @@ class ManagerController extends Controller {
         return redirect()->back()->with('success', 'Restaurant created successfully.');
     }
 
+    public function toggleStatus($id)
+    {
+        $restaurant = Restaurant::findOrFail($id);
+
+        if ($restaurant->user_id !== Auth::id()) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        $restaurant->is_active = !$restaurant->is_active;
+        $restaurant->save();
+
+        $status = $restaurant->is_active ? 'activated' : 'deactivated';
+        return redirect()->back()->with('success', "Restaurant {$status} successfully.");
+    }
+
 }

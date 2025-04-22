@@ -136,9 +136,9 @@
                                                         <a href="#" class="text-green-600 hover:text-green-900" title="Manage tables">
                                                             <i class="fas fa-chair"></i>
                                                         </a>
-                                                        <form action="#" method="POST" class="inline">
+                                                        <form action="{{ route('restaurant.toggle.status', $restaurant->id) }}" method="POST" class="inline">
                                                             @csrf
-                                                            @method('PATCH')
+                                                            @method('PUT')
                                                             <button type="submit" class="{{ $restaurant->is_active ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900' }}" title="{{ $restaurant->is_active ? 'Deactivate' : 'Activate' }}">
                                                                 <i class="fas {{ $restaurant->is_active ? 'fa-toggle-off' : 'fa-toggle-on' }}"></i>
                                                             </button>

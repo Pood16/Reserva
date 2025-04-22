@@ -64,6 +64,7 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('restaurant.dashboard');
     Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
     Route::post('/manager/restaurant/add', [ManagerController::class, 'addRestaurant'])->name('restaurant.store');
+    Route::put('/manager/restaurant/{id}/status', [ManagerController::class, 'toggleStatus'])->name('restaurant.toggle.status');
 
     // Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
