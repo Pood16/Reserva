@@ -25,8 +25,8 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.dashboard', compact(
-  'userCount',
- 'restaurantCount',
+            'userCount',
+            'restaurantCount',
             'reservationCount',
             'latestUsers',
             'latestRestaurants',
