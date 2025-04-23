@@ -37,8 +37,9 @@ class ManagerController extends Controller {
     public function restaurantsList(){
         $myRestaurants = Restaurant::where('user_id', Auth::id())
             ->with('reviews')
+            ->with('tables')
             ->get();
-        return view('manager.restaurants', compact('myRestaurants'));
+        return view('manager.restaurants.restaurants', compact('myRestaurants'));
     }
     // Show my restaurants details
     public function restaurantDetails($id)
@@ -48,7 +49,7 @@ class ManagerController extends Controller {
             ->with(['reviews', 'images', 'openingDays', 'tables'])
             ->firstOrFail();
 
-        return view('manager.restaurant-details', compact('restaurant'));
+        return view('manager.restaurants.restaurant-details', compact('restaurant'));
     }
 
     // Add Images to my restaurants

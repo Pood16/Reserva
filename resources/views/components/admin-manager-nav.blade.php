@@ -1,4 +1,3 @@
-
     <!-- Navbar -->
     <div class="bg-white shadow-lg fixed inset-y-0 left-0 z-30 w-64 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0"
          id="sidebar">
@@ -54,6 +53,9 @@
                 @elseif(auth()->user()->role == 'manager')
                 <ul class="space-y-2 px-4">
                     <ul class="space-y-2 px-4">
+                        <li class="pt-4">
+                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Dashboard Statistics</span>
+                        </li>
                         <li>
                             <a href="{{ route('restaurant.dashboard') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('restaurant.dashboard') ? 'bg-amber-100 text-amber-600' : '' }}">
                                 <i class="fas fa-tachometer-alt w-5 h-5 mr-3 text-gray-500"></i>

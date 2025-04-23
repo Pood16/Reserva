@@ -4,34 +4,7 @@
         <x-admin-manager-nav />
         <div class="flex flex-col flex-1 lg:ml-64">
             <!-- Fixed Header -->
-            <header class="bg-white shadow-sm sticky top-0 z-20 py-1">
-                <div class="flex items-center justify-between px-6 py-3">
-                    <div class="flex items-center">
-                        <button id="toggleSidebar" class="mr-4 text-gray-600 hover:text-amber-500 lg:hidden">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="relative" id="userMenu">
-                            <button id="toggleUserMenu" class="flex items-center text-gray-700 hover:text-amber-500 focus:outline-none">
-                                <span class="mr-2 hidden sm:inline">{{ Auth::user()->name }}</span>
-                                <i class="fas fa-user-circle text-xl"></i>
-                            </button>
-                            <div id="userMenuDropdown" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50 hidden">
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
-                                    <i class="fas fa-user mr-2"></i> Profile
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
-                                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <x-dashboard-header />
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
@@ -111,48 +84,9 @@
                     </div>
                 </div>
 
-                <!-- Restaurant Gallery -->
+
+                <!-- Restaurant Stats -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="text-lg font-semibold text-gray-800">Restaurant Gallery</h3>
-                        <button id="openImageModal" class="bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded inline-flex items-center">
-                            <i class="fas fa-plus mr-2"></i> Add Image
-                        </button>
-                    </div>
-
-                    <div class="p-6">
-                        @if(count($restaurant->images) > 0)
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                @foreach($restaurant->images as $image)
-                                    <div class="relative group">
-                                        <div class="aspect-w-16 aspect-h-12 mb-2">
-                                            <img src="{{ asset('storage/' . $image->image_path) }}"
-                                                alt="Restaurant Image"
-                                                class="object-cover w-full h-full rounded shadow-sm hover:shadow-md transition">
-                                        </div>
-                                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded">
-                                            <form action="{{ route('restaurant.images.delete', ['id' => $restaurant->id, 'imageId' => $image->id]) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-white bg-red-600 hover:bg-red-700 rounded-full p-2" title="Delete image">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="text-center py-10">
-                                <div class="text-gray-500 mb-4">No images have been added to this restaurant yet</div>
-                                <p class="text-sm text-gray-500">Add images to showcase your restaurant</p>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- Restaurant Stats (optional) -->
-                <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-800">Restaurant Stats</h3>
                     </div>
@@ -224,6 +158,48 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Restaurant Gallery -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-800">Restaurant Gallery</h3>
+                        <button id="openImageModal" class="bg-amber-500 hover:bg-amber-600 text-white py-2 px-4 rounded inline-flex items-center">
+                            <i class="fas fa-plus mr-2"></i> Add Image
+                        </button>
+                    </div>
+
+                    <div class="p-6">
+                        @if(count($restaurant->images) > 0)
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                @foreach($restaurant->images as $image)
+                                    <div class="relative group">
+                                        <div class="aspect-w-16 aspect-h-12 mb-2">
+                                            <img src="{{ asset('storage/' . $image->image_path) }}"
+                                                alt="Restaurant Image"
+                                                class="object-cover w-full h-full rounded shadow-sm hover:shadow-md transition">
+                                        </div>
+                                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded">
+                                            <form action="{{ route('restaurant.images.delete', ['id' => $restaurant->id, 'imageId' => $image->id]) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-white bg-red-600 hover:bg-red-700 rounded-full p-2" title="Delete image">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-10">
+                                <div class="text-gray-500 mb-4">No images have been added to this restaurant yet</div>
+                                <p class="text-sm text-gray-500">Add images to showcase your restaurant</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+
             </main>
         </div>
     </div>
