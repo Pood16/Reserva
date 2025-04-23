@@ -159,7 +159,17 @@
                                     <!-- Opening Time -->
                                     <div>
                                         <label for="opening_time" class="block text-sm font-medium text-gray-700">Opening Time <span class="text-red-500">*</span></label>
-                                        <input type="time" name="opening_time" id="opening_time" value="{{ old('opening_time', $restaurant->opening_time) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" required>
+                                        <div class="flex items-center">
+                                            <input required type="time" name="opening_time" id="opening_time" value="{{ old('opening_time', $restaurant->opening_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                            <span class="ml-2 text-sm text-gray-500">
+                                                @php
+                                                    if($restaurant->opening_time) {
+                                                        $time = new DateTime($restaurant->opening_time);
+                                                        echo $time->format('g:i A');
+                                                    }
+                                                @endphp
+                                            </span>
+                                        </div>
                                         @error('opening_time')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror
@@ -168,7 +178,17 @@
                                     <!-- Closing Time -->
                                     <div>
                                         <label for="closing_time" class="block text-sm font-medium text-gray-700">Closing Time <span class="text-red-500">*</span></label>
-                                        <input type="time" name="closing_time" id="closing_time" value="{{ old('closing_time', $restaurant->closing_time) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" required>
+                                        <div class="flex items-center">
+                                            <input required type="time" name="closing_time" id="closing_time" value="{{ old('closing_time', $restaurant->closing_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                            <span class="ml-2 text-sm text-gray-500">
+                                                @php
+                                                    if($restaurant->closing_time) {
+                                                        $time = new DateTime($restaurant->closing_time);
+                                                        echo $time->format('g:i A');
+                                                    }
+                                                @endphp
+                                            </span>
+                                        </div>
                                         @error('closing_time')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                         @enderror

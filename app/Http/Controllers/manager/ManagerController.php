@@ -217,6 +217,7 @@ class ManagerController extends Controller {
     // Update business hours (section: hours)
     private function updateBusinessHours(Request $request, Restaurant $restaurant)
     {
+
         $validated = $request->validate([
             'opening_time' => 'required',
             'closing_time' => 'required',
