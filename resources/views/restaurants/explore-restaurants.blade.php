@@ -84,7 +84,7 @@
                         <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                             <div class="relative">
                                 <a href="{{ route('restaurants.show', $restaurant->id) }}">
-                                    <img src="{{ $restaurant->cover_image ?? asset('images/placeholder-300x200.jpg') }}"
+                                    <img src="{{ asset('storage/'.$restaurant->cover_image) ?? asset('images/placeholder-300x200.jpg') }}"
                                          alt="{{ $restaurant->name }}"
                                          class="w-full h-48 object-cover"
                                          onerror="this.src='{{ asset('images/restaurant-placeholder-300x200.jpg') }}'; this.onerror='';">
