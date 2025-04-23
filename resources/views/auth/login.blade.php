@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="w-full min-h-screen bg-cover bg-center flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
-         style="background-image: url('https://cdn.pixabay.com/photo/2022/05/22/13/21/healthy-7213383_1280.jpg')">
+        style="background-image: url('https://cdn.pixabay.com/photo/2022/05/22/13/21/healthy-7213383_1280.jpg')">
         <div class="max-w-md w-full space-y-8 bg-white/80 backdrop-blur-sm p-8 rounded-xl shadow-2xl">
             @if (session('success'))
                 <div class="mb-6 text-sm text-green-600 text-center">

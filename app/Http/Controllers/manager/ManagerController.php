@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ManagerController extends Controller {
 
+    // Manager Dashboard
     public function dashboard()
     {
         $user = Auth::user();
@@ -31,14 +32,15 @@ class ManagerController extends Controller {
         ));
     }
 
+    // =============================>>   Restaurants functions
+    // List of my restaurants
     public function restaurantsList(){
-
         $myRestaurants = Restaurant::where('user_id', Auth::id())
             ->with('reviews')
             ->get();
         return view('manager.restaurants', compact('myRestaurants'));
     }
-
+    // Show my restaurants details
     public function restaurantDetails($id)
     {
         $restaurant = Restaurant::where('id', $id)
@@ -49,6 +51,7 @@ class ManagerController extends Controller {
         return view('manager.restaurant-details', compact('restaurant'));
     }
 
+    // Add Images to my restaurants
     public function addRestaurantImage(Request $request, $id)
     {
         $restaurant = Restaurant::where('id', $id)
@@ -58,7 +61,6 @@ class ManagerController extends Controller {
         $validated = $request->validate([
             'image' => 'required|image|max:2048',
         ]);
-
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('restaurant-images', 'public');
 
@@ -69,10 +71,10 @@ class ManagerController extends Controller {
 
             return redirect()->back()->with('success', 'Image added successfully.');
         }
-
         return redirect()->back()->with('error', 'Failed to upload image.');
     }
 
+    // Delete a specific image
     public function deleteRestaurantImage($id, $imageId)
     {
         $restaurant = Restaurant::where('id', $id)
@@ -82,20 +84,16 @@ class ManagerController extends Controller {
         $image = RestaurantImage::where('id', $imageId)
             ->where('restaurant_id', $restaurant->id)
             ->firstOrFail();
-
-        
         if (Storage::disk('public')->exists($image->image_path)) {
             Storage::disk('public')->delete($image->image_path);
         }
-
         $image->delete();
-
         return redirect()->back()->with('success', 'Image deleted successfully.');
     }
 
+    // Create a restaurant
     public function addRestaurant(Request $request)
     {
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -110,8 +108,6 @@ class ManagerController extends Controller {
             'cover_image' => 'nullable|image|max:2048',
             'is_active' => 'nullable|boolean',
         ]);
-
-        //  extract opening days
         $openingDays = $validated['opening_days'];
         unset($validated['opening_days']);
 
@@ -132,19 +128,18 @@ class ManagerController extends Controller {
         return redirect()->back()->with('success', 'Restaurant created successfully.');
     }
 
+    // Toggle my restaurants status
     public function toggleStatus($id)
     {
         $restaurant = Restaurant::findOrFail($id);
-
         if ($restaurant->user_id !== Auth::id()) {
             return redirect()->back()->with('error', 'Unauthorized access.');
         }
-
         $restaurant->is_active = !$restaurant->is_active;
         $restaurant->save();
-
         $status = $restaurant->is_active ? 'activated' : 'deactivated';
         return redirect()->back()->with('success', "Restaurant {$status} successfully.");
     }
+
 
 }

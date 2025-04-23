@@ -161,14 +161,19 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <!-- Tables -->
                             <div class="bg-gray-50 rounded-lg p-4">
-                                <div class="flex items-center">
-                                    <div class="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
-                                        <i class="fas fa-chair text-xl"></i>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
+                                            <i class="fas fa-chair text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Tables</p>
+                                            <p class="text-xl font-semibold">{{ $restaurant->tables->count() }}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p class="text-sm text-gray-600">Tables</p>
-                                        <p class="text-xl font-semibold">{{ $restaurant->tables->count() }}</p>
-                                    </div>
+                                    <a href="{{ route('manager.tables.index', $restaurant->id) }}" class="text-amber-600 hover:text-amber-800">
+                                        <i class="fas fa-cog mr-1"></i> Manage Tables
+                                    </a>
                                 </div>
                             </div>
 

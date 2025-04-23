@@ -71,7 +71,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('manage.restaurants') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('manage.restaurants') ? 'bg-amber-100 text-amber-600' : '' }}">
+                            <a href="{{ route('manage.restaurants') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('manager.tables.*') ? 'bg-amber-100 text-amber-600' : '' }}">
                                 <i class="fas fa-chair w-5 h-5 mr-3 text-gray-500"></i>
                                 <span>Tables</span>
                             </a>

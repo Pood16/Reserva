@@ -114,6 +114,9 @@
                                                         <a href="{{ route('restaurant.details', $restaurant->id) }}" class="text-blue-600 hover:text-blue-900" title="View details">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
+                                                        <a href="{{ route('manager.tables.index', $restaurant->id) }}" class="text-blue-600 hover:text-blue-900" title="View details">
+                                                            <i class="fas fa-chair"></i>
+                                                        </a>
                                                         <a href="{{ route('restaurant.details', $restaurant->id) }}" class="text-amber-600 hover:text-amber-900" title="Edit restaurant">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
@@ -272,6 +275,6 @@
 
     @push('scripts')
     <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
-    <script src="{{asset('resources/js/manager/restaurantsLis.js')}}"></script>
+    <script src="{{asset('resources/js/manager/restaurantsList.js')}}"></script>
     @endpush
 </x-app-layout>

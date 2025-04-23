@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Manager\TableController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -68,6 +69,15 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::get('/manager/restaurant/{id}', [ManagerController::class, 'restaurantDetails'])->name('restaurant.details');
     Route::post('/manager/restaurant/{id}/images', [ManagerController::class, 'addRestaurantImage'])->name('restaurant.images.add');
     Route::delete('/manager/restaurant/{id}/images/{imageId}', [ManagerController::class, 'deleteRestaurantImage'])->name('restaurant.images.delete');
+
+    // Table management routes for manager
+    Route::get('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'index'])->name('manager.tables.index');
+    Route::post('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'store'])->name('manager.tables.store');
+    Route::get('/manager/restaurant/{restaurantId}/tables/{id}/edit', [TableController::class, 'edit'])->name('manager.tables.edit');
+    Route::put('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'update'])->name('manager.tables.update');
+    Route::delete('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'destroy'])->name('manager.tables.destroy');
+    Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-availability', [TableController::class, 'toggleAvailability'])->name('manager.tables.toggle-availability');
+    Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-active', [TableController::class, 'toggleActive'])->name('manager.tables.toggle-active');
 
     // Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
