@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\Table;
 use App\Models\OpeningDay;
+use App\Models\RestaurantImage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ManagerController extends Controller {
 
@@ -37,6 +39,59 @@ class ManagerController extends Controller {
         return view('manager.restaurants', compact('myRestaurants'));
     }
 
+    public function restaurantDetails($id)
+    {
+        $restaurant = Restaurant::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->with(['reviews', 'images', 'openingDays', 'tables'])
+            ->firstOrFail();
+
+        return view('manager.restaurant-details', compact('restaurant'));
+    }
+
+    public function addRestaurantImage(Request $request, $id)
+    {
+        $restaurant = Restaurant::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $validated = $request->validate([
+            'image' => 'required|image|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('restaurant-images', 'public');
+
+            RestaurantImage::create([
+                'restaurant_id' => $restaurant->id,
+                'image_path' => $imagePath,
+            ]);
+
+            return redirect()->back()->with('success', 'Image added successfully.');
+        }
+
+        return redirect()->back()->with('error', 'Failed to upload image.');
+    }
+
+    public function deleteRestaurantImage($id, $imageId)
+    {
+        $restaurant = Restaurant::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $image = RestaurantImage::where('id', $imageId)
+            ->where('restaurant_id', $restaurant->id)
+            ->firstOrFail();
+
+        
+        if (Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
+        }
+
+        $image->delete();
+
+        return redirect()->back()->with('success', 'Image deleted successfully.');
+    }
 
     public function addRestaurant(Request $request)
     {

@@ -1,5 +1,3 @@
-
-
 document.addEventListener('DOMContentLoaded', function() {
     // Toggle navbar
     const sidebar = document.getElementById('sidebar');
@@ -25,28 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
             userMenuDropdown.classList.add('hidden');
         }
     });
-    // Add smooth scrolling to the main content
+    // smooth scrolling
     const mainContent = document.querySelector('main');
     if (mainContent) {
         mainContent.classList.add('scroll-smooth');
     }
-
-    // add Restaurant modal
-    const modal = document.getElementById('addRestaurantModal');
-    const openButton = document.getElementById('openRestaurantModal');
-    const closeButton = document.getElementById('closeRestaurantModal');
-
-    openButton.addEventListener('click', function() {
-        modal.classList.remove('hidden');
-    });
-
-    closeButton.addEventListener('click', function() {
-        modal.classList.add('hidden');
-    });
-
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            modal.classList.add('hidden');
-        }
-    });
-});
+})

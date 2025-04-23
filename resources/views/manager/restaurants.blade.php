@@ -66,9 +66,9 @@
                                                     <div class="flex items-center">
                                                         <div class="flex-shrink-0 h-10 w-14">
                                                             <img class="h-10 w-14 object-cover"
-                                                                src="{{ asset('storage/' . $restaurant->cover_image)}}"
+                                                                src="{{ asset('storage/' . $restaurant->cover_image) }}"
                                                                 alt="{{ $restaurant->name }}"
-                                                                onerror="this.src='{{ asset('resources/images/default-profile.png') }}'">
+                                                                onerror="this.src='/resources/images/default-profile.png'">
                                                         </div>
                                                         <div class="ml-4">
                                                             <div class="text-sm font-medium text-gray-900">{{ $restaurant->name }}</div>
@@ -111,13 +111,13 @@
                                                 </td>
                                                 <td class="px-4 py-4 text-sm font-medium whitespace-nowrap">
                                                     <div class="flex space-x-4">
-                                                        <a href="#" class="text-blue-600 hover:text-blue-900" title="View details">
+                                                        <a href="{{ route('restaurant.details', $restaurant->id) }}" class="text-blue-600 hover:text-blue-900" title="View details">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <a href="#" class="text-amber-600 hover:text-amber-900" title="Edit restaurant">
+                                                        <a href="{{ route('restaurant.details', $restaurant->id) }}" class="text-amber-600 hover:text-amber-900" title="Edit restaurant">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <a href="#" class="text-green-600 hover:text-green-900" title="Manage tables">
+                                                        <a href="{{ route('restaurant_owner.tables.index') }}" class="text-green-600 hover:text-green-900" title="Manage tables">
                                                             <i class="fas fa-chair"></i>
                                                         </a>
                                                         <form action="{{ route('restaurant.toggle.status', $restaurant->id) }}" method="POST" class="inline">
@@ -274,6 +274,7 @@
     </div>
 
     @push('scripts')
-    <script src="{{asset('resources/js/manager.js')}}"></script>
+    <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
+    <script src="{{asset('resources/js/manager/restaurantsLis.js')}}"></script>
     @endpush
 </x-app-layout>

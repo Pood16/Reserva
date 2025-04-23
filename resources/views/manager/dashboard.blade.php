@@ -185,6 +185,9 @@
 
 
     @push('scripts')
-    <script src="{{asset('resources/js/manager.js')}}"></script>
+    <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
+    <script src="{{asset('resources/js/manager/dashboard.js')}}"></script>
+    <script src="{{asset('resources/js/manager/restaurantsList.js')}}"></script>
+
     @endpush
 </x-app-layout>
