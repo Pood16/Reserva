@@ -129,6 +129,20 @@ class ManagerController extends Controller {
         return redirect()->back()->with('success', 'Restaurant created successfully.');
     }
 
+    // Show update restaurant page
+    public function showEditRestaurant(Request $request, $id){
+        $restaurant = Restaurant::where('user_id', Auth::id())
+                        ->where('id', $id)
+                        ->with(['images', 'openingDays'])
+                        ->firstOrFail();
+            return view('manager.restaurants.edit', compact('restaurant'));
+        }
+
+    // Update my restaurant
+    public function updateRestaurant(){
+
+    }
+
     // Toggle my restaurants status
     public function toggleStatus($id)
     {
