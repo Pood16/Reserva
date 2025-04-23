@@ -117,9 +117,6 @@
                                                         <a href="{{ route('restaurant.details', $restaurant->id) }}" class="text-amber-600 hover:text-amber-900" title="Edit restaurant">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <a href="{{ route('restaurant_owner.tables.index') }}" class="text-green-600 hover:text-green-900" title="Manage tables">
-                                                            <i class="fas fa-chair"></i>
-                                                        </a>
                                                         <form action="{{ route('restaurant.toggle.status', $restaurant->id) }}" method="POST" class="inline">
                                                             @csrf
                                                             @method('PUT')

@@ -42,15 +42,6 @@
                                 <span>Restaurants</span>
                             </a>
                         </li>
-                        <!-- System Settings Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">System</span>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.settings') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.settings') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-cog w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Settings</span>
-                            </a>
                         </li>
                         <!-- Return to Main Site -->
                         <li class="pt-6">
@@ -69,7 +60,7 @@
                                 <span>Dashboard</span>
                             </a>
                         </li>
-                        <!-- Restaurant Management Section -->
+                        <!-- restaurant management section -->
                         <li class="pt-4">
                             <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Restaurant Management</span>
                         </li>
@@ -79,7 +70,13 @@
                                 <span>Restaurants</span>
                             </a>
                         </li>
-                        <!-- Return to Main Site -->
+                        <li>
+                            <a href="{{ route('manage.restaurants') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('manage.restaurants') ? 'bg-amber-100 text-amber-600' : '' }}">
+                                <i class="fas fa-chair w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Tables</span>
+                            </a>
+                        </li>
+                        <!-- back to maain  -->
                         <li class="pt-6">
                             <a href="{{ route('home') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50">
                                 <i class="fas fa-arrow-left w-5 h-5 mr-3 text-gray-500"></i>
