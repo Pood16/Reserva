@@ -49,20 +49,6 @@ class TableController extends Controller
     }
 
 
-    public function edit($restaurantId, $id)
-    {
-        $restaurant = Restaurant::findOrFail($restaurantId);
-        if ($restaurant->user_id !== Auth::id()) {
-            return redirect()->route('manage.restaurants')
-                ->with('error', 'You are not authorized to manage tables for this restaurant.');
-        }
-
-        $table = Table::where('restaurant_id', $restaurantId)->findOrFail($id);
-
-        return view('manager.tables.edit', compact('restaurant', 'table'));
-    }
-
-
     public function update(Request $request, $restaurantId, $id)
     {
         $restaurant = Restaurant::findOrFail($restaurantId);
@@ -76,10 +62,8 @@ class TableController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:50',
             'capacity' => 'required|integer|min:1|max:20',
-            'location' => 'required|string|in:indoor,outdoor',
+            'location' => 'required|string|in:indoor,outdoor,terrace',
             'description' => 'nullable|string|max:255',
-            'is_available' => 'boolean',
-            'is_active' => 'boolean',
         ]);
 
         $validated['is_available'] = $request->has('is_available');
