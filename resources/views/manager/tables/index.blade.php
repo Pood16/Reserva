@@ -34,6 +34,8 @@
                 </div>
             </header>
 
+            <x-flash-messages />
+
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
@@ -154,7 +156,7 @@
                     <!-- Table Name -->
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Table Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="e.g. Table 1" required>
+                        <input type="text" name="name" id="name" value="{{ old('name') }}" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md p-1" placeholder="e.g. Table 1" required>
                         @error('name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -163,7 +165,7 @@
                     <!-- Capacity -->
                     <div>
                         <label for="capacity" class="block text-sm font-medium text-gray-700 mb-1">Capacity <span class="text-red-500">*</span></label>
-                        <input type="number" name="capacity" id="capacity" value="{{ old('capacity') }}" min="1" max="20" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+                        <input type="number" name="capacity" id="capacity" value="{{ old('capacity') }}" min="1" max="20" class="p-1 shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
                         @error('capacity')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -172,10 +174,11 @@
                     <!-- Location -->
                     <div>
                         <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location <span class="text-red-500">*</span></label>
-                        <select name="location" id="location" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
+                        <select name="location" id="location" class="p-1 shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
                             <option value="">Select location</option>
-                            <option value="indoor" {{ old('location') == 'indoor' ? 'selected' : '' }}>Indoor</option>
-                            <option value="outdoor" {{ old('location') == 'outdoor' ? 'selected' : '' }}>Outdoor</option>
+                            <option value="indoors" {{ old('location') == 'indoor' ? 'selected' : '' }}>Indoor</option>
+                            <option value="outdoors" {{ old('location') == 'outdoor' ? 'selected' : '' }}>Outdoor</option>
+                            <option value="terrace" {{ old('location') == 'outdoor' ? 'selected' : '' }}>Terrace</option>
                         </select>
                         @error('location')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
