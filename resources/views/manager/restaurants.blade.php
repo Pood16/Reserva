@@ -35,23 +35,7 @@
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <p>{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                        <p>{{ session('error') }}</p>
-                    </div>
-                @endif
-
-                @if(session('unauthorized'))
-                    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
-                        <p>{{ session('unauthorized') }}</p>
-                    </div>
-                @endif
+                <x-flash-messages />
 
                 <!-- manage restaurants -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
