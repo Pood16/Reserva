@@ -66,7 +66,8 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
     Route::post('/manager/restaurant/add', [ManagerController::class, 'addRestaurant'])->name('restaurant.store');
     Route::put('/manager/restaurant/{id}/status', [ManagerController::class, 'toggleStatus'])->name('restaurant.toggle.status');
-    Route::get('/manager/restaurant/{id}/edit', [ManagerController::class, 'showEditRestaurant'])->name('restaurant.update');
+    Route::get('/manager/restaurant/{id}/edit', [ManagerController::class, 'showEditRestaurant'])->name('restaurant.update.show');
+    Route::put('/manager/restaurant/{id}/update', [ManagerController::class, 'updateRestaurant'])->name('restaurant.update');
     Route::get('/manager/restaurant/{id}', [ManagerController::class, 'restaurantDetails'])->name('restaurant.details');
     Route::post('/manager/restaurant/{id}/images', [ManagerController::class, 'addRestaurantImage'])->name('restaurant.images.add');
     Route::delete('/manager/restaurant/{id}/images/{imageId}', [ManagerController::class, 'deleteRestaurantImage'])->name('restaurant.images.delete');
