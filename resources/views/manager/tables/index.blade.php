@@ -34,13 +34,10 @@
                 </div>
             </header>
 
-            <x-flash-messages />
-
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
                 <x-flash-messages />
-
                 <!-- Breadcrumbs and back button -->
                 <div class="flex justify-between items-center mb-6">
                     <div>
@@ -58,7 +55,7 @@
                 <!-- Restaurant Name -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">Tables for {{ $restaurant->name }}</h3>
+                        <h3 class="text-lg font-semibold text-gray-800">Tables for {{ $restaurant->name }} <i class="fas fa-utensils mr-1"></i></h3>
                     </div>
                 </div>
 
@@ -115,13 +112,12 @@
                                                 <a href="{{ route('manager.tables.edit', ['restaurantId' => $restaurant->id, 'id' => $table->id]) }}" class="text-indigo-600 hover:text-indigo-900">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <form action="{{ route('manager.tables.destroy', ['restaurantId' => $restaurant->id, 'id' => $table->id]) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this table?')">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="text-red-600 hover:text-red-900 delete-table-btn" 
+                                                    data-table-id="{{ $table->id }}" 
+                                                    data-table-name="{{ $table->name }}"
+                                                    data-delete-url="{{ route('manager.tables.destroy', ['restaurantId' => $restaurant->id, 'id' => $table->id]) }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -231,43 +227,35 @@
         </div>
     </div>
 
+    <!-- Delete Table Confirmation Modal -->
+    <div id="deleteTableModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg w-full max-w-md">
+            <div class="flex justify-between items-center border-b px-6 py-4">
+                <h3 class="text-lg font-semibold text-gray-800">Confirm Deletion</h3>
+                <button id="closeDeleteModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-700 mb-6">Are you sure you want to delete this table? This action cannot be undone.</p>
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelDelete" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                        Cancel
+                    </button>
+                    <form id="deleteTableForm" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            Delete Table
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
     <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
-    <script>
-        // Table Modal
-        const tableModal = document.getElementById('addTableModal');
-        const openTableModalBtn = document.getElementById('openTableModal');
-        const closeTableModalBtn = document.getElementById('closeTableModal');
-        const cancelTableBtn = document.getElementById('cancelTable');
-
-        function openTableModal() {
-            tableModal.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
-        }
-
-        function closeTableModal() {
-            tableModal.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-        }
-
-        openTableModalBtn.addEventListener('click', openTableModal);
-        closeTableModalBtn.addEventListener('click', closeTableModal);
-        cancelTableBtn.addEventListener('click', closeTableModal);
-
-        // Close modal when clicking outside of it
-        tableModal.addEventListener('click', function(event) {
-            if (event.target === tableModal) {
-                closeTableModal();
-            }
-        });
-
-        // Check for validation errors to reopen the modal
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if there are validation errors
-            @if($errors->any())
-            openTableModal();
-            @endif
-        });
-    </script>
+    <script src="{{asset('resources/js/manager/tables.js')}}"></script>
     @endpush
 </x-app-layout>

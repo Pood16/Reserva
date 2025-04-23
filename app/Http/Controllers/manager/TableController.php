@@ -43,18 +43,15 @@ class TableController extends Controller
         ]);
         $validated['is_available'] = $request->has('is_available') && $request->input('is_available') === 'on';
         $validated['is_active'] = $request->has('is_active') && $request->input('is_active') === 'on';
-
         $validated['restaurant_id'] = $restaurantId;
         $table = Table::create($validated);
-        return redirect()->route('manage.restaurants')->with('success', 'Table created successfully.');
+        return redirect()->back()->with('success', 'Table created successfully.');
     }
 
 
     public function edit($restaurantId, $id)
     {
         $restaurant = Restaurant::findOrFail($restaurantId);
-
-        // Check if the authenticated user owns this restaurant
         if ($restaurant->user_id !== Auth::id()) {
             return redirect()->route('manage.restaurants')
                 ->with('error', 'You are not authorized to manage tables for this restaurant.');
@@ -69,8 +66,6 @@ class TableController extends Controller
     public function update(Request $request, $restaurantId, $id)
     {
         $restaurant = Restaurant::findOrFail($restaurantId);
-
-        // Check if the authenticated user owns this restaurant
         if ($restaurant->user_id !== Auth::id()) {
             return redirect()->route('manage.restaurants')
                 ->with('error', 'You are not authorized to manage tables for this restaurant.');
@@ -87,7 +82,6 @@ class TableController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        // Set default values for checkboxes if not present in request
         $validated['is_available'] = $request->has('is_available');
         $validated['is_active'] = $request->has('is_active');
 
@@ -102,7 +96,6 @@ class TableController extends Controller
     {
         $restaurant = Restaurant::findOrFail($restaurantId);
 
-        // Check if the authenticated user owns this restaurant
         if ($restaurant->user_id !== Auth::id()) {
             return redirect()->route('manage.restaurants')
                 ->with('error', 'You are not authorized to manage tables for this restaurant.');
@@ -120,7 +113,6 @@ class TableController extends Controller
     {
         $restaurant = Restaurant::findOrFail($restaurantId);
 
-        // Check if the authenticated user owns this restaurant
         if ($restaurant->user_id !== Auth::id()) {
             return redirect()->route('manage.restaurants')
                 ->with('error', 'You are not authorized to manage tables for this restaurant.');
@@ -139,7 +131,6 @@ class TableController extends Controller
     {
         $restaurant = Restaurant::findOrFail($restaurantId);
 
-        // Check if the authenticated user owns this restaurant
         if ($restaurant->user_id !== Auth::id()) {
             return redirect()->route('manage.restaurants')
                 ->with('error', 'You are not authorized to manage tables for this restaurant.');
