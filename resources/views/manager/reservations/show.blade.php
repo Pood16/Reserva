@@ -184,3 +184,8 @@
         </div>
     </div>
 </x-app-layout>
+
+
+@push('scripts')
+<script src="{{ asset('resources/js/manager/toggleNav.js') }}"></script>
+@endpush
