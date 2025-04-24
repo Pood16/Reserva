@@ -11,34 +11,18 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    /**
-     * Show the manager's profile.
-     *
-     * @return \Illuminate\View\View
-     */
     public function show()
     {
         $user = Auth::user();
         return view('manager.profile.show', compact('user'));
     }
 
-    /**
-     * Show the form for editing the manager's profile.
-     *
-     * @return \Illuminate\View\View
-     */
     public function edit()
     {
         $user = Auth::user();
         return view('manager.profile.edit', compact('user'));
     }
 
-    /**
-     * Update the manager's profile information.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function update(Request $request)
     {
         $user = Auth::user();
@@ -49,18 +33,14 @@ class ProfileController extends Controller
             'profile_picture' => 'nullable|image|max:2048',
         ]);
 
-        // Update user profile
         $user->name = $validated['name'];
         $user->email = $validated['email'];
 
-        // Handle profile picture upload
         if ($request->hasFile('profile_picture')) {
-            // Delete old picture if exists
             if ($user->profile_picture && $user->profile_picture !== 'default-profile.png') {
                 Storage::disk('public')->delete($user->profile_picture);
             }
 
-            // Store new picture
             $profilePicture = $request->file('profile_picture')->store('profile-pictures', 'public');
             $user->profile_picture = $profilePicture;
         }
@@ -71,22 +51,11 @@ class ProfileController extends Controller
             ->with('success', 'Profile updated successfully.');
     }
 
-    /**
-     * Show the form for changing password.
-     *
-     * @return \Illuminate\View\View
-     */
     public function showChangePasswordForm()
     {
         return view('manager.profile.change-password');
     }
 
-    /**
-     * Update the manager's password.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function updatePassword(Request $request)
     {
         $user = Auth::user();
@@ -96,12 +65,10 @@ class ProfileController extends Controller
             'password' => 'required|string|min:8|confirmed|different:current_password',
         ]);
 
-        // Check if current password is correct
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'The current password is incorrect.']);
         }
 
-        // Update password
         $user->password = Hash::make($validated['password']);
         $user->save();
 
