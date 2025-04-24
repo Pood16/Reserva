@@ -39,15 +39,12 @@ class ReservationStatusChanged extends Notification implements ShouldQueue
             ->greeting("Hello {$notifiable->name}!")
             ->line("Your reservation at {$this->reservation->restaurant->name} has been {$this->status}.")
             ->line(new HtmlString('<strong>Reservation Details:</strong>'))
-            ->line(new HtmlString("
-                <div style='background-color: #f8fafc; padding: 16px; border-radius: 8px; margin: 16px 0;'>
-                    <p><strong>Restaurant:</strong> {$this->reservation->restaurant->name}</p>
-                    <p><strong>Date:</strong> {$this->reservation->booking_date->format('l, F j, Y')}</p>
-                    <p><strong>Time:</strong> {$this->reservation->booking_date->format('g:i A')} - {$this->reservation->end_time->format('g:i A')}</p>
-                    <p><strong>Number of Guests:</strong> {$this->reservation->guests_number}</p>
-                    <p><strong>Table:</strong> {$this->reservation->table->name}</p>
-                </div>
-            "));
+            ->line("Restaurant: {$this->reservation->restaurant->name}")
+            ->line("Date: {$this->reservation->booking_date->format('l, F j, Y')}")
+            ->line("Time: {$this->reservation->booking_date->format('g:i A')} - {$this->reservation->end_time->format('g:i A')}")
+            ->line("Number of Guests: {$this->reservation->guests_number}")
+            ->line("Table: {$this->reservation->table->name}");
+
 
         switch ($this->status) {
             case 'confirmed':

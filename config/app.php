@@ -126,6 +126,7 @@ return [
     // 'providers' => [
     //     // Other providers...
     //     Illuminate\Auth\AuthServiceProvider::class,
+    //     App\Providers\BroadcastServiceProvider::class,
     //     // ...
     // ],
 
