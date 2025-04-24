@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
 {
@@ -16,8 +17,9 @@ class ProfileController extends Controller
      */
     public function edit()
     {
-        $user = Auth::user();
-        return view('profile.edit', compact('user'));
+        return view('profile.edit', [
+            'user' => Auth::user(),
+        ]);
     }
 
     /**
@@ -31,31 +33,72 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'current_password' => 'nullable|required_with:password',
-            'password' => 'nullable|string|min:8|confirmed',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
         ]);
 
-        // Check current password if user wants to change password
-        if ($request->filled('current_password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
-                return back()->withErrors(['current_password' => 'The current password is incorrect.']);
-            }
-        }
+        $user->update($validated);
 
-        // Update user profile
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
+        return back()->with('status', 'profile-updated');
+    }
 
-        // Update password if provided
-        if ($request->filled('password')) {
-            $user->password = Hash::make($validated['password']);
-        }
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
 
-        $user->save();
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
 
-        return redirect()->route('profile.edit')
-            ->with('success', 'Profile updated successfully.');
+        return back()->with('status', 'password-updated');
+    }
+
+    /**
+     * Get notifications for the authenticated user
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getNotifications(Request $request)
+    {
+        $user = Auth::user();
+        $unreadNotifications = $user->unreadNotifications()->limit(10)->get();
+        $readNotifications = $user->readNotifications()->limit(5)->get();
+
+        return response()->json([
+            'unread' => $unreadNotifications,
+            'read' => $readNotifications,
+            'unread_count' => $user->unreadNotifications->count()
+        ]);
+    }
+
+    /**
+     * Mark a notification as read
+     *
+     * @param Request $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markNotificationAsRead(Request $request, $id)
+    {
+        $notification = Auth::user()->notifications()->findOrFail($id);
+        $notification->markAsRead();
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Mark all notifications as read
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAllNotificationsAsRead()
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+
+        return response()->json(['success' => true]);
     }
 }
