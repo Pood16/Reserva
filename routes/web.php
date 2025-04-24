@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Manager\TableController;
 use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
+use App\Http\Controllers\Manager\ReservationController as ManagerReservationController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -87,6 +88,13 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::put('/manager/profile', [ManagerProfileController::class, 'update'])->name('manager.profile.update');
     Route::get('/manager/profile/change-password', [ManagerProfileController::class, 'showChangePasswordForm'])->name('manager.profile.password.edit');
     Route::put('/manager/profile/change-password', [ManagerProfileController::class, 'updatePassword'])->name('manager.profile.password.update');
+
+    // Manager Reservation Routes
+    Route::get('/manager/reservations', [ManagerReservationController::class, 'index'])->name('manager.reservations');
+    Route::get('/manager/reservations/{id}', [ManagerReservationController::class, 'show'])->name('manager.reservations.show');
+    Route::put('/manager/reservations/{id}/approve', [ManagerReservationController::class, 'approve'])->name('manager.reservations.approve');
+    Route::put('/manager/reservations/{id}/decline', [ManagerReservationController::class, 'decline'])->name('manager.reservations.decline');
+    Route::put('/manager/reservations/{id}/complete', [ManagerReservationController::class, 'complete'])->name('manager.reservations.complete');
 
     // Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     // Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
