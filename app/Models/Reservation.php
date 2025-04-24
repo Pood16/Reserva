@@ -18,6 +18,7 @@ class Reservation extends Model
         'guests_number',
         'special_requests',
         'status',
+        'decline_reason',
     ];
 
     protected $casts = [
