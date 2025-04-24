@@ -12,9 +12,15 @@
                     <i class="fas fa-user-circle text-xl"></i>
                 </button>
                 <div id="userMenuDropdown" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50 hidden">
-                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
-                        <i class="fas fa-user mr-2"></i> Profile
-                    </a>
+                    @if(Auth::user()->role === 'manager')
+                        <a href="{{ route('manager.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                            <i class="fas fa-user mr-2"></i> Profile
+                        </a>
+                    @else
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                            <i class="fas fa-user mr-2"></i> Profile
+                        </a>
+                    @endif
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">

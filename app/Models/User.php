@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'role',
         'password',
+        'profile_picture',
     ];
 
     protected $hidden = [
@@ -49,5 +50,29 @@ class User extends Authenticatable
     public function hasFavorited(Restaurant $restaurant)
     {
         return $this->favoriteRestaurants()->where('restaurant_id', $restaurant->id)->exists();
+    }
+
+    /**
+     * Get the profile picture URL attribute.
+     *
+     * @return string
+     */
+    public function getProfilePictureUrlAttribute()
+    {
+        if ($this->profile_picture) {
+            return asset('storage/' . $this->profile_picture);
+        }
+
+        return asset('resources/images/default-profile.png');
+    }
+
+    /**
+     * Get the user's role display name.
+     *
+     * @return string
+     */
+    public function getRoleDisplayAttribute()
+    {
+        return ucfirst($this->role);
     }
 }

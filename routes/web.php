@@ -10,6 +10,7 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Manager\TableController;
+use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -79,6 +80,13 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::delete('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'destroy'])->name('manager.tables.destroy');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-availability', [TableController::class, 'toggleAvailability'])->name('manager.tables.toggle-availability');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-active', [TableController::class, 'toggleActive'])->name('manager.tables.toggle-active');
+
+    // Manager Profile Routes
+    Route::get('/manager/profile', [ManagerProfileController::class, 'show'])->name('manager.profile.show');
+    Route::get('/manager/profile/edit', [ManagerProfileController::class, 'edit'])->name('manager.profile.edit');
+    Route::put('/manager/profile', [ManagerProfileController::class, 'update'])->name('manager.profile.update');
+    Route::get('/manager/profile/change-password', [ManagerProfileController::class, 'showChangePasswordForm'])->name('manager.profile.password.edit');
+    Route::put('/manager/profile/change-password', [ManagerProfileController::class, 'updatePassword'])->name('manager.profile.password.update');
 
     // Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
     // Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
