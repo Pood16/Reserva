@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Manager;
 
+use App\Events\ReservationStatusChanged as ReservationStatusChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use App\Models\Restaurant;
@@ -46,7 +47,13 @@ class ReservationController extends Controller
         }
 
         $reservation->update(['status' => 'confirmed']);
+
+        // Send notification
         $reservation->user->notify(new ReservationStatusChanged($reservation, 'confirmed'));
+
+        // Broadcast event
+        event(new ReservationStatusChangedEvent($reservation, 'confirmed'));
+
         return redirect()->back()->with('success', 'Reservation has been approved and customer has been notified.');
     }
 
@@ -70,11 +77,15 @@ class ReservationController extends Controller
             'decline_reason' => $validated['reason']
         ]);
 
+        // Send notification
         $reservation->user->notify(new ReservationStatusChanged(
             $reservation,
             'declined',
             $validated['reason']
         ));
+
+        // Broadcast event
+        event(new ReservationStatusChangedEvent($reservation, 'declined', $validated['reason']));
 
         return redirect()->back()->with('success', 'Reservation has been declined and customer has been notified.');
     }
@@ -91,7 +102,12 @@ class ReservationController extends Controller
         }
 
         $reservation->update(['status' => 'completed']);
+
+        // Send notification
         $reservation->user->notify(new ReservationStatusChanged($reservation, 'completed'));
+
+        // Broadcast event
+        event(new ReservationStatusChangedEvent($reservation, 'completed'));
 
         return redirect()->back()->with('success', 'Reservation has been marked as completed and customer has been notified.');
     }

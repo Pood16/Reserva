@@ -82,7 +82,7 @@ class ReservationStatusChanged extends Notification implements ShouldQueue
     public function toBroadcast(object $notifiable): BroadcastMessage
     {
         return new BroadcastMessage([
-            'id' => $this->id,
+            'notification_id' => $this->id,
             'reservation_id' => $this->reservation->id,
             'status' => $this->status,
             'restaurant' => [
@@ -101,10 +101,10 @@ class ReservationStatusChanged extends Notification implements ShouldQueue
         ]);
     }
 
-    public function broadcastType(): string
-    {
-        return 'client.reservation.status.changed';
-    }
+    // public function broadcastType(): string
+    // {
+    //     return 'client.reservation.status.changed';
+    // }
 
     public function toDatabase(object $notifiable): array
     {

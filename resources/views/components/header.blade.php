@@ -213,14 +213,31 @@
             }
         });
 
-        // listen to my notifications
-        const userId = {{ auth()->id() }};
-        console.log('Listening for notifications for user:', userId);
-        window.Echo.private(`App.Models.User.${userId}`)
-            .notification((notification) => {
-                console.log('hbjhbjh');
-                console.log('Received notification:', notification);
-            });
+        @auth
+            const userId = {{ auth()->id() }};
+            console.log('Listening for notifications for user:', userId);
+
+            // Listen for general notifications
+            window.Echo.private(`App.Models.User.${userId}`)
+                .notification((notification) => {
+                    console.log('Notification received:', notification);
+                })
+                .error((error) => {
+                    console.error('Echo connection error:', error);
+                });
+
+            // Listen specifically for reservation status changes
+            window.Echo.private(`App.Models.User.${userId}`)
+                .listen('.reservation.status.changed', (event) => {
+                    console.log('Reservation status changed:', event);
+                    // Log the details for debugging
+                    console.log(`Reservation at ${event.restaurant} has been ${event.status}`);
+                    console.log(`Date: ${event.date} at ${event.time}`);
+                    if (event.reason) {
+                        console.log(`Reason: ${event.reason}`);
+                    }
+                });
+        @endauth
     });
 </script>
 @endpush

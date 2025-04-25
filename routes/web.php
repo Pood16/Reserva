@@ -18,7 +18,7 @@ use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Broadcast;
-Broadcast::routes(['middleware' => ['web', 'auth']]);
+// Broadcast::routes(['middleware' => ['web', 'auth']]);
 
 
 
