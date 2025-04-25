@@ -101,6 +101,11 @@ class ReservationStatusChanged extends Notification implements ShouldQueue
         ]);
     }
 
+    public function broadcastType(): string
+    {
+        return 'client.reservation.status.changed';
+    }
+
     public function toDatabase(object $notifiable): array
     {
         return [

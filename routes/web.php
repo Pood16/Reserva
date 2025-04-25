@@ -11,10 +11,17 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Manager\TableController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\Client\ReservationController as ClientReservationController;
 use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
 use App\Http\Controllers\Manager\ReservationController as ManagerReservationController;
+use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Facades\Broadcast;
+Broadcast::routes();
+
+
+
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -44,20 +51,19 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 // Auth required routes
 Route::middleware(['auth'])->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Notifications
+    // Notifications : client
     Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.get');
     Route::post('/notifications/read', [NotificationsController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationsController::class, 'markAllAsRead'])->name('notifications.read-all');
 
-    // Reservations
-    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
-    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
-    Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
-    Route::put('/reservations/{id}', [ReservationController::class, 'update'])->name('reservations.update');
-    Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+    // client reservations
+    Route::prefix('client')->name('client.')->group(function () {
+        Route::get('/reservations', [ClientReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/history', [ClientReservationController::class, 'history'])->name('reservations.history');
+        Route::get('/reservations/{id}', [ClientReservationController::class, 'show'])->name('reservations.show');
+        Route::put('/reservations/{id}/cancel', [ClientReservationController::class, 'cancel'])->name('reservations.cancel');
+    });
 
     // Favorites
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
@@ -68,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
-// Restaurant owner routes
+// restaurant manager routes
 Route::middleware(['auth', 'manager'])->group(function () {
     Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('restaurant.dashboard');
     Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
@@ -80,7 +86,7 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::post('/manager/restaurant/{id}/images', [ManagerController::class, 'addRestaurantImage'])->name('restaurant.images.add');
     Route::delete('/manager/restaurant/{id}/images/{imageId}', [ManagerController::class, 'deleteRestaurantImage'])->name('restaurant.images.delete');
 
-    // Table management routes for manager
+    // Table management routes
     Route::get('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'index'])->name('manager.tables.index');
     Route::post('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'store'])->name('manager.tables.store');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'update'])->name('manager.tables.update');
