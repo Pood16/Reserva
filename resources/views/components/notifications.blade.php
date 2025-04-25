@@ -43,13 +43,13 @@
             e.stopPropagation();
             notificationDropdown.classList.toggle('hidden');
 
-            // If dropdown is visible, fetch notifications
+
             if (!notificationDropdown.classList.contains('hidden')) {
                 fetchNotifications();
             }
         });
 
-        // Close dropdown when clicking outside
+        // Close dropdown
         document.addEventListener('click', function(e) {
             if (!notificationDropdown.contains(e.target) && !notificationButton.contains(e.target)) {
                 notificationDropdown.classList.add('hidden');
@@ -74,7 +74,7 @@
         function updateNotificationBadge(count) {
             notificationBadge.textContent = count;
 
-            // Hide the badge if no notifications
+
             if (count === 0) {
                 notificationBadge.classList.add('hidden');
             } else {

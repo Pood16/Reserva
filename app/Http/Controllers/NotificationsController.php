@@ -7,11 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
 {
-    /**
-     * Get the user's unread notifications
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function getNotifications()
     {
         $user = Auth::user();
@@ -25,12 +21,7 @@ class NotificationsController extends Controller
         ]);
     }
 
-    /**
-     * Mark a notification as read
-     *
-     * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function markAsRead(Request $request)
     {
         $user = Auth::user();
@@ -46,11 +37,7 @@ class NotificationsController extends Controller
         return response()->json(['success' => false], 404);
     }
 
-    /**
-     * Mark all notifications as read
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function markAllAsRead()
     {
         $user = Auth::user();
