@@ -213,13 +213,14 @@
             }
         });
 
-        // listen to my Notifications
-        const userId = {{auth()->id()}};
-        console.log(userId);
-        Echo.private('App.Models.User.' + userId)
-        .notification((notification) => {
-            console.log('njhbjhbjh');
-        });
+        // listen to my notifications
+        const userId = {{ auth()->id() }};
+        console.log('Listening for notifications for user:', userId);
+        window.Echo.private(`App.Models.User.${userId}`)
+            .notification((notification) => {
+                console.log('hbjhbjh');
+                console.log('Received notification:', notification);
+            });
     });
 </script>
 @endpush
