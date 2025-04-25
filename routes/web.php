@@ -10,6 +10,7 @@ use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Manager\TableController;
+use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
 use App\Http\Controllers\Manager\ReservationController as ManagerReservationController;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,11 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Notifications
+    Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.get');
+    Route::post('/notifications/read', [NotificationsController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationsController::class, 'markAllAsRead'])->name('notifications.read-all');
 
     // Reservations
     Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
@@ -95,22 +101,6 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::put('/manager/reservations/{id}/approve', [ManagerReservationController::class, 'approve'])->name('manager.reservations.approve');
     Route::put('/manager/reservations/{id}/decline', [ManagerReservationController::class, 'decline'])->name('manager.reservations.decline');
     Route::put('/manager/reservations/{id}/complete', [ManagerReservationController::class, 'complete'])->name('manager.reservations.complete');
-
-    // Route::get('/restaurants', [RestaurantController::class, 'ownerIndex'])->name('restaurant_owner.restaurants.index');
-    // Route::get('/restaurants/create', [RestaurantController::class, 'create'])->name('restaurant_owner.restaurants.create');
-    // Route::post('/restaurants', [RestaurantController::class, 'store'])->name('restaurant_owner.restaurants.store');
-    // Route::get('/restaurants/{id}/edit', [RestaurantController::class, 'edit'])->name('restaurant_owner.restaurants.edit');
-    // Route::put('/restaurants/{id}', [RestaurantController::class, 'update'])->name('restaurant_owner.restaurants.update');
-
-    // Route::get('/reservations', [ReservationController::class, 'ownerIndex'])->name('restaurant_owner.reservations.index');
-    // Route::put('/reservations/{id}/status', [ReservationController::class, 'updateStatus'])->name('restaurant_owner.reservations.update_status');
-
-    // Route::get('/tables', [RestaurantController::class, 'tableIndex'])->name('restaurant_owner.tables.index');
-    // Route::get('/tables/create', [RestaurantController::class, 'tableCreate'])->name('restaurant_owner.tables.create');
-    // Route::post('/tables', [RestaurantController::class, 'tableStore'])->name('restaurant_owner.tables.store');
-    // Route::get('/tables/{id}/edit', [RestaurantController::class, 'tableEdit'])->name('restaurant_owner.tables.edit');
-    // Route::put('/tables/{id}', [RestaurantController::class, 'tableUpdate'])->name('restaurant_owner.tables.update');
-    // Route::delete('/tables/{id}', [RestaurantController::class, 'tableDestroy'])->name('restaurant_owner.tables.destroy');
 });
 
 // Admin routes

@@ -30,35 +30,8 @@
                         </div>
                     @endif
 
-                    <!-- Notification Button -->
-                    <div class="relative">
-                        <button type="button" class="w-10 h-10 p-2 bg-yellow-500 rounded-lg flex justify-center items-center hover:bg-yellow-600 cursor-pointer relative mx-1" id="notification-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405C18.79 14.79 18 13.42 18 12V8c0-3.314-2.686-6-6-6S6 4.686 6 8v4c0 1.42-.79 2.79-1.595 3.595L3 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                            <span id="notification-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">0</span>
-                        </button>
-
-                        <!-- Notification Dropdown -->
-                        <div id="notification-dropdown" class="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50">
-                            <div class="py-2">
-                                <div class="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100 flex justify-between items-center">
-                                    <span>Notifications</span>
-                                    <button id="mark-all-read" class="text-xs text-blue-600 hover:text-blue-800">Mark all as read</button>
-                                </div>
-
-                                <!-- Notifications List -->
-                                <div id="notifications-list" class="max-h-80 overflow-y-auto">
-                                    <div class="text-center text-gray-500 text-sm py-6">Loading notifications...</div>
-                                </div>
-
-                                <!-- Notifications Footer -->
-                                <div class="border-t border-gray-100 mt-1 text-center">
-                                    <a href="#" class="block w-full text-sm text-blue-600 hover:text-blue-800 py-2">View all notifications</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Include Notifications Component -->
+                    @include('components.notifications')
 
                     <!-- User Dropdown -->
                     <div class="relative inline-block text-left">
@@ -77,7 +50,7 @@
 
                                 <!-- admin or manager -->
                                 @if(auth()->user()->role === 'admin' || auth()->user()->role === 'manager')
-                                    <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('owner.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
+                                    <a href="{{ auth()->user()->role === 'admin' ? route('admin.dashboard') : route('restaurant.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Dashboard</a>
                                     <div class="border-t border-gray-100 my-1"></div>
                                 @endif
 
@@ -111,7 +84,6 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-
         const userMenuButton = document.getElementById('user-menu-button');
         const userDropdownMenu = document.getElementById('user-dropdown-menu');
         // toggle user dropdown
