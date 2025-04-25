@@ -100,6 +100,13 @@
                                     <p class="text-sm text-gray-600">Special Requests</p>
                                     <p class="text-base text-gray-900">{{ $reservation->special_requests ?: 'None' }}</p>
                                 </div>
+
+                                @if($reservation->status === 'cancelled' && $reservation->decline_reason)
+                                <div class="col-span-3">
+                                    <p class="text-sm text-gray-600">Decline Reason</p>
+                                    <p class="text-base text-gray-900">{{ $reservation->decline_reason }}</p>
+                                </div>
+                                @endif
                             </div>
                         </div>
 
@@ -113,13 +120,11 @@
                                         Approve Reservation
                                     </button>
                                 </form>
-                                <form action="{{ route('manager.reservations.decline', $reservation->id) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                                        Decline Reservation
-                                    </button>
-                                </form>
+                                <button type="button"
+                                    class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                                    onclick="document.getElementById('decline-modal').classList.remove('hidden')">
+                                    Decline Reservation
+                                </button>
                             @endif
                             @if($reservation->status === 'confirmed')
                                 <form action="{{ route('manager.reservations.complete', $reservation->id) }}" method="POST" class="inline">
@@ -133,7 +138,54 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Decline Modal -->
+                <div id="decline-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div class="mt-3">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Decline Reservation</h3>
+                            <form action="{{ route('manager.reservations.decline', $reservation->id) }}" method="POST" class="mt-2">
+                                @csrf
+                                @method('PUT')
+                                <div class="mb-4">
+                                    <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Declining</label>
+                                    <textarea
+                                        name="reason"
+                                        id="reason"
+                                        rows="4"
+                                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-amber-500 focus:ring-amber-500"
+                                        required
+                                        placeholder="Please explain why this reservation is being declined..."
+                                    ></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        This reason will be sent to the customer in the notification email.
+                                    </p>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button
+                                        type="button"
+                                        onclick="document.getElementById('decline-modal').classList.add('hidden')"
+                                        class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                                    >
+                                        Decline
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
 </x-app-layout>
+
+
+@push('scripts')
+<script src="{{ asset('resources/js/manager/toggleNav.js') }}"></script>
+@endpush

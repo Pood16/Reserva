@@ -92,36 +92,31 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">
-                                                <a href="{{ route('manager.reservations.show', $reservation->id) }}"
-                                                   class="text-indigo-600 hover:text-indigo-900">
-                                                    View
-                                                </a>
-                                                @if($reservation->status === 'pending')
-                                                    <form action="{{ route('manager.reservations.approve', $reservation->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="submit" class="text-green-600 hover:text-green-900 ml-2">
-                                                            Approve
-                                                        </button>
-                                                    </form>
-                                                    <form action="{{ route('manager.reservations.decline', $reservation->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="submit" class="text-red-600 hover:text-red-900 ml-2">
-                                                            Decline
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                                @if($reservation->status === 'confirmed')
-                                                    <form action="{{ route('manager.reservations.complete', $reservation->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <button type="submit" class="text-blue-600 hover:text-blue-900 ml-2">
-                                                            Complete
-                                                        </button>
-                                                    </form>
-                                                @endif
+                                                <select
+                                                    onchange="handleAction(this, {{ $reservation->id }})"
+                                                    class="text-sm rounded-md border border-gray-300 py-1 px-2 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
+                                                >
+                                                    <option value="">Select action</option>
+                                                    <option value="view">View Details</option>
+                                                    @if($reservation->status === 'pending')
+                                                        <option value="approve">Approve</option>
+                                                        <option value="decline">Decline</option>
+                                                    @endif
+                                                    @if($reservation->status === 'confirmed')
+                                                        <option value="complete">Complete</option>
+                                                    @endif
+                                                </select>
                                             </div>
+
+                                            <!-- Hidden forms for actions -->
+                                            <form id="approve-form-{{ $reservation->id }}" action="{{ route('manager.reservations.approve', $reservation->id) }}" method="POST" class="hidden">
+                                                @csrf
+                                                @method('PUT')
+                                            </form>
+                                            <form id="complete-form-{{ $reservation->id }}" action="{{ route('manager.reservations.complete', $reservation->id) }}" method="POST" class="hidden">
+                                                @csrf
+                                                @method('PUT')
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty
@@ -135,7 +130,93 @@
                         </table>
                     </div>
                 </div>
+
+                <!-- Decline Modal -->
+                <div id="decline-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+                    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div class="mt-3">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Decline Reservation</h3>
+                            <form id="decline-form" action="" method="POST" class="mt-2">
+                                @csrf
+                                @method('PUT')
+                                <div class="mb-4">
+                                    <label for="reason" class="block text-sm font-medium text-gray-700 mb-2">Reason for Declining</label>
+                                    <textarea
+                                        name="reason"
+                                        id="reason"
+                                        rows="4"
+                                        class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm p-2 focus:border-amber-500 focus:ring-amber-500"
+                                        required
+                                        placeholder="Please explain why this reservation is being declined..."
+                                    ></textarea>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        This reason will be sent to the customer in the notification email.
+                                    </p>
+                                </div>
+                                <div class="flex justify-end space-x-3">
+                                    <button
+                                        type="button"
+                                        onclick="closeDeclineModal()"
+                                        class="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                                    >
+                                        Decline
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </main>
         </div>
     </div>
+
+    @push('scripts')
+
+    <script src="{{ asset('resources/js/manager/toggleNav.js') }}"></script>
+
+    <script>
+        function handleAction(selectElement, reservationId) {
+            const action = selectElement.value;
+
+            if (!action) return; // No action selected
+
+            // Reset the select
+            setTimeout(() => { selectElement.value = ''; }, 100);
+
+            switch (action) {
+                case 'view':
+                    window.location.href = `{{ url('manager/reservations') }}/${reservationId}`;
+                    break;
+                case 'approve':
+                    document.getElementById(`approve-form-${reservationId}`).submit();
+                    break;
+                case 'decline':
+                    openDeclineModal(reservationId);
+                    break;
+                case 'complete':
+                    document.getElementById(`complete-form-${reservationId}`).submit();
+                    break;
+            }
+        }
+
+        function openDeclineModal(reservationId) {
+            const modal = document.getElementById('decline-modal');
+            const form = document.getElementById('decline-form');
+
+            form.action = "{{ url('manager/reservations') }}/" + reservationId + "/decline";
+            modal.classList.remove('hidden');
+        }
+
+        function closeDeclineModal() {
+            const modal = document.getElementById('decline-modal');
+            modal.classList.add('hidden');
+        }
+    </script>
+    @endpush
 </x-app-layout>
