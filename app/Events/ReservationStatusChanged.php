@@ -19,9 +19,7 @@ class ReservationStatusChanged implements ShouldBroadcast
     public $status;
     public $reason;
 
-    /**
-     * Create a new event instance.
-     */
+
     public function __construct($reservation, $status, $reason = null)
     {
         $this->reservation = $reservation;
@@ -29,11 +27,7 @@ class ReservationStatusChanged implements ShouldBroadcast
         $this->reason = $reason;
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
+
     public function broadcastOn(): array
     {
         return [
@@ -41,19 +35,13 @@ class ReservationStatusChanged implements ShouldBroadcast
         ];
     }
 
-    /**
-     * The event's broadcast name.
-     */
+
     public function broadcastAs(): string
     {
         return 'reservation.status.changed';
     }
 
-    /**
-     * Get the data to broadcast.
-     *
-     * @return array
-     */
+
     public function broadcastWith(): array
     {
         return [
@@ -67,9 +55,6 @@ class ReservationStatusChanged implements ShouldBroadcast
         ];
     }
 
-    /**
-     * Get a human-readable status message.
-     */
     private function getStatusMessage(): string
     {
         switch ($this->status) {
