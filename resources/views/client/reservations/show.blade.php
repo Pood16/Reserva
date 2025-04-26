@@ -131,7 +131,7 @@
             </div>
 
             @if($reservation->status === 'confirmed' && $reservation->booking_date > now())
-                <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">         
                     <div class="p-6 border-b border-gray-200">
                         <h2 class="text-xl font-semibold text-gray-900 mb-4">Important Information</h2>
 

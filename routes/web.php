@@ -8,7 +8,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Manager\TableController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\Client\ReservationController as ClientReservationController;
@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Broadcast;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/manager-request', [HomeController::class, 'submitManagerRequest'])->name('manager.request.submit');
 
 Route::get('/unauthorized', function () {
     return view('unauthorized');
