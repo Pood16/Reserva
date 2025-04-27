@@ -1,9 +1,15 @@
 <?php
 
 use App\Http\Controllers\auth\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Manager\ManagerController;
-use App\Http\Controllers\ReservationController;
+// Manager imports
+use App\Http\Controllers\Manager\ManagerDashboardController;
+use App\Http\Controllers\Manager\ManagerProfileController;
+use App\Http\Controllers\Manager\ManagerReservationController;
+use App\Http\Controllers\Manager\ManagerRestaurantController;
+// client imports
+// use App\Http\Controllers\Client\ReservationController;
+// use App\Http\Controllers\DashboardController;
+// use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
@@ -11,9 +17,6 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Controllers\Manager\TableController;
 use App\Http\Controllers\NotificationsController;
-use App\Http\Controllers\Client\ReservationController as ClientReservationController;
-use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
-use App\Http\Controllers\Manager\ReservationController as ManagerReservationController;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -77,15 +80,15 @@ Route::middleware(['auth'])->group(function () {
 
 // restaurant manager routes
 Route::middleware(['auth', 'manager'])->group(function () {
-    Route::get('/manager/dashboard', [ManagerController::class, 'dashboard'])->name('restaurant.dashboard');
-    Route::get('/manager/restaurants', [ManagerController::class, 'restaurantsList'])->name('manage.restaurants');
-    Route::post('/manager/restaurant/add', [ManagerController::class, 'addRestaurant'])->name('restaurant.store');
-    Route::put('/manager/restaurant/{id}/status', [ManagerController::class, 'toggleStatus'])->name('restaurant.toggle.status');
-    Route::get('/manager/restaurant/{id}/edit', [ManagerController::class, 'showEditRestaurant'])->name('restaurant.update.show');
-    Route::put('/manager/restaurant/{id}/update', [ManagerController::class, 'updateRestaurant'])->name('restaurant.update');
-    Route::get('/manager/restaurant/{id}', [ManagerController::class, 'restaurantDetails'])->name('restaurant.details');
-    Route::post('/manager/restaurant/{id}/images', [ManagerController::class, 'addRestaurantImage'])->name('restaurant.images.add');
-    Route::delete('/manager/restaurant/{id}/images/{imageId}', [ManagerController::class, 'deleteRestaurantImage'])->name('restaurant.images.delete');
+    Route::get('/manager/dashboard', [ManagerDashboardController::class, 'dashboard'])->name('restaurant.dashboard');
+    Route::get('/manager/restaurants', [ManagerRestaurantController::class, 'restaurantsList'])->name('manage.restaurants');
+    Route::post('/manager/restaurant/add', [ManagerRestaurantController::class, 'addRestaurant'])->name('restaurant.store');
+    Route::put('/manager/restaurant/{id}/status', [ManagerRestaurantController::class, 'toggleStatus'])->name('restaurant.toggle.status');
+    Route::get('/manager/restaurant/{id}/edit', [ManagerRestaurantController::class, 'showEditRestaurant'])->name('restaurant.update.show');
+    Route::put('/manager/restaurant/{id}/update', [ManagerRestaurantController::class, 'updateRestaurant'])->name('restaurant.update');
+    Route::get('/manager/restaurant/{id}', [ManagerRestaurantController::class, 'restaurantDetails'])->name('restaurant.details');
+    Route::post('/manager/restaurant/{id}/images', [ManagerRestaurantController::class, 'addRestaurantImage'])->name('restaurant.images.add');
+    Route::delete('/manager/restaurant/{id}/images/{imageId}', [ManagerRestaurantController::class, 'deleteRestaurantImage'])->name('restaurant.images.delete');
 
     // Table management routes
     Route::get('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'index'])->name('manager.tables.index');

@@ -10,7 +10,7 @@ use App\Notifications\ReservationStatusChanged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class ReservationController extends Controller
+class ManagerReservationController extends Controller
 {
     // list of reservations
     public function index()

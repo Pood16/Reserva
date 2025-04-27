@@ -12,27 +12,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-class ManagerController extends Controller {
+class ManagerRestaurantController extends Controller {
 
-    // Manager Dashboard
-    public function dashboard()
-    {
-        $user = Auth::user();
-        $restaurants = Restaurant::where('user_id', $user->id)->get();
-        $restaurantCount = $restaurants->count();
-        $tableCount = Table::whereIn('restaurant_id', $restaurants->pluck('id'))->count();
-        $activeRestaurants = $restaurants->where('is_active', true)->count();
 
-        return view('manager.dashboard', compact(
-            'user',
-            'restaurants',
-            'restaurantCount',
-            'tableCount',
-            'activeRestaurants'
-        ));
-    }
 
-    // =============================>>   Restaurants functions
     // List of my restaurants
     public function restaurantsList(){
         $myRestaurants = Restaurant::where('user_id', Auth::id())
@@ -41,6 +24,7 @@ class ManagerController extends Controller {
             ->get();
         return view('manager.restaurants.restaurants', compact('myRestaurants'));
     }
+
     // Show my restaurants details
     public function restaurantDetails($id)
     {
