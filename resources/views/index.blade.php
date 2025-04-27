@@ -5,19 +5,20 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-6">Welcome to QuickTable</h1>
-                    <p class="text-lg text-gray-700 mb-6">
-                        QuickTable is the premier restaurant reservation platform connecting food enthusiasts with their favorite dining establishments. We simplify the dining experience by providing a seamless booking system that benefits both diners and restaurant owners.
-                    </p>
-                    <p class="text-lg text-gray-700 mb-8">
-                        Founded in 2025, our mission is to transform the way people discover, book, and experience restaurants. With QuickTable, you can browse top-rated restaurants, view real customer reviews, and secure your table in seconds — all in one place.
+                    <span class="inline-block px-4 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm font-medium mb-4">Hungry? We've got you covered</span>
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">Reserve Your <span class="text-yellow-500">Perfect</span> Table in Seconds</h1>
+                    <p class="text-xl text-gray-700 mb-8">
+                        Skip the phone calls and waiting. Instantly book tables at top restaurants and enjoy seamless dining experiences with QuickTable.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="{{ route('restaurants.index') }}" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300 inline-block text-center">
                             Find Your Table
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
                         </a>
                         <a href="{{ route('about') }}" class="px-6 py-3 border border-yellow-500 text-yellow-600 hover:bg-yellow-50 font-semibold rounded-md transition duration-300 inline-block text-center">
-                            Learn More About Us
+                            About Us
                         </a>
                     </div>
                 </div>

@@ -1,4 +1,3 @@
-categories_table.php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -12,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('restaurant_food_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
+            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
+            $table->foreignId('food_type_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
-
-
     }
 
     /**
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('restaurant_food_types');
     }
 };

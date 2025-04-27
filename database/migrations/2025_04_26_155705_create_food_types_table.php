@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('manager_requests', function (Blueprint $table) {
+        Schema::create('food_types', function (Blueprint $table) {
             $table->id();
-            $table->string('FirstName');
-            $table->string('LastName');
-            $table->string('Email')->unique();
-            $table->enum('Status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->text('Notes')->nullable();
+            $table->string('name')->unique();
+            $table->string('description')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('manager_requests');
+        Schema::dropIfExists('food_types');
     }
 };
