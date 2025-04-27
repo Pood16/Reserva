@@ -6,8 +6,9 @@ use App\Http\Controllers\Manager\ManagerDashboardController;
 use App\Http\Controllers\Manager\ManagerProfileController;
 use App\Http\Controllers\Manager\ManagerReservationController;
 use App\Http\Controllers\Manager\ManagerRestaurantController;
+use App\Http\Controllers\Manager\MenuController;
 // client imports
-// use App\Http\Controllers\Client\ReservationController;
+use App\Http\Controllers\Client\ReservationController as ClientReservationController;
 // use App\Http\Controllers\DashboardController;
 // use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FavoriteController;
@@ -97,6 +98,22 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::delete('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'destroy'])->name('manager.tables.destroy');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-availability', [TableController::class, 'toggleAvailability'])->name('manager.tables.toggle-availability');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-active', [TableController::class, 'toggleActive'])->name('manager.tables.toggle-active');
+
+    // Menu management routes
+    Route::get('/manager/restaurant/{restaurantId}/menus', [MenuController::class, 'index'])->name('manager.menus.index');
+    Route::get('/manager/restaurant/{restaurantId}/menus/create', [MenuController::class, 'create'])->name('manager.menus.create');
+    Route::post('/manager/restaurant/{restaurantId}/menus', [MenuController::class, 'store'])->name('manager.menus.store');
+    Route::get('/manager/restaurant/{restaurantId}/menus/{menuId}/edit', [MenuController::class, 'edit'])->name('manager.menus.edit');
+    Route::put('/manager/restaurant/{restaurantId}/menus/{menuId}', [MenuController::class, 'update'])->name('manager.menus.update');
+    Route::delete('/manager/restaurant/{restaurantId}/menus/{menuId}', [MenuController::class, 'destroy'])->name('manager.menus.destroy');
+
+    // Menu items management routes
+    Route::get('/manager/restaurant/{restaurantId}/menus/{menuId}/items', [MenuController::class, 'showItems'])->name('manager.menus.items');
+    Route::post('/manager/restaurant/{restaurantId}/menus/{menuId}/items', [MenuController::class, 'storeItem'])->name('manager.menus.items.store');
+    Route::get('/manager/restaurant/{restaurantId}/menus/{menuId}/items/{itemId}/edit', [MenuController::class, 'editItem'])->name('manager.menus.items.edit');
+    Route::put('/manager/restaurant/{restaurantId}/menus/{menuId}/items/{itemId}', [MenuController::class, 'updateItem'])->name('manager.menus.items.update');
+    Route::delete('/manager/restaurant/{restaurantId}/menus/{menuId}/items/{itemId}', [MenuController::class, 'destroyItem'])->name('manager.menus.items.destroy');
+    Route::put('/manager/restaurant/{restaurantId}/menus/{menuId}/items/{itemId}/toggle', [MenuController::class, 'toggleItemAvailability'])->name('manager.menus.items.toggle');
 
     // Manager Profile Routes
     Route::get('/manager/profile', [ManagerProfileController::class, 'show'])->name('manager.profile.show');

@@ -6,7 +6,7 @@ use App\Models\Restaurant;
 use App\Models\ManagerRequest;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class TrushHomeController extends Controller
 {
     /**
      * Display the homepage with featured restaurants

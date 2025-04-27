@@ -72,12 +72,16 @@
                                 <span>Restaurants</span>
                             </a>
                         </li>
+                        <li class="pt-4">
+                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Rservations Management</span>
+                        </li>
                         <li>
                             <a href="{{ route('manager.reservations') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('manager.reservations*') ? 'bg-amber-100 text-amber-600' : '' }}">
                                 <i class="fas fa-calendar-check w-5 h-5 mr-3 text-gray-500"></i>
                                 <span>Reservations</span>
                             </a>
                         </li>
+
                         <!-- back to maain  -->
                         <li class="pt-6">
                             <a href="{{ route('home') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50">

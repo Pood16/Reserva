@@ -24,6 +24,7 @@ class ManagerRestaurantController extends Controller {
             ->with('reviews')
             ->with('tables')
             ->with('foodTypes')
+            ->with('menus')
             ->get();
 
         $foodTypes = FoodType::all();

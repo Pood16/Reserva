@@ -27,6 +27,8 @@
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reviews</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tables</th>
+                                            <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Menus</th>
+
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                         </tr>
@@ -83,6 +85,13 @@
                                                     </div>
                                                 </td>
 
+                                                <td class="px-4 py-4">
+                                                    <div class="flex items-center">
+                                                        <a href="{{ route('manager.menus.index', $restaurant->id) }}" class="ml-2 text-blue-600 hover:text-blue-900">
+                                                            <i class="fas fa-external-link-alt"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
                                                 <td class="px-4 py-4">
                                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                                         {{ $restaurant->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
