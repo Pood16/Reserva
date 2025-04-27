@@ -5,7 +5,7 @@ namespace App\Http\Controllers\auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;                
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -29,6 +29,11 @@ class AuthController extends Controller
 
         // first user is admin
         $role = User::count() === 0 ? 'admin' : 'client';
+
+        // If user checked the manager checkbox, set role to manager
+        if ($request->has('is_manager')) {
+            $role = 'manager';
+        }
 
         // register the user
         $user = User::create([

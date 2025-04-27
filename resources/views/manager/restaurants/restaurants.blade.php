@@ -211,6 +211,7 @@
                                 @endforeach
                             </div>
                         </div>
+                    
                         <div >
                             <label for="cover_image" class="block text-sm font-medium text-gray-700">Restaurant Cover Image</label>
                             <div class="mt-1 flex items-center">
