@@ -8,6 +8,8 @@ use App\Models\Restaurant;
 use App\Models\Table;
 use App\Models\OpeningDay;
 use App\Models\RestaurantImage;
+use App\Models\FoodType;
+use App\Models\RestaurantFoodType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -21,8 +23,11 @@ class ManagerRestaurantController extends Controller {
         $myRestaurants = Restaurant::where('user_id', Auth::id())
             ->with('reviews')
             ->with('tables')
+            ->with('foodTypes')
             ->get();
-        return view('manager.restaurants.restaurants', compact('myRestaurants'));
+
+        $foodTypes = FoodType::all();
+        return view('manager.restaurants.restaurants', compact('myRestaurants', 'foodTypes'));
     }
 
     // Show my restaurants details
@@ -30,7 +35,7 @@ class ManagerRestaurantController extends Controller {
     {
         $restaurant = Restaurant::where('id', $id)
             ->where('user_id', Auth::id())
-            ->with(['reviews', 'images', 'openingDays', 'tables'])
+            ->with(['reviews', 'images', 'openingDays', 'tables', 'foodTypes'])
             ->firstOrFail();
 
         return view('manager.restaurants.restaurant-details', compact('restaurant'));
@@ -92,9 +97,14 @@ class ManagerRestaurantController extends Controller {
             'opening_days' => 'required|array',
             'cover_image' => 'nullable|image|max:2048',
             'is_active' => 'nullable|boolean',
+            'food_types' => 'nullable|array',
+            'food_types.*' => 'exists:food_types,id',
         ]);
         $openingDays = $validated['opening_days'];
         unset($validated['opening_days']);
+
+        $foodTypes = $request->input('food_types', []);
+        unset($validated['food_types']);
 
         $validated['user_id'] = Auth::id();
         if ($request->hasFile('cover_image')) {
@@ -104,12 +114,25 @@ class ManagerRestaurantController extends Controller {
         }
 
         $restaurant = Restaurant::create($validated);
+
+        // Add opening days
         foreach ($openingDays as $day) {
             OpeningDay::create([
                 'restaurant_id' => $restaurant->id,
                 'day_of_week' => $day
             ]);
         }
+
+        // Add food types
+        if (!empty($foodTypes)) {
+            foreach ($foodTypes as $foodTypeId) {
+                RestaurantFoodType::create([
+                    'restaurant_id' => $restaurant->id,
+                    'food_type_id' => $foodTypeId
+                ]);
+            }
+        }
+
         return redirect()->back()->with('success', 'Restaurant created successfully.');
     }
 
@@ -117,9 +140,10 @@ class ManagerRestaurantController extends Controller {
     public function showEditRestaurant(Request $request, $id){
         $restaurant = Restaurant::where('user_id', Auth::id())
                         ->where('id', $id)
-                        ->with(['images', 'openingDays'])
+                        ->with(['images', 'openingDays', 'foodTypes'])
                         ->firstOrFail();
-            return view('manager.restaurants.edit', compact('restaurant'));
+        $foodTypes = FoodType::all();
+        return view('manager.restaurants.edit', compact('restaurant', 'foodTypes'));
     }
 
     // Toggle my restaurants status
@@ -144,7 +168,7 @@ class ManagerRestaurantController extends Controller {
 
         $restaurant = Restaurant::where('id', $id)
             ->where('user_id', Auth::id())
-            ->with(['images', 'openingDays'])
+            ->with(['images', 'openingDays', 'foodTypes'])
             ->firstOrFail();
             $section = $request->input('section', 'general');
             switch ($section) {
@@ -162,6 +186,9 @@ class ManagerRestaurantController extends Controller {
 
                 case 'status':
                     return $this->updateStatus($request, $restaurant);
+
+                case 'food_types':
+                    return $this->updateFoodTypes($request, $restaurant);
 
                 default:
                     return redirect()->back()->with('error', 'Invalid section specified.');
@@ -271,5 +298,27 @@ class ManagerRestaurantController extends Controller {
         return redirect()->back()->with('success', "Restaurant {$statusText} successfully.");
     }
 
+    // Update food types (section: food_types)
+    private function updateFoodTypes(Request $request, Restaurant $restaurant)
+    {
+        $validated = $request->validate([
+            'food_types' => 'nullable|array',
+            'food_types.*' => 'exists:food_types,id',
+        ]);
 
+        // Delete existing restaurant food types
+        RestaurantFoodType::where('restaurant_id', $restaurant->id)->delete();
+
+        // Add new food types
+        if (isset($validated['food_types']) && !empty($validated['food_types'])) {
+            foreach ($validated['food_types'] as $foodTypeId) {
+                RestaurantFoodType::create([
+                    'restaurant_id' => $restaurant->id,
+                    'food_type_id' => $foodTypeId
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Food types updated successfully.');
+    }
 }

@@ -311,6 +311,55 @@
                     </div>
                 </div>
 
+                <!-- Food Types Section -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6" id="food-types-section">
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">Food Types</h3>
+                    </div>
+                    <div class="p-6">
+                        <form action="{{ route('restaurant.update', $restaurant->id) }}" method="POST" class="space-y-4">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="section" value="food_types">
+
+                            <div class="space-y-4">
+                                <!-- Food Types Selection -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Food Types</label>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-64 overflow-y-auto p-3 border border-gray-300 rounded-md">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="edit-all-food-types" class="rounded border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                            <label for="edit-all-food-types" class="ml-2 text-sm text-gray-700 font-semibold">All Types</label>
+                                        </div>
+
+                                        @php
+                                            $restaurantFoodTypes = $restaurant->foodTypes->pluck('id')->toArray();
+                                        @endphp
+
+                                        @foreach($foodTypes as $foodType)
+                                            <div class="flex items-center">
+                                                <input type="checkbox" name="food_types[]" id="edit-food-type-{{ $foodType->id }}" value="{{ $foodType->id }}"
+                                                    class="edit-food-type-checkbox rounded border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+                                                    {{ in_array($foodType->id, old('food_types', $restaurantFoodTypes)) ? 'checked' : '' }}>
+                                                <label for="edit-food-type-{{ $foodType->id }}" class="ml-2 text-sm text-gray-700">{{ $foodType->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    @error('food_types')
+                                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end pt-4">
+                                <button type="submit" class="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50">
+                                    Update Food Types
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 <!-- Status Section -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6" id="status-section">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
@@ -401,6 +450,41 @@
                 const element = document.getElementById(id);
                 if (element) {
                     element.scrollIntoView();
+                }
+            }
+
+            // Handle food type checkboxes
+            const allFoodTypesCheckbox = document.getElementById('edit-all-food-types');
+            const foodTypeCheckboxes = document.querySelectorAll('.edit-food-type-checkbox');
+
+            // Set initial state of "All" checkbox
+            updateAllCheckboxState();
+
+            // Handle "All" checkbox
+            allFoodTypesCheckbox.addEventListener('change', function() {
+                foodTypeCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
+
+            // Update "All" checkbox state based on individual selections
+            foodTypeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateAllCheckboxState);
+            });
+
+            function updateAllCheckboxState() {
+                const allChecked = Array.from(foodTypeCheckboxes).every(cb => cb.checked);
+                const noneChecked = Array.from(foodTypeCheckboxes).every(cb => !cb.checked);
+
+                if (allChecked) {
+                    allFoodTypesCheckbox.checked = true;
+                    allFoodTypesCheckbox.indeterminate = false;
+                } else if (noneChecked) {
+                    allFoodTypesCheckbox.checked = false;
+                    allFoodTypesCheckbox.indeterminate = false;
+                } else {
+                    allFoodTypesCheckbox.checked = false;
+                    allFoodTypesCheckbox.indeterminate = true;
                 }
             }
         });

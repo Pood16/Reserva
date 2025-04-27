@@ -9,7 +9,6 @@
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
                 <x-flash-messages />
-
                 <!-- manage restaurants -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
@@ -18,7 +17,6 @@
                             <i class="fas fa-plus mr-2"></i> Add Restaurant
                         </button>
                     </div>
-
                     <div class="p-6">
                         @if(count($myRestaurants) > 0)
                             <div class="overflow-x-auto">
@@ -171,6 +169,21 @@
                             <label for="website" class="block text-sm font-medium text-gray-700">Website</label>
                             <input type="text" name="website" id="website" class="mt-1 block w-full border p-1 rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" placeholder="https://...">
                         </div>
+
+                        <!-- Active Status -->
+                        <div class="mt-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Restaurant Status</label>
+                            <div class="flex space-x-4">
+                                <div class="flex items-center">
+                                    <input type="radio" name="is_active" id="is_active_yes" value="1" class="rounded-full border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50" checked>
+                                    <label for="is_active_yes" class="ml-2 text-sm text-gray-700">Active</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" name="is_active" id="is_active_no" value="0" class="rounded-full border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                    <label for="is_active_no" class="ml-2 text-sm text-gray-700">Inactive</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Right Column -->
@@ -185,20 +198,6 @@
                             <label for="city" class="block text-sm font-medium text-gray-700">City <span class="text-red-500">*</span></label>
                             <input type="text" name="city" id="city" class="mt-1 block w-full border p-1 rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" required>
                         </div>
-
-                        <!-- Business Hours -->
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label for="opening_time" class="block text-sm font-medium text-gray-700">Opening Time <span class="text-red-500">*</span></label>
-                                <input type="time" name="opening_time" id="opening_time" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" required>
-                            </div>
-
-                            <div>
-                                <label for="closing_time" class="block text-sm font-medium text-gray-700">Closing Time <span class="text-red-500">*</span></label>
-                                <input type="time" name="closing_time" id="closing_time" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" required>
-                            </div>
-                        </div>
-
                         <!-- Opening Days -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Opening Days <span class="text-red-500">*</span></label>
@@ -211,38 +210,50 @@
                                 @endforeach
                             </div>
                         </div>
-                    
-                        <div >
-                            <label for="cover_image" class="block text-sm font-medium text-gray-700">Restaurant Cover Image</label>
-                            <div class="mt-1 flex items-center">
-                                <input type="file" name="cover_image" id="cover_image" accept="image/*" class="block w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2 file:px-4 file:rounded-md
-                                    file:border-0 file:text-sm file:font-semibold
-                                    file:bg-amber-50 file:text-amber-700
-                                    hover:file:bg-amber-100">
+                                                <!-- Food Types -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Food Types <span class="text-red-500">*</span></label>
+                            <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 border border-gray-300 rounded-md">
+                                <div class="flex items-center">
+                                    <input type="checkbox" id="all-food-types" class="rounded border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                    <label for="all-food-types" class="ml-2 text-sm text-gray-700 font-semibold">All Types</label>
+                                </div>
+
+                                @foreach($foodTypes as $foodType)
+                                    <div class="flex items-center">
+                                        <input type="checkbox" name="food_types[]" id="food-type-{{ $foodType->id }}" value="{{ $foodType->id }}" class="food-type-checkbox rounded border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                        <label for="food-type-{{ $foodType->id }}" class="ml-2 text-sm text-gray-700">{{ $foodType->name }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                          <!-- Business Hours -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="opening_time" class="block text-sm font-medium text-gray-700">Opening Time <span class="text-red-500">*</span></label>
+                                <input type="time" name="opening_time" id="opening_time" class="mt-1 block w-full border rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" required>
+                            </div>
+
+                            <div>
+                                <label for="closing_time" class="block text-sm font-medium text-gray-700">Closing Time <span class="text-red-500">*</span></label>
+                                <input type="time" name="closing_time" id="closing_time" class="mt-1 block w-full rounded-md border border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50" required>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Active Status -->
-                <div class="mt-3">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Restaurant Status</label>
-                    <div class="flex space-x-4">
-                        <div class="flex items-center">
-                            <input type="radio" name="is_active" id="is_active_yes" value="1" class="rounded-full border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50" checked>
-                            <label for="is_active_yes" class="ml-2 text-sm text-gray-700">Active</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="radio" name="is_active" id="is_active_no" value="0" class="rounded-full border-gray-300 text-amber-600 shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
-                            <label for="is_active_no" class="ml-2 text-sm text-gray-700">Inactive</label>
-                        </div>
+                <div class="mt-5">
+                    <label for="cover_image" class="block text-sm font-medium text-gray-700">Restaurant Cover Image</label>
+                    <div class="mt-1 flex items-center">
+                        <input type="file" name="cover_image" id="cover_image" accept="image/*" class="block w-full text-sm text-gray-500
+                            file:mr-4 file:py-2 file:px-4 file:rounded-md
+                            file:border-0 file:text-sm file:font-semibold
+                            file:bg-amber-50 file:text-amber-700
+                            hover:file:bg-amber-100">
                     </div>
                 </div>
-
                 <!-- Hidden User ID Field -->
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-
                 <!-- Form Actions -->
                 <div class="mt-8 flex justify-end space-x-3">
                     <button type="button" id="cancelRestaurant" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500" onclick="document.getElementById('addRestaurantModal').classList.add('hidden')">
@@ -259,5 +270,38 @@
     @push('scripts')
     <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
     <script src="{{asset('resources/js/manager/restaurantsList.js')}}"></script>
+    <script>
+        // Food type checkboxes functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const allFoodTypesCheckbox = document.getElementById('all-food-types');
+            const foodTypeCheckboxes = document.querySelectorAll('.food-type-checkbox');
+
+            // Handle "All" checkbox
+            allFoodTypesCheckbox.addEventListener('change', function() {
+                foodTypeCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+            });
+
+            // Update "All" checkbox state based on individual selections
+            foodTypeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const allChecked = Array.from(foodTypeCheckboxes).every(cb => cb.checked);
+                    const noneChecked = Array.from(foodTypeCheckboxes).every(cb => !cb.checked);
+
+                    if (allChecked) {
+                        allFoodTypesCheckbox.checked = true;
+                        allFoodTypesCheckbox.indeterminate = false;
+                    } else if (noneChecked) {
+                        allFoodTypesCheckbox.checked = false;
+                        allFoodTypesCheckbox.indeterminate = false;
+                    } else {
+                        allFoodTypesCheckbox.checked = false;
+                        allFoodTypesCheckbox.indeterminate = true;
+                    }
+                });
+            });
+        });
+    </script>
     @endpush
 </x-app-layout>
