@@ -30,10 +30,6 @@ class AuthController extends Controller
         // first user is admin
         $role = User::count() === 0 ? 'admin' : 'client';
 
-        // If user checked the manager checkbox, set role to manager
-        if ($request->has('is_manager')) {
-            $role = 'manager';
-        }
 
         // register the user
         $user = User::create([
@@ -42,6 +38,14 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
             'role' => $role,
         ]);
+
+
+        // Check if is_manager is requested
+        if ($request->has('is_manager') && $request->is_manager) {
+            return redirect()->route('login.show')->with('success', 'Your manager account request has been received. You will be notified about its status via email.');
+        }
+
+        // Standard registration redirect
         return redirect()->route('login.show')->with('success', 'Registration successful! Please log in.');
     }
     public function handleLogin(Request $request)
