@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\auth\AuthController;
 // Manager imports
 use App\Http\Controllers\Manager\ManagerDashboardController;
@@ -14,8 +15,9 @@ use App\Http\Controllers\Client\ReservationController as ClientReservationContro
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\ClientHomeController;
 use App\Http\Controllers\Manager\TableController;
 use App\Http\Controllers\NotificationsController;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;

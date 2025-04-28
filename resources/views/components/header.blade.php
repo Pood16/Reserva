@@ -8,25 +8,25 @@
 
         <!-- Main Navigation -->
         <div class="hidden md:flex items-center space-x-6 text-gray-700 text-sm font-medium">
-            <a href="{{ route('home') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1">
+            <a href="{{ route('home') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1 p-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 <span>Home</span>
             </a>
-            <a href="{{ route('restaurants.index') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1">
+            <a href="{{ route('restaurants.index') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1 p-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <span>Find Restaurants</span>
             </a>
-            <a href="{{ route('about') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1">
+            <a href="{{ route('about') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1 p-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>About Us</span>
             </a>
-            <a href="{{ route('contact') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1">
+            <a href="{{ route('contact') }}" class="hover:text-amber-500 transition duration-200 flex items-center gap-1 p-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
@@ -48,7 +48,7 @@
                         </div>
                     @elseif(auth()->user()->role === 'manager')
                         <!-- Restaurant Owner  -->
-                        <div class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md mr-3 hidden md:flex items-center text-xs font-medium">
+                        <div class="px-5 py-3 bg-blue-100 text-blue-700 rounded-md mr-3 hidden md:flex items-center text-xs font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
@@ -62,7 +62,7 @@
                     <!-- User Dropdown -->
                     <div class="relative inline-block text-left">
                         <!-- User icon  -->
-                        <button id="user-menu-button" type="button" class="flex items-center gap-2 py-2 px-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm transition-colors duration-200" aria-expanded="false" aria-haspopup="true">
+                        <button id="user-menu-button" type="button" class="flex items-center gap-2 py-3 px-5 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm transition-colors duration-200" aria-expanded="false" aria-haspopup="true">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>

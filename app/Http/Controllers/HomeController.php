@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Client\Controllers;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
@@ -17,13 +17,10 @@ class HomeController extends Controller
         // Get featured restaurants - either based on ratings or manually featured
         $restaurants = Restaurant::with('reviews')
             ->withCount('reviews')
-            ->orderByDesc(
-                \DB::raw('(SELECT AVG(rating) FROM reviews WHERE reviews.restaurant_id = restaurants.id)')
-            )
+            ->orderByDesc(\DB::raw('(SELECT AVG(rating) FROM reviews WHERE reviews.restaurant_id = restaurants.id)'))
             ->orderByDesc('reviews_count')
             ->take(8)
             ->get();
-
         return view('index', compact('restaurants'));
     }
 
