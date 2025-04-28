@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Client;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rule;
 
-class ProfileController extends Controller
+class ClientProfileController extends Controller
 {
-    public function edit()
+    public function show()
     {
         $user = Auth::user();
-        return view('profile.edit', compact('user'));
+        return view('profile.show', compact('user'));
     }
+
+
 
     public function update(Request $request)
     {
@@ -23,7 +25,7 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'profile_picture' => 'nullable|image|max:2048',
         ]);
 
@@ -31,7 +33,7 @@ class ProfileController extends Controller
         $user->email = $validated['email'];
 
         if ($request->hasFile('profile_picture')) {
-            if ($user->profile_picture && !str_contains($user->profile_picture, 'default-profile.png')) {
+            if ($user->profile_picture && $user->profile_picture !== 'default-profile.png') {
                 Storage::disk('public')->delete($user->profile_picture);
             }
 
@@ -41,13 +43,10 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return back()->with('success', 'Profile updated successfully.');
+        return redirect()->route('profile.show')->with('success', 'Profile updated successfully.');
     }
 
-    public function changePassword()
-    {
-        return view('profile.change-password');
-    }
+
 
     public function updatePassword(Request $request)
     {
@@ -65,27 +64,6 @@ class ProfileController extends Controller
         $user->password = Hash::make($validated['password']);
         $user->save();
 
-        return back()->with('success', 'Password updated successfully.');
-    }
-
-    public function deleteProfilePicture()
-    {
-        $user = Auth::user();
-
-        if ($user->profile_picture && !str_contains($user->profile_picture, 'default-profile.png')) {
-            Storage::disk('public')->delete($user->profile_picture);
-            $user->profile_picture = null;
-            $user->save();
-        }
-
-        return back()->with('success', 'Profile picture removed successfully.');
-    }
-
-    public function destroy()
-    {
-        $user = Auth::user();
-        Auth::logout();
-        $user->delete();
-        return redirect('/')->with('success', 'Your account has been deleted.');
+        return redirect()->route('profile.show')->with('success', 'Password updated successfully.');
     }
 }

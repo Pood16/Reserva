@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\auth\AuthController;
 
+use App\Http\Controllers\Client\ClientProfileController;
 use App\Http\Controllers\Manager\ManagerDashboardController;
 use App\Http\Controllers\Manager\ManagerProfileController;
 use App\Http\Controllers\Manager\ManagerReservationController;
@@ -78,13 +79,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/restaurants/{restaurant}/favorite', [FavoriteController::class, 'toggleFavorite'])->name('favorites.toggle');
     Route::get('/restaurants/{restaurant}/favorite/status', [FavoriteController::class, 'checkFavoriteStatus'])->name('favorites.status');
 
-    // Profile settings
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
-    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
-    Route::delete('/profile/picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.delete-picture');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Profile Routes
+    Route::get('/profile', [ClientProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/change-password', [ClientProfileController::class, 'updatePassword'])->name('profile.password.update');
+
 });
 
 // restaurant manager routes
