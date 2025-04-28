@@ -75,7 +75,29 @@ class Restaurant extends Model
 
     public function menus()
     {
-        return $this->hasMany(Menu::class);
+        // Always return a collection, even if no menus exist
+        return $this->hasMany(Menu::class) ?? collect();
+    }
+
+    public function isOpenNow()
+    {
+        // Get today's day name (e.g., 'Monday')
+        $today = now()->format('l');
+        // Check if today is in openingDays
+        $isOpenToday = $this->openingDays->contains(function ($day) use ($today) {
+            return strtolower($day->day_of_week) === strtolower($today);
+        });
+        if (!$isOpenToday) {
+            return false;
+        }
+        // Check if current time is between opening_time and closing_time
+        $now = now();
+        if ($this->opening_time && $this->closing_time) {
+            $open = $this->opening_time->copy()->setDate($now->year, $now->month, $now->day);
+            $close = $this->closing_time->copy()->setDate($now->year, $now->month, $now->day);
+            return $now->between($open, $close);
+        }
+        return false;
     }
 }
 

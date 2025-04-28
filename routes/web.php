@@ -1,20 +1,19 @@
 <?php
-
-
 use App\Http\Controllers\auth\AuthController;
-// Manager imports
+
 use App\Http\Controllers\Manager\ManagerDashboardController;
 use App\Http\Controllers\Manager\ManagerProfileController;
 use App\Http\Controllers\Manager\ManagerReservationController;
 use App\Http\Controllers\Manager\ManagerRestaurantController;
 use App\Http\Controllers\Manager\MenuController;
-// client imports
-use App\Http\Controllers\Client\ReservationController as ClientReservationController;
-// use App\Http\Controllers\DashboardController;
-// use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\FavoriteController;
+
+use App\Http\Controllers\Client\ReservationController;
+use App\Http\Controllers\Client\RestaurantController;
+use App\Http\Controllers\Client\FavoriteController;
+
+
+// use App\Http\Controllers\Trush\RestaurantController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Client\ClientHomeController;
@@ -49,8 +48,7 @@ Route::post('/logout', [AuthController::class, 'handleLogout'])->middleware('aut
 
 // Restaurant listing and details
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
-Route::get('/restaurants/{id}', [RestaurantController::class, 'show'])->name('restaurants.show');
-Route::post('/restaurants/{id}/favorite', [RestaurantController::class, 'toggleFavorite'])->middleware('auth')->name('restaurants.favorite');
+Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])->name('restaurants.show');
 
 // Static pages
 Route::get('/about', [HomeController::class, 'about'])->name('about');
@@ -66,15 +64,19 @@ Route::middleware(['auth'])->group(function () {
 
     // client reservations
     Route::prefix('client')->name('client.')->group(function () {
-        Route::get('/reservations', [ClientReservationController::class, 'index'])->name('reservations.index');
-        Route::get('/reservations/history', [ClientReservationController::class, 'history'])->name('reservations.history');
-        Route::get('/reservations/{id}', [ClientReservationController::class, 'show'])->name('reservations.show');
-        Route::put('/reservations/{id}/cancel', [ClientReservationController::class, 'cancel'])->name('reservations.cancel');
+        // Use the ReservationController for client reservations
+        Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+        Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+        Route::get('/reservations/history', [ReservationController::class, 'history'])->name('reservations.history');
+        Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
+        Route::put('/reservations/{id}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
     });
 
     // Favorites
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
     Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.destroy');
+    Route::post('/restaurants/{restaurant}/favorite', [FavoriteController::class, 'toggleFavorite'])->name('favorites.toggle');
+    Route::get('/restaurants/{restaurant}/favorite/status', [FavoriteController::class, 'checkFavoriteStatus'])->name('favorites.status');
 
     // Profile settings
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
