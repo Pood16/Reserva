@@ -89,13 +89,22 @@ class AdminController extends Controller
     {
         $request = ManagerRequest::findOrFail($id);
         $user = User::where('email', $request->Email)->first();
+
         if ($user) {
             $user->role = 'manager';
             $user->save();
-
-            $request->status = 'approved';
-            $request->save();
+        } else {
+            // Create new user if they don't exist
+            $user = User::create([
+                'name' => $request->Name,
+                'email' => $request->Email,
+                'password' => Hash::make('password 123'),
+                'role' => 'manager',
+            ]);
         }
+
+        $request->status = 'approved';
+        $request->save();
 
         // Notify the user
         $user->notify(new ManagerRequestNotification($request, 'approved'));
