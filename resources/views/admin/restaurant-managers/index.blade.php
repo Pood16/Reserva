@@ -20,7 +20,7 @@
                                 <i class="fas fa-user-circle text-xl"></i>
                             </button>
                             <div id="userMenuDropdown" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50 hidden">
-                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
                                     <i class="fas fa-user mr-2"></i> Profile
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}">
@@ -142,22 +142,22 @@
             // Sidebar toggle functionality
             const toggleSidebar = document.getElementById('toggleSidebar');
             const sidebar = document.querySelector('#sidebar');
-            
+
             if (toggleSidebar && sidebar) {
                 toggleSidebar.addEventListener('click', function() {
                     sidebar.classList.toggle('-translate-x-full');
                 });
             }
-            
+
             // User menu dropdown toggle
             const toggleUserMenu = document.getElementById('toggleUserMenu');
             const userMenuDropdown = document.getElementById('userMenuDropdown');
-            
+
             if (toggleUserMenu && userMenuDropdown) {
                 toggleUserMenu.addEventListener('click', function() {
                     userMenuDropdown.classList.toggle('hidden');
                 });
-                
+
                 // Close user menu when clicking outside
                 document.addEventListener('click', function(event) {
                     const userMenu = document.getElementById('userMenu');
