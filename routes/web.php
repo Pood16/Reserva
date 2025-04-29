@@ -18,6 +18,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Client\ClientHomeController;
 use App\Http\Controllers\Client\ClientProfileController;
+use App\Http\Controllers\Client\ReviewController;
 use App\Http\Controllers\Manager\TableController;
 use App\Http\Controllers\NotificationsController;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
@@ -168,4 +169,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // System settings
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
     Route::put('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
+});
+
+// Reviews routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('restaurants/{restaurant}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('restaurants/{restaurant}/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 });

@@ -78,4 +78,9 @@ class User extends Authenticatable
     {
         return ucfirst($this->role);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }

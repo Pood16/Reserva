@@ -20,7 +20,7 @@
                                 <i class="fas fa-user-circle text-xl"></i>
                             </button>
                             <div id="userMenuDropdown" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50 hidden">
-                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                <a hrse={{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
                                     <i class="fas fa-user mr-2"></i> Profile
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}">
@@ -96,30 +96,36 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $request->created_at->format('M d, Y') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             @if(!$request->status || $request->status == 'pending')
-                                                <div class="flex space-x-2">
-                                                    <form action="{{ route('admin.manager-requests.approve', $request->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="text-green-600 hover:text-green-900">
-                                                            <i class="fas fa-check mr-1"></i> Approve
-                                                        </button>
-                                                    </form>
-                                                    <form action="{{ route('admin.manager-requests.reject', $request->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="text-amber-600 hover:text-amber-900">
-                                                            <i class="fas fa-times mr-1"></i> Reject
-                                                        </button>
-                                                    </form>
+                                                <div class="flex items-center space-x-2">
+                                                    <select class="action-select text-sm border-gray-300 rounded-md shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
+                                                            data-request-id="{{ $request->id }}">
+                                                        <option value="">Select Action</option>
+                                                        <option value="approve">Approve</option>
+                                                        <option value="reject">Reject</option>
+                                                        <option value="delete">Delete</option>
+                                                    </select>
+                                                    <button type="button"
+                                                            class="execute-action px-3 py-1 bg-amber-500 text-white rounded-md text-xs hidden"
+                                                            data-request-id="{{ $request->id }}">
+                                                        Execute
+                                                    </button>
+                                                </div>
+                                            @else
+                                                <div>
+                                                    <select class="action-select text-sm border-gray-300 rounded-md shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
+                                                            data-request-id="{{ $request->id }}">
+                                                        <option value="">Select Action</option>
+                                                        <option value="delete">Delete</option>
+                                                    </select>
+                                                    <button type="button"
+                                                            class="execute-action mt-1 px-3 py-1 bg-amber-500 text-white rounded-md text-xs hidden"
+                                                            data-request-id="{{ $request->id }}">
+                                                        Execute
+                                                    </button>
                                                 </div>
                                             @endif
-                                            <form action="{{ route('admin.manager-requests.destroy', $request->id) }}" method="POST" class="inline mt-2">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this request?')">
-                                                    <i class="fas fa-trash mr-1"></i> Delete
-                                                </button>
-                                            </form>
                                         </td>
                                     </tr>
                                 @empty
@@ -134,6 +140,30 @@
                     </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Confirm Action</h3>
+            </div>
+            <div class="px-6 py-4">
+                <p id="modalMessage" class="text-gray-700"></p>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rounded-b-lg">
+                <button type="button" id="cancelAction" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+                    Cancel
+                </button>
+                <form id="confirmForm" method="POST">
+                    @csrf
+                    <input type="hidden" name="_method" id="formMethod" value="POST">
+                    <button type="submit" id="confirmAction" class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600">
+                        Confirm
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -167,6 +197,76 @@
                     }
                 });
             }
+
+            // Show/hide execute button when action is selected
+            const actionSelects = document.querySelectorAll('.action-select');
+            actionSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const requestId = this.getAttribute('data-request-id');
+                    const executeButton = document.querySelector(`.execute-action[data-request-id="${requestId}"]`);
+
+                    if (this.value) {
+                        executeButton.classList.remove('hidden');
+                    } else {
+                        executeButton.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Handle execute button click
+            const executeButtons = document.querySelectorAll('.execute-action');
+            executeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const requestId = this.getAttribute('data-request-id');
+                    const select = document.querySelector(`.action-select[data-request-id="${requestId}"]`);
+                    const action = select.value;
+
+                    if (!action) return;
+
+                    const modal = document.getElementById('confirmationModal');
+                    const modalTitle = document.getElementById('modalTitle');
+                    const modalMessage = document.getElementById('modalMessage');
+                    const confirmForm = document.getElementById('confirmForm');
+                    const formMethod = document.getElementById('formMethod');
+
+                    // Configure modal based on action
+                    switch(action) {
+                        case 'approve':
+                            modalTitle.textContent = 'Confirm Approval';
+                            modalMessage.textContent = 'Are you sure you want to approve this manager request?';
+                            confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId + "/approve";
+                            formMethod.value = 'POST';
+                            break;
+                        case 'reject':
+                            modalTitle.textContent = 'Confirm Rejection';
+                            modalMessage.textContent = 'Are you sure you want to reject this manager request?';
+                            confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId + "/reject";
+                            formMethod.value = 'POST';
+                            break;
+                        case 'delete':
+                            modalTitle.textContent = 'Confirm Deletion';
+                            modalMessage.textContent = 'Are you sure you want to delete this manager request? This action cannot be undone.';
+                            confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId;
+                            formMethod.value = 'DELETE';
+                            break;
+                    }
+
+                    // Show modal
+                    modal.classList.remove('hidden');
+                });
+            });
+
+            // Close modal on cancel
+            document.getElementById('cancelAction').addEventListener('click', function() {
+                document.getElementById('confirmationModal').classList.add('hidden');
+            });
+
+            // Close modal when clicking outside
+            document.getElementById('confirmationModal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                    this.classList.add('hidden');
+                }
+            });
         });
     </script>
     @endpush

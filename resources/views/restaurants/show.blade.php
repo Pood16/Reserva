@@ -525,12 +525,12 @@
 
                                         <div class="flex flex-col justify-center items-center">
                                             <p class="mb-2 text-sm text-gray-500">Have you dined at this restaurant?</p>
-                                            <a href="#" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 inline-flex items-center">
+                                            <button type="button" id="open-review-modal" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 inline-flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                 </svg>
                                                 Write a Review
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -562,6 +562,21 @@
                                                     @endfor
                                                 </div>
                                                 <p class="text-gray-600">{{ $review->comment }}</p>
+                                                @if(auth()->check() && auth()->id() === $review->user_id)
+                                                <div class="flex space-x-2">
+                                                    <button type="button" class="edit-review-btn text-yellow-600 hover:text-yellow-800 text-sm font-medium"
+                                                            data-review-id="{{ $review->id }}"
+                                                            data-review-rating="{{ $review->rating }}"
+                                                            data-review-comment="{{ $review->comment }}">
+                                                        Edit
+                                                    </button>
+                                                    <button type="button" class="delete-review-btn text-red-600 hover:text-red-800 text-sm font-medium"
+                                                            data-review-id="{{ $review->id }}"
+                                                            data-action="{{ route('reviews.destroy', [$restaurant, $review]) }}">
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
@@ -829,7 +844,296 @@
                     notificationPopup.classList.add('hidden');
                 });
             }
+
+            // Review modal functionality
+            const reviewModal = document.getElementById('review-modal');
+            const openReviewModalBtn = document.getElementById('open-review-modal');
+            const closeReviewModalBtn = document.getElementById('close-review-modal');
+            const submitReviewBtn = document.getElementById('submit-review');
+            const reviewForm = document.getElementById('review-form');
+            const modalRatingStars = document.querySelectorAll('.modal-rating-star');
+            const modalRatingInput = document.getElementById('modal-rating-input');
+            const modalRatingText = document.getElementById('modal-rating-text');
+            const modalComment = document.getElementById('modal-comment');
+            const ratingError = document.getElementById('rating-error');
+            const commentError = document.getElementById('comment-error');
+
+            // Open review modal
+            if (openReviewModalBtn) {
+                openReviewModalBtn.addEventListener('click', function() {
+                    // Reset form
+                    reviewForm.action = "{{ route('reviews.store', $restaurant) }}";
+                    reviewForm.reset();
+                    modalRatingInput.value = "0";
+                    updateModalStars(0);
+                    modalRatingText.textContent = "Click to rate";
+                    document.getElementById('review-modal-title').textContent = "Write a Review";
+                    submitReviewBtn.textContent = "Submit Review";
+
+                    // Hide errors
+                    ratingError.classList.add('hidden');
+                    commentError.classList.add('hidden');
+
+                    reviewModal.classList.remove('hidden');
+                });
+            }
+
+            // Close review modal
+            if (closeReviewModalBtn) {
+                closeReviewModalBtn.addEventListener('click', function() {
+                    reviewModal.classList.add('hidden');
+                });
+            }
+
+            // Handle rating selection in modal
+            modalRatingStars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    modalRatingInput.value = rating;
+                    updateModalStars(rating);
+                    modalRatingText.textContent = `You rated ${rating} out of 5`;
+                });
+
+                star.addEventListener('mouseenter', function() {
+                    const hoverRating = parseInt(this.getAttribute('data-rating'));
+                    highlightModalStars(hoverRating);
+                });
+
+                star.addEventListener('mouseleave', function() {
+                    const currentRating = parseInt(modalRatingInput.value) || 0;
+                    updateModalStars(currentRating);
+                });
+            });
+
+            function updateModalStars(rating) {
+                modalRatingStars.forEach(star => {
+                    const starRating = parseInt(star.getAttribute('data-rating'));
+                    const starIcon = star.querySelector('svg');
+
+                    if (starRating <= rating) {
+                        starIcon.classList.remove('text-gray-300');
+                        starIcon.classList.add('text-yellow-400');
+                    } else {
+                        starIcon.classList.remove('text-yellow-400');
+                        starIcon.classList.add('text-gray-300');
+                    }
+                });
+            }
+
+            function highlightModalStars(rating) {
+                modalRatingStars.forEach(star => {
+                    const starRating = parseInt(star.getAttribute('data-rating'));
+                    const starIcon = star.querySelector('svg');
+
+                    if (starRating <= rating) {
+                        starIcon.classList.remove('text-gray-300');
+                        starIcon.classList.add('text-yellow-400');
+                    } else {
+                        starIcon.classList.remove('text-yellow-400');
+                        starIcon.classList.add('text-gray-300');
+                    }
+                });
+            }
+
+            // Handle review submission
+            if (submitReviewBtn) {
+                submitReviewBtn.addEventListener('click', function() {
+                    let isValid = true;
+
+                    // Validate rating
+                    const rating = parseInt(modalRatingInput.value) || 0;
+                    if (rating < 1) {
+                        ratingError.classList.remove('hidden');
+                        isValid = false;
+                    } else {
+                        ratingError.classList.add('hidden');
+                    }
+
+                    // Validate comment
+                    const comment = modalComment.value.trim();
+                    if (comment.length < 10) {
+                        commentError.classList.remove('hidden');
+                        isValid = false;
+                    } else {
+                        commentError.classList.add('hidden');
+                    }
+
+                    // Submit if valid
+                    if (isValid) {
+                        reviewForm.submit();
+                    }
+                });
+            }
+
+            // Handle edit review buttons
+            const editReviewBtns = document.querySelectorAll('.edit-review-btn');
+            editReviewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const reviewId = this.getAttribute('data-review-id');
+                    const reviewRating = parseInt(this.getAttribute('data-review-rating'));
+                    const reviewComment = this.getAttribute('data-review-comment');
+
+                    // Set form values
+                    reviewForm.action = "{{ route('reviews.store', $restaurant) }}";
+                    modalRatingInput.value = reviewRating;
+                    modalComment.value = reviewComment;
+                    updateModalStars(reviewRating);
+                    modalRatingText.textContent = `You rated ${reviewRating} out of 5`;
+
+                    // Set title and button text
+                    document.getElementById('review-modal-title').textContent = "Edit Your Review";
+                    submitReviewBtn.textContent = "Update Review";
+
+                    // Hide errors
+                    ratingError.classList.add('hidden');
+                    commentError.classList.add('hidden');
+
+                    // Open modal
+                    reviewModal.classList.remove('hidden');
+                });
+            });
+
+            // Delete review modal functionality
+            const deleteReviewModal = document.getElementById('delete-review-modal');
+            const deleteReviewForm = document.getElementById('delete-review-form');
+            const cancelDeleteBtn = document.getElementById('cancel-delete');
+            const deleteReviewBtns = document.querySelectorAll('.delete-review-btn');
+
+            // Open delete confirmation modal
+            deleteReviewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const actionUrl = this.getAttribute('data-action');
+                    deleteReviewForm.action = actionUrl;
+                    deleteReviewModal.classList.remove('hidden');
+                });
+            });
+
+            // Close delete confirmation modal
+            if (cancelDeleteBtn) {
+                cancelDeleteBtn.addEventListener('click', function() {
+                    deleteReviewModal.classList.add('hidden');
+                });
+            }
         });
     </script>
     @endpush
+
+    <!-- Review Modal -->
+<div id="review-modal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+        <!-- Modal panel -->
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="review-modal-title">
+                            Write a Review
+                        </h3>
+                        <div class="mt-4">
+                            <form id="review-form" action="" method="POST">
+                                @csrf
+                                <input type="hidden" name="restaurant_id" id="review-restaurant-id" value="{{ $restaurant->id }}">
+
+                                <!-- Rating selection -->
+                                <div class="mb-6">
+                                    <label class="block text-gray-700 font-medium mb-3">Your Rating</label>
+                                    <div class="flex items-center">
+                                        <div class="rating-stars flex" id="modal-rating-stars">
+                                            @for($i = 1; $i <= 5; $i++)
+                                            <button type="button"
+                                                class="modal-rating-star w-12 h-12 flex items-center justify-center focus:outline-none"
+                                                data-rating="{{ $i }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                    class="h-8 w-8 text-gray-300"
+                                                    viewBox="0 0 20 20"
+                                                    fill="currentColor">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            </button>
+                                            @endfor
+                                        </div>
+                                        <input type="hidden" name="rating" id="modal-rating-input" value="0">
+                                        <span class="ml-4 text-gray-600" id="modal-rating-text">
+                                            Click to rate
+                                        </span>
+                                    </div>
+                                    <div class="text-red-600 text-sm mt-1 hidden" id="rating-error">Please select a rating</div>
+                                </div>
+
+                                <!-- Review text -->
+                                <div class="mb-6">
+                                    <label for="modal-comment" class="block text-gray-700 font-medium mb-2">Your Review</label>
+                                    <textarea
+                                        id="modal-comment"
+                                        name="comment"
+                                        rows="5"
+                                        class="w-full border-gray-300 rounded-lg shadow-sm focus:border-yellow-500 focus:ring focus:ring-yellow-200 focus:ring-opacity-50"
+                                        placeholder="Share your experience at this restaurant..."
+                                    ></textarea>
+                                    <p class="text-sm text-gray-500 mt-2">Minimum 10 characters, maximum 500 characters</p>
+                                    <div class="text-red-600 text-sm mt-1 hidden" id="comment-error">Please enter a comment (minimum 10 characters)</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" id="submit-review" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-500 text-base font-medium text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    Submit Review
+                </button>
+                <button type="button" id="close-review-modal" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Review Confirmation Modal -->
+<div id="delete-review-modal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+        <!-- Modal panel -->
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <!-- Icon -->
+                        <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Delete Review
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500">
+                                Are you sure you want to delete your review? This action cannot be undone.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <form id="delete-review-form" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Delete
+                    </button>
+                </form>
+                <button type="button" id="cancel-delete" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </x-app-layout>
