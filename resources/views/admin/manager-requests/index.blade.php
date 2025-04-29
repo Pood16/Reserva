@@ -20,7 +20,7 @@
                                 <i class="fas fa-user-circle text-xl"></i>
                             </button>
                             <div id="userMenuDropdown" class="absolute right-0 w-48 py-2 mt-2 bg-white rounded-md shadow-lg z-50 hidden">
-                                <a hrse={{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
+                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-50">
                                     <i class="fas fa-user mr-2"></i> Profile
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}">
@@ -99,33 +99,26 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             @if(!$request->status || $request->status == 'pending')
                                                 <div class="flex items-center space-x-2">
-                                                    <select class="action-select text-sm border-gray-300 rounded-md shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
-                                                            data-request-id="{{ $request->id }}">
-                                                        <option value="">Select Action</option>
-                                                        <option value="approve">Approve</option>
-                                                        <option value="reject">Reject</option>
-                                                        <option value="delete">Delete</option>
-                                                    </select>
                                                     <button type="button"
-                                                            class="execute-action px-3 py-1 bg-amber-500 text-white rounded-md text-xs hidden"
+                                                            class="action-btn bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-md text-xs transition-colors"
+                                                            data-action="approve"
                                                             data-request-id="{{ $request->id }}">
-                                                        Execute
+                                                        <i class="fas fa-check mr-1"></i> Approve
                                                     </button>
-                                                </div>
-                                            @else
-                                                <div>
-                                                    <select class="action-select text-sm border-gray-300 rounded-md shadow-sm focus:border-amber-300 focus:ring focus:ring-amber-200 focus:ring-opacity-50"
-                                                            data-request-id="{{ $request->id }}">
-                                                        <option value="">Select Action</option>
-                                                        <option value="delete">Delete</option>
-                                                    </select>
                                                     <button type="button"
-                                                            class="execute-action mt-1 px-3 py-1 bg-amber-500 text-white rounded-md text-xs hidden"
+                                                            class="action-btn bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-xs transition-colors"
+                                                            data-action="reject"
                                                             data-request-id="{{ $request->id }}">
-                                                        Execute
+                                                        <i class="fas fa-times mr-1"></i> Reject
                                                     </button>
                                                 </div>
                                             @endif
+                                            <button type="button"
+                                                    class="action-btn mt-1 bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md text-xs transition-colors"
+                                                    data-action="delete"
+                                                    data-request-id="{{ $request->id }}">
+                                                <i class="fas fa-trash mr-1"></i> Delete
+                                            </button>
                                         </td>
                                     </tr>
                                 @empty
@@ -198,30 +191,12 @@
                 });
             }
 
-            // Show/hide execute button when action is selected
-            const actionSelects = document.querySelectorAll('.action-select');
-            actionSelects.forEach(select => {
-                select.addEventListener('change', function() {
-                    const requestId = this.getAttribute('data-request-id');
-                    const executeButton = document.querySelector(`.execute-action[data-request-id="${requestId}"]`);
-
-                    if (this.value) {
-                        executeButton.classList.remove('hidden');
-                    } else {
-                        executeButton.classList.add('hidden');
-                    }
-                });
-            });
-
-            // Handle execute button click
-            const executeButtons = document.querySelectorAll('.execute-action');
-            executeButtons.forEach(button => {
+            // Handle action button clicks
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const requestId = this.getAttribute('data-request-id');
-                    const select = document.querySelector(`.action-select[data-request-id="${requestId}"]`);
-                    const action = select.value;
-
-                    if (!action) return;
+                    const action = this.getAttribute('data-action');
 
                     const modal = document.getElementById('confirmationModal');
                     const modalTitle = document.getElementById('modalTitle');
@@ -233,13 +208,13 @@
                     switch(action) {
                         case 'approve':
                             modalTitle.textContent = 'Confirm Approval';
-                            modalMessage.textContent = 'Are you sure you want to approve this manager request?';
+                            modalMessage.textContent = 'Are you sure you want to approve this manager request? The applicant will be notified via email.';
                             confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId + "/approve";
                             formMethod.value = 'POST';
                             break;
                         case 'reject':
                             modalTitle.textContent = 'Confirm Rejection';
-                            modalMessage.textContent = 'Are you sure you want to reject this manager request?';
+                            modalMessage.textContent = 'Are you sure you want to reject this manager request? The applicant will be notified via email.';
                             confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId + "/reject";
                             formMethod.value = 'POST';
                             break;

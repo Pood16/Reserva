@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Notifications\ManagerRequestNotification;
 
 class AdminController extends Controller
 {
@@ -87,42 +88,40 @@ class AdminController extends Controller
     public function managerRequestsApprove($id)
     {
         $request = ManagerRequest::findOrFail($id);
+        $user = User::where('email', $request->Email)->first();
+        if ($user) {
+            $user->role = 'manager';
+            $user->save();
 
-        // Create a new user with manager role
-        $user = User::create([
-            'name' => $request->FirstName . ' ' . $request->LastName,
-            'email' => $request->Email,
-            'password' => Hash::make('password123'), // Default password that will require change
-            'role' => 'manager',
-            'email_verified_at' => now(),
-        ]);
+            $request->status = 'approved';
+            $request->save();
+        }
 
-        // Mark request as approved
-        $request->status = 'approved';
-        $request->processed_at = now();
-        $request->save();
-
-        // Notify the new manager (this would be implemented in a real app)
-        // Notification::send($user, new ManagerRequestApproved());
+        // Notify the user
+        $user->notify(new ManagerRequestNotification($request, 'approved'));
 
         return redirect()->route('admin.manager-requests.index')
-            ->with('success', 'Manager request approved. A new manager account has been created.');
+            ->with('success', 'Manager request approved. User has been granted manager privileges and notified.');
     }
 
     public function managerRequestsReject($id)
     {
         $request = ManagerRequest::findOrFail($id);
 
-        // Mark request as rejected
+
+        $user = User::where('email', $request->Email)->first();
+
+
         $request->status = 'rejected';
-        $request->processed_at = now();
         $request->save();
 
-        // Notify the applicant (this would be implemented in a real app)
-        // Notification::send($request, new ManagerRequestRejected());
+        // Send email notification to the request email
+        $user->notify(new ManagerRequestNotification($request, 'rejected'));
+
+
 
         return redirect()->route('admin.manager-requests.index')
-            ->with('success', 'Manager request rejected.');
+            ->with('success', 'Manager request rejected. The applicant has been notified.');
     }
 
     public function managerRequestsDestroy($id)
