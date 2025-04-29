@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-header />
     <div class="py-12 bg-gray-50">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mb-6">
@@ -131,7 +132,7 @@
             </div>
 
             @if($reservation->status === 'confirmed' && $reservation->booking_date > now())
-                <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">         
+                <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 border-b border-gray-200">
                         <h2 class="text-xl font-semibold text-gray-900 mb-4">Important Information</h2>
 

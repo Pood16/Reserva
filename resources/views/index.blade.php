@@ -166,11 +166,13 @@
                             </div>
                         </li>
                     </ul>
+                    @guest
                     <div class="mt-8 text-center">
                         <a href="{{ route('register.show') }}" class="inline-block px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300">
                             Sign Up as a Diner
                         </a>
                     </div>
+                    @endguest
                 </div>
 
                 <!-- For Restaurant Owners -->
@@ -219,6 +221,8 @@
                             </div>
                         </li>
                     </ul>
+                    @auth
+                    @if (auth()->user()->role === 'client')
                     <div class="mt-8 text-center">
                         <button type="button"
                             class="inline-block px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300"
@@ -229,6 +233,8 @@
                             Register Your Restaurant
                         </button>
                     </div>
+                    @endif
+                    @endauth
                 </div>
             </div>
         </div>

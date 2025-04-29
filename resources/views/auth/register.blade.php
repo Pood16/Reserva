@@ -65,15 +65,6 @@
                             <span class="mt-1 text-xs text-red-600 block">{{ $message }}</span>
                         @enderror
                     </div>
-
-                    <!-- Register as Manager Checkbox -->
-                    <div class="flex items-center mt-3">
-                        <input id="is_manager" name="is_manager" type="checkbox" class="h-4 w-4 text-amber-500 focus:ring-amber-500 border-gray-300 rounded">
-                        <label for="is_manager" class="ml-2 block text-sm text-gray-700">
-                            I want to register as a restaurant manager
-                        </label>
-                    </div>
-
                     <!-- Register Button -->
                     <button type="submit"
                         class="w-full p-3 mt-6 bg-yellow-500 hover:bg-yellow-600 rounded-lg text-gray-900 font-medium text-sm transition-colors duration-300 flex items-center justify-center">
