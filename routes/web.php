@@ -1,7 +1,6 @@
 <?php
 use App\Http\Controllers\auth\AuthController;
 
-use App\Http\Controllers\Client\ClientProfileController;
 use App\Http\Controllers\Manager\ManagerDashboardController;
 use App\Http\Controllers\Manager\ManagerProfileController;
 use App\Http\Controllers\Manager\ManagerReservationController;
@@ -18,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Client\ClientHomeController;
+use App\Http\Controllers\Client\ClientProfileController;
 use App\Http\Controllers\Manager\TableController;
 use App\Http\Controllers\NotificationsController;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
@@ -68,6 +68,7 @@ Route::middleware(['auth'])->group(function () {
         // Use the ReservationController for client reservations
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+        Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
         Route::get('/reservations/history', [ReservationController::class, 'history'])->name('reservations.history');
         Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
         Route::put('/reservations/{id}/cancel', [ReservationController::class, 'cancel'])->name('reservations.cancel');
@@ -79,11 +80,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/restaurants/{restaurant}/favorite', [FavoriteController::class, 'toggleFavorite'])->name('favorites.toggle');
     Route::get('/restaurants/{restaurant}/favorite/status', [FavoriteController::class, 'checkFavoriteStatus'])->name('favorites.status');
 
-    // Profile Routes
+    // Profile settings
     Route::get('/profile', [ClientProfileController::class, 'show'])->name('profile.show');
     Route::put('/profile', [ClientProfileController::class, 'update'])->name('profile.update');
-    Route::put('/profile/change-password', [ClientProfileController::class, 'updatePassword'])->name('profile.password.update');
-
+    Route::put('/profile/password', [ClientProfileController::class, 'updatePassword'])->name('profile.password.update');
+    Route::delete('/profile', [ClientProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // restaurant manager routes
@@ -140,6 +141,15 @@ Route::middleware(['auth', 'manager'])->group(function () {
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+
+    // Manager Requests Management
+    Route::get('/manager-requests', [AdminController::class, 'managerRequestsIndex'])->name('admin.manager-requests.index');
+    Route::post('/manager-requests/{id}/approve', [AdminController::class, 'managerRequestsApprove'])->name('admin.manager-requests.approve');
+    Route::post('/manager-requests/{id}/reject', [AdminController::class, 'managerRequestsReject'])->name('admin.manager-requests.reject');
+    Route::delete('/manager-requests/{id}', [AdminController::class, 'managerRequestsDestroy'])->name('admin.manager-requests.destroy');
+
+    // Restaurant Managers Management
+    Route::get('/restaurant-managers', [AdminController::class, 'restaurantManagersIndex'])->name('admin.restaurant-managers.index');
 
     // User management
     Route::get('/users', [AdminController::class, 'userIndex'])->name('admin.users.index');

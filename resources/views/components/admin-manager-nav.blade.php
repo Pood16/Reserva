@@ -1,4 +1,4 @@
-    <!-- Navbar -->
+<!-- Navbar -->
     <div class="bg-white shadow-lg fixed inset-y-0 left-0 z-30 w-64 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0"
          id="sidebar">
         <div class="flex items-center justify-between px-4 py-4 bg-amber-50 border-b border-gray-200">
@@ -22,26 +22,25 @@
                             </a>
                         </li>
                         <!-- User Management Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">User Management</span>
-                        </li>
+
                         <li>
-                            <a href="{{ route('admin.users.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.users.*') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-users w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Users</span>
+                            <a href="{{ route('admin.restaurant-managers.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.restaurant-managers.*') ? 'bg-amber-100 text-amber-600' : '' }}">
+                                <i class="fas fa-user-tie w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Restaurant Managers</span>
                             </a>
                         </li>
-                        <!-- Restaurant Management Section -->
-                        <li class="pt-4">
-                            <span class="px-2 text-xs font-semibold text-gray-400 uppercase">Restaurant Management</span>
-                        </li>
                         <li>
-                            <a href="{{ route('admin.restaurants.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.restaurants.*') ? 'bg-amber-100 text-amber-600' : '' }}">
-                                <i class="fas fa-utensils w-5 h-5 mr-3 text-gray-500"></i>
-                                <span>Restaurants</span>
+                            <a href="{{ route('admin.manager-requests.index') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50 {{ request()->routeIs('admin.manager-requests.*') ? 'bg-amber-100 text-amber-600' : '' }}">
+                                <i class="fas fa-user-plus w-5 h-5 mr-3 text-gray-500"></i>
+                                <span>Manager Requests</span>
+                                @if(isset($managerRequestCount) && $managerRequestCount > 0)
+                                <span class="inline-flex ml-auto items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                                    {{ $managerRequestCount }}
+                                </span>
+                                @endif
                             </a>
                         </li>
-                        </li>
+
                         <!-- Return to Main Site -->
                         <li class="pt-6">
                             <a href="{{ route('home') }}" class="flex items-center p-2 text-gray-700 rounded-lg hover:bg-amber-50">

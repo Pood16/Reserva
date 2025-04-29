@@ -71,4 +71,21 @@ class ReservationController extends Controller
             ->get();
         return view('client.reservations.history', compact('completedReservations'));
     }
+
+    // Show reservation creation form
+    public function create(Request $request)
+    {
+        $restaurantId = $request->query('restaurant');
+        $restaurant = null;
+        $openingDays = [];
+        $tables = [];
+        if ($restaurantId) {
+            $restaurant = Restaurant::with(['openingDays', 'tables' => function($q) {
+                $q->where('is_active', true)->where('is_available', true);
+            }])->findOrFail($restaurantId);
+            $openingDays = $restaurant->openingDays->pluck('day_of_week')->toArray();
+            $tables = $restaurant->tables;
+        }
+        return view('client.reservations.create', compact('restaurant', 'openingDays', 'tables'));
+    }
 }

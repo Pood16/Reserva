@@ -23,6 +23,9 @@ class User extends Authenticatable
         'password',
     ];
 
+    /**
+     * Get the restaurants managed by the user.
+     */
     public function restaurants()
     {
         return $this->hasMany(Restaurant::class);

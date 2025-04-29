@@ -14,7 +14,7 @@ class ClientProfileController extends Controller
     public function show()
     {
         $user = Auth::user();
-        return view('profile.show', compact('user'));
+        return view('client.profile.show', compact('user'));
     }
 
 

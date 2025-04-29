@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\User;
 use App\Models\Reservation;
+use App\Models\ManagerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -17,6 +20,38 @@ class AdminController extends Controller
         $userCount = User::count();
         $restaurantCount = Restaurant::count();
         $reservationCount = Reservation::count();
+        $managerRequestCount = ManagerRequest::count();
+
+        // Get data for charts
+        $usersByRole = User::select('role', DB::raw('count(*) as count'))
+            ->groupBy('role')
+            ->get();
+
+        $reservationsByStatus = Reservation::select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get();
+
+        // Monthly registrations for the last 6 months
+        $sixMonthsAgo = Carbon::now()->subMonths(6);
+        $monthlyRegistrations = User::select(
+                DB::raw('MONTH(created_at) as month'),
+                DB::raw('YEAR(created_at) as year'),
+                DB::raw('count(*) as count')
+            )
+            ->where('created_at', '>=', $sixMonthsAgo)
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        // Format for Chart.js
+        $monthLabels = [];
+        $registrationData = [];
+
+        foreach ($monthlyRegistrations as $data) {
+            $monthLabels[] = Carbon::createFromDate($data->year, $data->month, 1)->format('M Y');
+            $registrationData[] = $data->count;
+        }
 
         $latestUsers = User::latest()->take(5)->get();
         $latestRestaurants = Restaurant::latest()->take(5)->get();
@@ -24,17 +59,92 @@ class AdminController extends Controller
             ->latest()
             ->take(5)
             ->get();
+        $latestManagerRequests = ManagerRequest::latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
             'userCount',
             'restaurantCount',
             'reservationCount',
+            'managerRequestCount',
             'latestUsers',
             'latestRestaurants',
-            'latestReservations'
+            'latestReservations',
+            'latestManagerRequests',
+            'usersByRole',
+            'reservationsByStatus',
+            'monthLabels',
+            'registrationData'
         ));
     }
 
+    // Manager Request Methods
+    public function managerRequestsIndex()
+    {
+        $managerRequests = ManagerRequest::latest()->get();
+        return view('admin.manager-requests.index', compact('managerRequests'));
+    }
+
+    public function managerRequestsApprove($id)
+    {
+        $request = ManagerRequest::findOrFail($id);
+
+        // Create a new user with manager role
+        $user = User::create([
+            'name' => $request->FirstName . ' ' . $request->LastName,
+            'email' => $request->Email,
+            'password' => Hash::make('password123'), // Default password that will require change
+            'role' => 'manager',
+            'email_verified_at' => now(),
+        ]);
+
+        // Mark request as approved
+        $request->status = 'approved';
+        $request->processed_at = now();
+        $request->save();
+
+        // Notify the new manager (this would be implemented in a real app)
+        // Notification::send($user, new ManagerRequestApproved());
+
+        return redirect()->route('admin.manager-requests.index')
+            ->with('success', 'Manager request approved. A new manager account has been created.');
+    }
+
+    public function managerRequestsReject($id)
+    {
+        $request = ManagerRequest::findOrFail($id);
+
+        // Mark request as rejected
+        $request->status = 'rejected';
+        $request->processed_at = now();
+        $request->save();
+
+        // Notify the applicant (this would be implemented in a real app)
+        // Notification::send($request, new ManagerRequestRejected());
+
+        return redirect()->route('admin.manager-requests.index')
+            ->with('success', 'Manager request rejected.');
+    }
+
+    public function managerRequestsDestroy($id)
+    {
+        $request = ManagerRequest::findOrFail($id);
+        $request->delete();
+
+        return redirect()->route('admin.manager-requests.index')
+            ->with('success', 'Manager request deleted permanently.');
+    }
+
+    // Restaurant Managers Specific Methods
+    public function restaurantManagersIndex()
+    {
+        $managers = User::where('role', 'manager')
+            ->withCount('restaurants')
+            ->get();
+
+        return view('admin.restaurant-managers.index', compact('managers'));
+    }
+
+    // User Management Methods
     public function userIndex()
     {
         $users = User::all();

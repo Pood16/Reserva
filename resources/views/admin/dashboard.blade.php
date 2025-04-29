@@ -56,7 +56,7 @@
                 @endif
 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <div class="flex items-center">
                             <div class="bg-amber-100 p-3 rounded-full">
@@ -88,6 +88,40 @@
                                 <h3 class="text-xl font-semibold text-gray-800">{{ $reservationCount ?? 0 }}</h3>
                                 <p class="text-gray-500">Reservations</p>
                             </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center">
+                            <div class="bg-purple-100 p-3 rounded-full">
+                                <i class="fas fa-user-plus text-purple-500"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-semibold text-gray-800">{{ $managerRequestCount ?? 0 }}</h3>
+                                <p class="text-gray-500">Manager Requests</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- User Roles Chart -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">User Distribution by Role</h3>
+                        </div>
+                        <div class="p-6">
+                            <canvas id="userRolesChart" width="400" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Registrations Chart -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">Monthly User Registrations</h3>
+                        </div>
+                        <div class="p-6">
+                            <canvas id="registrationsChart" width="400" height="250"></canvas>
                         </div>
                     </div>
                 </div>
@@ -184,6 +218,7 @@
     </div>
 
     @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Sidebar toggle functionality
@@ -220,6 +255,85 @@
             if (mainContent) {
                 mainContent.classList.add('scroll-smooth');
             }
+
+            // Initialize Charts
+            // User Roles Chart
+            const userRolesCtx = document.getElementById('userRolesChart').getContext('2d');
+            const userRolesData = @json($usersByRole);
+
+            new Chart(userRolesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: userRolesData.map(item => item.role.charAt(0).toUpperCase() + item.role.slice(1)),
+                    datasets: [{
+                        data: userRolesData.map(item => item.count),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',  // Red for admin
+                            'rgba(54, 162, 235, 0.7)',  // Blue for manager
+                            'rgba(75, 192, 192, 0.7)'   // Green for client
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: 'User Distribution by Role'
+                        }
+                    }
+                }
+            });
+
+            // Monthly Registrations Chart
+            const registrationsCtx = document.getElementById('registrationsChart').getContext('2d');
+            const monthLabels = @json($monthLabels);
+            const registrationData = @json($registrationData);
+
+            new Chart(registrationsCtx, {
+                type: 'line',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'New Users',
+                        data: registrationData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Monthly User Registrations'
+                        }
+                    }
+                }
+            });
         });
     </script>
     @endpush
