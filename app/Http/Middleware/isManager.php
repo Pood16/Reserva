@@ -17,7 +17,8 @@ class isManager
     public function handle(Request $request, Closure $next): Response
     {
             if (!Auth::check() || Auth::user()->role !== 'manager') {
-                return redirect()->back()->with('unauthorized', 'Unauthorized access.');
+                return redirect()->route('unauthorized');
+            ;
         }
         return $next($request);
     }

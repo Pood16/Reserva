@@ -32,7 +32,7 @@
                     setTimeout(function() {
                         alert.style.display = 'none';
                     }, 1000);
-                }, 5000);
+                }, 7000);
             }
         });
     });

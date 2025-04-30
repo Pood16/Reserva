@@ -80,6 +80,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
 
-        return redirect()->route('login.show')->with('success', 'Logout successful!');
+        return redirect()->route('home')->with('success', 'Logout successful!');
     }
 }
