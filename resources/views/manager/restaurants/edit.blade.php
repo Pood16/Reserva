@@ -160,7 +160,7 @@
                                     <div>
                                         <label for="opening_time" class="block text-sm font-medium text-gray-700">Opening Time <span class="text-red-500">*</span></label>
                                         <div class="flex items-center">
-                                            <input required type="time" name="opening_time" id="opening_time" value="{{ old('opening_time', $restaurant->opening_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                            <input type="time" name="opening_time" id="opening_time" value="{{ old('opening_time', $restaurant->opening_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
                                             <span class="ml-2 text-sm text-gray-500">
                                                 @php
                                                     if($restaurant->opening_time) {
@@ -179,7 +179,7 @@
                                     <div>
                                         <label for="closing_time" class="block text-sm font-medium text-gray-700">Closing Time <span class="text-red-500">*</span></label>
                                         <div class="flex items-center">
-                                            <input required type="time" name="closing_time" id="closing_time" value="{{ old('closing_time', $restaurant->closing_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
+                                            <input type="time" name="closing_time" id="closing_time" value="{{ old('closing_time', $restaurant->closing_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
                                             <span class="ml-2 text-sm text-gray-500">
                                                 @php
                                                     if($restaurant->closing_time) {

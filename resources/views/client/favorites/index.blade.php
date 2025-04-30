@@ -2,12 +2,8 @@
     <x-header />
     <div class="bg-gray-50 min-h-screen py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Success message -->
-            @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
-                <span class="block sm:inline">{{ session('success') }}</span>
-            </div>
-            @endif
+
+            <x-flash-messages />
 
             <div class="mb-8">
                 <h1 class="text-3xl font-bold text-gray-900">My Favorite Restaurants</h1>
@@ -62,18 +58,14 @@
                                        class="text-yellow-600 hover:text-yellow-700 font-medium text-sm">
                                         View Details
                                     </a>
-                                    <form action="{{ route('favorites.destroy', $restaurant->id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="flex items-center text-red-500 hover:text-red-700 text-sm"
-                                                onclick="return confirm('Are you sure you want to remove this restaurant from favorites?')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                            Remove
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                            class="flex items-center text-red-500 hover:text-red-700 text-sm"
+                                            onclick="openRemoveModal('{{ $restaurant->id }}', '{{ $restaurant->name }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Remove
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -102,16 +94,55 @@
     </div>
     <x-footer />
 
+    <!-- Modal for confirming removal from favorites -->
+    <div id="remove-favorite-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg max-w-md w-full p-6">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">Remove from favorites?</h3>
+            <p class="text-gray-600 mb-6">Are you sure you want to remove <span id="restaurant-name" class="font-medium"></span> from your favorites?</p>
+            <div class="flex justify-end space-x-4">
+                <button type="button" id="cancel-remove" class="px-4 py-2 text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">
+                    Cancel
+                </button>
+                <form id="remove-favorite-form" action="" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="px-4 py-2 text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors">
+                        Remove
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Image fallback
-            document.querySelectorAll('.restaurant-image').forEach(img => {
-                img.addEventListener('error', function() {
-                    this.src = this.getAttribute('data-fallback');
-                });
+
+            // Modal
+            const modal = document.getElementById('remove-favorite-modal');
+            const cancelButton = document.getElementById('cancel-remove');
+
+            cancelButton.addEventListener('click', function() {
+                modal.classList.add('hidden');
+            });
+
+            // Close modal
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
             });
         });
+
+        function openRemoveModal(restaurantId, restaurantName) {
+            const modal = document.getElementById('remove-favorite-modal');
+            const form = document.getElementById('remove-favorite-form');
+            const nameElement = document.getElementById('restaurant-name');
+
+            nameElement.textContent = restaurantName;
+            form.action = '{{ route("favorites.destroy", "") }}/' + restaurantId;
+            modal.classList.remove('hidden');
+        }
     </script>
     @endpush
 </x-app-layout>

@@ -229,30 +229,40 @@ class ManagerRestaurantController extends Controller {
     // Update business hours (section: hours)
     private function updateBusinessHours(Request $request, Restaurant $restaurant)
     {
-
         $validated = $request->validate([
-            'opening_time' => 'required',
-            'closing_time' => 'required',
-            'opening_days' => 'required|array',
-            'opening_days.*' => 'string'
+            'opening_time' => 'sometimes|required',
+            'closing_time' => 'sometimes|required',
+            'opening_days' => 'sometimes|required|array',
+            'opening_days.*' => 'string',
         ]);
 
-        $restaurant->update([
-            'opening_time' => $validated['opening_time'],
-            'closing_time' => $validated['closing_time'],
-        ]);
+        // Update only if opening_time or closing_time is present
+        $timeUpdates = [];
+        if ($request->has('opening_time')) {
+            $timeUpdates['opening_time'] = $validated['opening_time'];
+        }
+        if ($request->has('closing_time')) {
+            $timeUpdates['closing_time'] = $validated['closing_time'];
+        }
+        if (!empty($timeUpdates)) {
+            $restaurant->update($timeUpdates);
+        }
 
-        $restaurant->openingDays()->delete();
+        // Update opening days only if provided
+        if ($request->has('opening_days')) {
+            $restaurant->openingDays()->delete();
 
-        foreach ($validated['opening_days'] as $day) {
-            OpeningDay::create([
-                'restaurant_id' => $restaurant->id,
-                'day_of_week' => $day
-            ]);
+            foreach ($validated['opening_days'] as $day) {
+                OpeningDay::create([
+                    'restaurant_id' => $restaurant->id,
+                    'day_of_week' => $day
+                ]);
+            }
         }
 
         return redirect()->back()->with('success', 'Business hours updated successfully.');
     }
+
 
     private function updateImages(Request $request, Restaurant $restaurant)
     {
