@@ -2,11 +2,7 @@
     <x-header />
     <div class="bg-gray-50 min-h-screen">
         <!-- Success message -->
-        @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative max-w-7xl mx-auto mt-4" role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-        @endif
+        <x-flash-messages />
 
         <!-- Reservation Confirmation Modal -->
         @if(session('show_confirmation_modal') && session('reservation_details'))

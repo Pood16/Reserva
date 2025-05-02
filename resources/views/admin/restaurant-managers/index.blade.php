@@ -38,29 +38,9 @@
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <p>{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                        <p>{{ session('error') }}</p>
-                    </div>
-                @endif
-
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                         <h2 class="text-lg font-semibold text-gray-800">Restaurant Managers</h2>
-                        <div class="flex items-center space-x-2">
-                            <a href="{{ route('admin.manager-requests.index') }}" class="px-4 py-2 text-sm bg-purple-500 text-white rounded hover:bg-purple-600">
-                                <i class="fas fa-user-plus mr-2"></i> View Manager Requests
-                            </a>
-                            <a href="{{ route('admin.users.create') }}" class="px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
-                                <i class="fas fa-plus mr-2"></i> Add New Manager
-                            </a>
-                        </div>
                     </div>
 
                     <div class="overflow-x-auto">
@@ -108,9 +88,21 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-3">
-                                                <a href="{{ route('admin.users.edit', $manager->id) }}" class="text-indigo-600 hover:text-indigo-900">
-                                                    <i class="fas fa-edit mr-1"></i> Edit
-                                                </a>
+                                                @if($manager->is_banned)
+                                                    <form action="{{ route('admin.restaurant-managers.unban', $manager->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="text-green-600 hover:text-green-900" onclick="return confirm('Are you sure you want to unban this manager? This will reactivate their restaurants and restore manager privileges.')">
+                                                            <i class="fas fa-unlock mr-1"></i> Unban
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('admin.restaurant-managers.ban', $manager->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        <button type="submit" class="text-yellow-600 hover:text-yellow-900" onclick="return confirm('Are you sure you want to ban this manager? This will deactivate all their restaurants and change their role to client.')">
+                                                            <i class="fas fa-ban mr-1"></i> Ban
+                                                        </button>
+                                                    </form>
+                                                @endif
                                                 <form action="{{ route('admin.users.destroy', $manager->id) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')
@@ -137,36 +129,6 @@
     </div>
 
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar toggle functionality
-            const toggleSidebar = document.getElementById('toggleSidebar');
-            const sidebar = document.querySelector('#sidebar');
-
-            if (toggleSidebar && sidebar) {
-                toggleSidebar.addEventListener('click', function() {
-                    sidebar.classList.toggle('-translate-x-full');
-                });
-            }
-
-            // User menu dropdown toggle
-            const toggleUserMenu = document.getElementById('toggleUserMenu');
-            const userMenuDropdown = document.getElementById('userMenuDropdown');
-
-            if (toggleUserMenu && userMenuDropdown) {
-                toggleUserMenu.addEventListener('click', function() {
-                    userMenuDropdown.classList.toggle('hidden');
-                });
-
-                // Close user menu when clicking outside
-                document.addEventListener('click', function(event) {
-                    const userMenu = document.getElementById('userMenu');
-                    if (userMenu && !userMenu.contains(event.target)) {
-                        userMenuDropdown.classList.add('hidden');
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="{{ asset('resources/js/manager/toggleNav.js') }}"></script>
     @endpush
 </x-app-layout>

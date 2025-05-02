@@ -37,23 +37,7 @@
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <p>{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                        <p>{{ session('error') }}</p>
-                    </div>
-                @endif
-
-                @if(session('unauthorized'))
-                    <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
-                        <p>{{ session('unauthorized') }}</p>
-                    </div>
-                @endif
+                <x-flash-messages />
 
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -115,13 +99,13 @@
                         </div>
                     </div>
 
-                    <!-- Monthly Registrations Chart -->
+                    <!-- Reservation Status Chart -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-800">Monthly User Registrations</h3>
+                            <h3 class="text-lg font-semibold text-gray-800">Reservation Status Distribution</h3>
                         </div>
                         <div class="p-6">
-                            <canvas id="registrationsChart" width="400" height="250"></canvas>
+                            <canvas id="reservationStatusChart" width="400" height="250"></canvas>
                         </div>
                     </div>
                 </div>
@@ -171,36 +155,39 @@
                         </div>
                     </div>
 
-                    <!-- Latest Restaurants -->
+                    <!-- Recent Reservations -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                            <h3 class="text-lg font-semibold text-gray-800">Latest Restaurants</h3>
+                            <h3 class="text-lg font-semibold text-gray-800">Recent Reservations</h3>
                         </div>
                         <div class="p-6">
-                            @if(isset($latestRestaurants) && count($latestRestaurants) > 0)
+                            @if(isset($recentReservations) && count($recentReservations) > 0)
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full divide-y divide-gray-200">
                                         <thead>
                                             <tr>
-                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Location</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Restaurant</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
+                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                                                 <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                                                <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Added</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-200">
-                                            @foreach($latestRestaurants as $restaurant)
+                                            @foreach($recentReservations as $reservation)
                                                 <tr>
-                                                    <td class="px-4 py-3 whitespace-nowrap">{{ $restaurant->name }}</td>
-                                                    <td class="px-4 py-3 whitespace-nowrap">{{ $restaurant->city }}</td>
+                                                    <td class="px-4 py-3 whitespace-nowrap">{{ $reservation->restaurant->name }}</td>
+                                                    <td class="px-4 py-3 whitespace-nowrap">{{ $reservation->user->name }}</td>
+                                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                                        {{ \Carbon\Carbon::parse($reservation->date . ' ' . $reservation->time)->format('M j, Y g:i A') }}
+                                                    </td>
                                                     <td class="px-4 py-3 whitespace-nowrap">
                                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                            {{ $restaurant->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                                            {{ $restaurant->is_active ? 'Active' : 'Inactive' }}
+                                                            {{ $reservation->status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
+                                                              ($reservation->status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                              ($reservation->status === 'canceled' || $reservation->status === 'declined' ? 'bg-red-100 text-red-800' :
+                                                              'bg-yellow-100 text-yellow-800')) }}">
+                                                            {{ ucfirst($reservation->status) }}
                                                         </span>
-                                                    </td>
-                                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                                        {{ $restaurant->created_at->format('M j, Y') }}
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -208,7 +195,7 @@
                                     </table>
                                 </div>
                             @else
-                                <p class="text-gray-500">No restaurants found.</p>
+                                <p class="text-gray-500">No reservations found.</p>
                             @endif
                         </div>
                     </div>
@@ -219,45 +206,10 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar toggle functionality
-            const sidebar = document.getElementById('sidebar');
-            const toggleSidebar = document.getElementById('toggleSidebar');
-            const closeSidebar = document.getElementById('closeSidebar');
-
-            toggleSidebar.addEventListener('click', function() {
-                sidebar.classList.toggle('-translate-x-full');
-            });
-
-            closeSidebar.addEventListener('click', function() {
-                sidebar.classList.add('-translate-x-full');
-            });
-
-            // User menu dropdown toggle
-            const toggleUserMenu = document.getElementById('toggleUserMenu');
-            const userMenuDropdown = document.getElementById('userMenuDropdown');
-
-            toggleUserMenu.addEventListener('click', function() {
-                userMenuDropdown.classList.toggle('hidden');
-            });
-
-            // Close user menu when clicking outside
-            document.addEventListener('click', function(event) {
-                const userMenu = document.getElementById('userMenu');
-                if (!userMenu.contains(event.target)) {
-                    userMenuDropdown.classList.add('hidden');
-                }
-            });
-
-            // Add smooth scrolling to the main content
-            const mainContent = document.querySelector('main');
-            if (mainContent) {
-                mainContent.classList.add('scroll-smooth');
-            }
-
-            // Initialize Charts
-            // User Roles Chart
+            // Chart
             const userRolesCtx = document.getElementById('userRolesChart').getContext('2d');
             const userRolesData = @json($usersByRole);
 
@@ -268,9 +220,9 @@
                     datasets: [{
                         data: userRolesData.map(item => item.count),
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.7)',  // Red for admin
-                            'rgba(54, 162, 235, 0.7)',  // Blue for manager
-                            'rgba(75, 192, 192, 0.7)'   // Green for client
+                            'rgba(255, 99, 132, 0.7)',  // Red admin
+                            'rgba(54, 162, 235, 0.7)',  // Blue manager
+                            'rgba(75, 192, 192, 0.7)'   // Green client
                         ],
                         borderColor: [
                             'rgba(255, 99, 132, 1)',
@@ -294,22 +246,23 @@
                 }
             });
 
-            // Monthly Registrations Chart
-            const registrationsCtx = document.getElementById('registrationsChart').getContext('2d');
-            const monthLabels = @json($monthLabels);
-            const registrationData = @json($registrationData);
+            // Reservation Status Chart
+            const reservationStatusCtx = document.getElementById('reservationStatusChart').getContext('2d');
+            const statusLabels = @json($statusLabels);
+            const statusCounts = @json($statusCounts);
+            const statusBgColors = @json($statusBgColors);
+            const statusBorderColors = @json($statusBorderColors);
 
-            new Chart(registrationsCtx, {
-                type: 'line',
+            new Chart(reservationStatusCtx, {
+                type: 'bar',
                 data: {
-                    labels: monthLabels,
+                    labels: statusLabels,
                     datasets: [{
-                        label: 'New Users',
-                        data: registrationData,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        tension: 0.3,
-                        fill: true
+                        label: 'Reservations',
+                        data: statusCounts,
+                        backgroundColor: statusBgColors,
+                        borderColor: statusBorderColors,
+                        borderWidth: 1
                     }]
                 },
                 options: {
@@ -324,12 +277,11 @@
                     },
                     plugins: {
                         legend: {
-                            display: true,
-                            position: 'top'
+                            display: false
                         },
                         title: {
                             display: true,
-                            text: 'Monthly User Registrations'
+                            text: 'Reservation Status Distribution'
                         }
                     }
                 }

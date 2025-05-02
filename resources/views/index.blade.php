@@ -324,39 +324,7 @@
         </div>
     </div>
 
-    <!-- Add JavaScript for form submission -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('restaurantManagerForm');
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
 
-                // AJAX form submission
-                fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Show success message
-                        document.getElementById('managerRequestForm').classList.add('hidden');
-                        document.getElementById('managerRequestSuccess').classList.remove('hidden');
-                        // Reset form
-                        form.reset();
-                    } else {
-                        alert('There was an error submitting your request. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            });
-        });
-    </script>
 
     <!-- Testimonials -->
     <div class="bg-gray-50 py-16">
@@ -446,4 +414,43 @@
         </div>
     </div>
     <x-footer />
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('restaurantManagerForm');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // AJAX form submission
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        document.getElementById('managerRequestForm').classList.add('hidden');
+                        document.getElementById('managerRequestSuccess').classList.remove('hidden');
+                        // Reset form
+                        form.reset();
+                    } else {
+                        alert('There was an error submitting your request. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+        // test broadcast event
+        window.Echo.channel('chat').listen('TestEvent', (event)=>{
+            console.log(event);
+        })
+    </script>
 </x-app-layout>

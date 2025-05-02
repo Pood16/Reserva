@@ -52,7 +52,7 @@ class ManagerReservationController extends Controller
         $reservation->user->notify(new ReservationStatusChanged($reservation, 'confirmed'));
 
         // Broadcast event
-        event(new ReservationStatusChangedEvent($reservation, 'confirmed'));
+        // event(new ReservationStatusChangedEvent($reservation, 'confirmed'));
 
         return redirect()->back()->with('success', 'Reservation has been approved and customer has been notified.');
     }
@@ -107,7 +107,7 @@ class ManagerReservationController extends Controller
         $reservation->user->notify(new ReservationStatusChanged($reservation, 'completed'));
 
         // Broadcast event
-        event(new ReservationStatusChangedEvent($reservation, 'completed'));
+        // event(new ReservationStatusChangedEvent($reservation, 'completed'));
 
         return redirect()->back()->with('success', 'Reservation has been marked as completed and customer has been notified.');
     }

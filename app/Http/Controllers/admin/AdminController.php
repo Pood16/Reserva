@@ -23,7 +23,7 @@ class AdminController extends Controller
         $reservationCount = Reservation::count();
         $managerRequestCount = ManagerRequest::count();
 
-        // Get data for charts
+
         $usersByRole = User::select('role', DB::raw('count(*) as count'))
             ->groupBy('role')
             ->get();
@@ -32,34 +32,37 @@ class AdminController extends Controller
             ->groupBy('status')
             ->get();
 
-        // Monthly registrations for the last 6 months
-        $sixMonthsAgo = Carbon::now()->subMonths(6);
-        $monthlyRegistrations = User::select(
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('YEAR(created_at) as year'),
-                DB::raw('count(*) as count')
-            )
-            ->where('created_at', '>=', $sixMonthsAgo)
-            ->groupBy('year', 'month')
-            ->orderBy('year', 'asc')
-            ->orderBy('month', 'asc')
-            ->get();
 
-        // Format for Chart.js
-        $monthLabels = [];
-        $registrationData = [];
+        $statuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+        $statusLabels = array_map('ucfirst', $statuses);
 
-        foreach ($monthlyRegistrations as $data) {
-            $monthLabels[] = Carbon::createFromDate($data->year, $data->month, 1)->format('M Y');
-            $registrationData[] = $data->count;
+        $statusCounts = [];
+        $statusColors = [
+            'pending' => '#FCD34D',
+            'confirmed' => '#60A5FA',
+            'completed' => '#34D399',
+            'cancelled' => '#F87171',
+            'declined' => '#9CA3AF'
+        ];
+
+        $statusBgColors = [];
+        $statusBorderColors = [];
+
+        foreach ($statuses as $status) {
+            $count = $reservationsByStatus->where('status', $status)->first();
+            $statusCounts[] = $count ? $count->count : 0;
+            $statusBgColors[] = $statusColors[$status] . 'AA';
+            $statusBorderColors[] = $statusColors[$status];
         }
+
+        // Get recent reservations with relations
+        $recentReservations = Reservation::with(['restaurant', 'user'])
+            ->latest()
+            ->take(10)
+            ->get();
 
         $latestUsers = User::latest()->take(5)->get();
         $latestRestaurants = Restaurant::latest()->take(5)->get();
-        $latestReservations = Reservation::with(['restaurant', 'user'])
-            ->latest()
-            ->take(5)
-            ->get();
         $latestManagerRequests = ManagerRequest::latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
@@ -69,12 +72,13 @@ class AdminController extends Controller
             'managerRequestCount',
             'latestUsers',
             'latestRestaurants',
-            'latestReservations',
+            'recentReservations',
             'latestManagerRequests',
             'usersByRole',
-            'reservationsByStatus',
-            'monthLabels',
-            'registrationData'
+            'statusLabels',
+            'statusCounts',
+            'statusBgColors',
+            'statusBorderColors'
         ));
     }
 
@@ -150,6 +154,56 @@ class AdminController extends Controller
             ->get();
 
         return view('admin.restaurant-managers.index', compact('managers'));
+    }
+
+    public function restaurantManagersBan($id)
+    {
+        $manager = User::findOrFail($id);
+
+        if ($manager->role !== 'manager') {
+            return redirect()->route('admin.restaurant-managers.index')
+                ->with('error', 'User is not a restaurant manager.');
+        }
+
+        // Change role to client
+        $manager->role = 'client';
+        $manager->is_banned = true;
+        $manager->save();
+
+        // Deactivate all associated restaurants
+        $restaurants = Restaurant::where('user_id', $manager->id)->get();
+        foreach ($restaurants as $restaurant) {
+            $restaurant->is_active = false;
+            $restaurant->save();
+        }
+
+        return redirect()->route('admin.restaurant-managers.index')
+            ->with('success', 'Manager has been banned successfully. All their restaurants have been deactivated.');
+    }
+
+    public function restaurantManagersUnban($id)
+    {
+        $user = User::findOrFail($id);
+
+        if (!$user->is_banned) {
+            return redirect()->route('admin.restaurant-managers.index')
+                ->with('error', 'User is not banned.');
+        }
+
+        // Restore manager role
+        $user->role = 'manager';
+        $user->is_banned = false;
+        $user->save();
+
+        // Reactivate all associated restaurants
+        $restaurants = Restaurant::where('user_id', $user->id)->get();
+        foreach ($restaurants as $restaurant) {
+            $restaurant->is_active = true;
+            $restaurant->save();
+        }
+
+        return redirect()->route('admin.restaurant-managers.index')
+            ->with('success', 'Manager has been unbanned successfully. All their restaurants have been reactivated.');
     }
 
     // User Management Methods

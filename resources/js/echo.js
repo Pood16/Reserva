@@ -1,12 +1,10 @@
-import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
-window.Pusher = Pusher;
 
 window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    broadcaster: 'reverb',
+    key: import.meta.env.VITE_REVERB_APP_KEY,
+    host: window.location.hostname + ':8080',
+    wsPath: '',
     forceTLS: false,
-    authEndpoint: '/broadcasting/auth'
+    disableStats: true,
 });
-console.log('Echo is working:', import.meta.env.VITE_PUSHER_APP_KEY);

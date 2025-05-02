@@ -26,10 +26,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Broadcast;
 
-
-
-
-
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/manager-request', [HomeController::class, 'submitManagerRequest'])->name('manager.request.submit');
@@ -45,9 +41,6 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login.show');
 Route::post('/login', [AuthController::class, 'handleLogin'])->name('login.handle');
 Route::post('/logout', [AuthController::class, 'handleLogout'])->middleware('auth')->name('logout');
 
-
-
-
 // Restaurant listing and details
 Route::get('/restaurants', [RestaurantController::class, 'index'])->name('restaurants.index');
 Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])->name('restaurants.show');
@@ -58,6 +51,10 @@ Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
 // Auth required routes
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/broadcast', function(){
+        broadcast(new \App\Events\TestEvent());
+    })->name('broadcast');
 
     // Notifications : client
     Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.get');
@@ -151,6 +148,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     // Restaurant Managers Management
     Route::get('/restaurant-managers', [AdminController::class, 'restaurantManagersIndex'])->name('admin.restaurant-managers.index');
+    Route::post('/restaurant-managers/{id}/ban', [AdminController::class, 'restaurantManagersBan'])->name('admin.restaurant-managers.ban');
+    Route::post('/restaurant-managers/{id}/unban', [AdminController::class, 'restaurantManagersUnban'])->name('admin.restaurant-managers.unban');
 
     // User management
     Route::get('/users', [AdminController::class, 'userIndex'])->name('admin.users.index');

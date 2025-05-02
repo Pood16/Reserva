@@ -9,15 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class isAdmin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
-            return redirect()->back()->with('unauthorized', 'Unauthorized access.');
+            return redirect()->route('unauthorized');
         }
         return $next($request);
     }

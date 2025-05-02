@@ -70,11 +70,9 @@
                 });
         }
 
-        // Update notification badge count
+        // Update notification counter
         function updateNotificationBadge(count) {
             notificationBadge.textContent = count;
-
-
             if (count === 0) {
                 notificationBadge.classList.add('hidden');
             } else {
@@ -82,7 +80,7 @@
             }
         }
 
-        // Render notifications in the dropdown
+        // Render notifications
         function renderNotifications(notifications) {
             if (!notifications || notifications.length === 0) {
                 notificationsList.innerHTML = '<div class="text-center text-gray-500 text-sm py-6">No notifications</div>';
@@ -109,7 +107,7 @@
 
             notificationsList.innerHTML = html;
 
-            // Add event listeners to "Mark as read" buttons
+            // Mark as read
             document.querySelectorAll('.mark-as-read').forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -119,14 +117,13 @@
                 });
             });
 
-            // Make entire notification clickable if it has a URL
+            // self mark as read
             document.querySelectorAll('.notification-item').forEach(item => {
                 item.addEventListener('click', function() {
                     const notificationData = notifications.find(n => n.id === this.dataset.id);
                     if (notificationData && notificationData.data && notificationData.data.url) {
                         window.location.href = notificationData.data.url;
                     }
-
                     if (!notificationData.read_at) {
                         markAsRead(this.dataset.id, this);
                     }
@@ -147,7 +144,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update UI to show notification as read
+
                     if (element) {
                         element.classList.remove('bg-blue-50');
                         element.classList.add('bg-white');
@@ -157,7 +154,7 @@
                         }
                     }
 
-                    // Decrease notification badge count
+
                     const currentCount = parseInt(notificationBadge.textContent);
                     if (currentCount > 0) {
                         updateNotificationBadge(currentCount - 1);
@@ -198,7 +195,7 @@
             .catch(error => console.error('Error marking all notifications as read:', error));
         });
 
-        // Helper function to format dates
+        // Format date
         function formatDate(dateString) {
             const date = new Date(dateString);
             const now = new Date();
