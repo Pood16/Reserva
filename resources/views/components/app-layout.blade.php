@@ -25,8 +25,6 @@
         {{$slot}}
         @yield('script')
         @stack('scripts')
-
-
     </body>
 
 </html>

@@ -23,10 +23,10 @@
 
                 <!-- Profile Header -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-                    <div class="bg-amber-500 px-6 py-12">
+                    <div class="bg-amber-50 border-b border-amber-100 px-6 py-12">
                         <div class="flex flex-col md:flex-row items-center justify-between">
                             <div class="flex flex-col md:flex-row items-center">
-                                <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-white p-1 shadow-lg mb-4 md:mb-0 md:mr-6">
+                                <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-amber-50 p-1 border border-amber-200 shadow-lg mb-4 md:mb-0 md:mr-6">
                                     @if($user->profile_picture)
                                         <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="{{ $user->name }}" class="rounded-full w-full h-full object-cover">
                                     @else
@@ -36,16 +36,16 @@
                                     @endif
                                 </div>
                                 <div class="text-center md:text-left">
-                                    <h1 class="text-2xl font-bold text-white">{{ $user->name }}</h1>
-                                    <p class="text-amber-100">{{ $user->email }}</p>
-                                    <p class="bg-amber-600 inline-block px-2 py-1 rounded text-xs text-white mt-2">{{ ucfirst($user->role) }}</p>
+                                    <h1 class="text-2xl font-bold text-amber-900">{{ $user->name }}</h1>
+                                    <p class="text-amber-800">{{ $user->email }}</p>
+                                    <p class="bg-amber-200 inline-block px-2 py-1 rounded text-xs text-amber-800 mt-2 border border-amber-300">{{ ucfirst($user->role) }}</p>
                                 </div>
                             </div>
                             <div class="mt-4 md:mt-0 flex space-x-2">
-                                <a href="{{ route('manager.profile.edit') }}" class="bg-white text-amber-600 px-4 py-2 rounded-md hover:bg-amber-50">
+                                <a href="{{ route('manager.profile.edit') }}" class="bg-amber-100 text-amber-800 border border-amber-200 px-4 py-2 rounded-md hover:bg-amber-200">
                                     <i class="fas fa-user-edit mr-2"></i> Edit Profile
                                 </a>
-                                <a href="{{ route('manager.profile.password.edit') }}" class="bg-white text-amber-600 px-4 py-2 rounded-md hover:bg-amber-50">
+                                <a href="{{ route('manager.profile.password.edit') }}" class="bg-amber-100 text-amber-800 border border-amber-200 px-4 py-2 rounded-md hover:bg-amber-200">
                                     <i class="fas fa-key mr-2"></i> Change Password
                                 </a>
                             </div>

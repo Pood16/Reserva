@@ -1,23 +1,25 @@
 <x-app-layout>
     <x-header />
+    <x-flash-messages />
     <!-- Hero section -->
     <div class="bg-gradient-to-r from-yellow-50 to-amber-100 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 mb-6">Welcome to QuickTable</h1>
-                    <p class="text-lg text-gray-700 mb-6">
-                        QuickTable is the premier restaurant reservation platform connecting food enthusiasts with their favorite dining establishments. We simplify the dining experience by providing a seamless booking system that benefits both diners and restaurant owners.
-                    </p>
-                    <p class="text-lg text-gray-700 mb-8">
-                        Founded in 2025, our mission is to transform the way people discover, book, and experience restaurants. With QuickTable, you can browse top-rated restaurants, view real customer reviews, and secure your table in seconds — all in one place.
+                    <span class="inline-block px-4 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm font-medium mb-4">Hungry? We've got you covered</span>
+                    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">Reserve Your <span class="text-yellow-500">Perfect</span> Table in Seconds</h1>
+                    <p class="text-xl text-gray-700 mb-8">
+                        Skip the phone calls and waiting. Instantly book tables at top restaurants and enjoy seamless dining experiences with QuickTable.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4">
                         <a href="{{ route('restaurants.index') }}" class="px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300 inline-block text-center">
                             Find Your Table
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
                         </a>
                         <a href="{{ route('about') }}" class="px-6 py-3 border border-yellow-500 text-yellow-600 hover:bg-yellow-50 font-semibold rounded-md transition duration-300 inline-block text-center">
-                            Learn More About Us
+                            About Us
                         </a>
                     </div>
                 </div>
@@ -27,36 +29,25 @@
                              alt="Restaurant dining experience"
                              class="w-full h-auto object-cover">
                     </div>
-                    <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
-                        <div class="flex items-center">
-                            <div class="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center mr-4">
-                                <span class="text-xl font-bold">4.8</span>
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-900">Trusted by diners</p>
-                                <p class="text-sm text-gray-600">Over 10 reservations</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Key stats/features -->
+            <!-- stats/features -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">5+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{$activeRestaurantsCount ?? 0}}+</div>
                     <div class="text-gray-700">Partner Restaurants</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">20+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{$clientCount ?? 0}}+</div>
                     <div class="text-gray-700">Happy Diners</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">5+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{$citiesCount ?? 0}}+</div>
                     <div class="text-gray-700">Cities Covered</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">4.8</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{number_format($averageRating ?? 0, 1)}}</div>
                     <div class="text-gray-700">Average Rating</div>
                 </div>
             </div>
@@ -165,11 +156,13 @@
                             </div>
                         </li>
                     </ul>
+                    @guest
                     <div class="mt-8 text-center">
                         <a href="{{ route('register.show') }}" class="inline-block px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300">
                             Sign Up as a Diner
                         </a>
                     </div>
+                    @endguest
                 </div>
 
                 <!-- For Restaurant Owners -->
@@ -218,11 +211,82 @@
                             </div>
                         </li>
                     </ul>
+                    @auth
+                    @if (auth()->user()->role === 'client')
                     <div class="mt-8 text-center">
-                        <a href="{{ route('register.show') }}" class="inline-block px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300">
+                        <button type="button"
+                            class="inline-block px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-md transition duration-300"
+                            onclick="document.getElementById('managerRequestModal').classList.remove('hidden')">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
                             Register Your Restaurant
-                        </a>
+                        </button>
                     </div>
+                    @endif
+                    @endauth
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manager Request Modal -->
+    <div id="managerRequestModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full relative">
+            <!-- Close button -->
+            <button type="button"
+                onclick="document.getElementById('managerRequestModal').classList.add('hidden');"
+                class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- Form Container -->
+            <div id="managerRequestForm">
+                <div class="p-6">
+                    <div class="text-center mb-6">
+                        <div class="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900">Restaurant Manager Request</h3>
+                        <p class="text-gray-600 mt-2">Fill out the form below to request restaurant manager access. Our team will review your application and contact you soon.</p>
+                    </div>
+
+                    <form action="{{ route('manager.request.submit') }}" method="POST" id="restaurantManagerForm">
+                        @csrf
+                        <div class="space-y-4">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
+                                <input type="text" id="firstName" name="FirstName" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
+                            </div>
+
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
+                                <input type="text" id="lastName" name="LastName" required
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                                <input type="email" id="email" name="Email" value="{{auth()->user()->email ?? ''}}" readonly
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
+                                <p class="mt-1 text-xs text-gray-500">We'll contact you at this email address regarding your request.</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <button type="submit" class="w-full px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                                Submit Request
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -260,9 +324,6 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
                             </div>
                         </div>
                     </div>
@@ -280,9 +341,6 @@
                         <div>
                             <h4 class="font-semibold text-gray-900">Ouirghane Lahcen</h4>
                             <div class="flex text-yellow-400 mt-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>

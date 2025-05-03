@@ -1,102 +1,187 @@
 <x-app-layout>
     <x-header />
-    <div class="max-w-7xl mx-auto p-4">
-        <div class="flex flex-col md:flex-row gap-6">
-            <!-- Side Search with Filters -->
-            <div class="w-full md:w-80 shrink-0">
-                <div class="bg-white rounded-lg shadow-lg p-6 sticky top-4">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Find Restaurants</h2>
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Hero Section with Search and Filters -->
+        <div class="mb-10 text-center">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Discover Amazing Restaurants</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">Find your next culinary adventure with our curated selection of the finest restaurants</p>
 
-                    <form action="{{ route('restaurants.index') }}" method="GET">
-                        <!-- Search Section -->
-                        <div class="mb-4">
-                            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-                            <input type="text" id="search" name="search" placeholder="Restaurant name or cuisine..." class="w-full p-3 border border-gray-300 rounded-md">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                            <input type="date" id="date" name="date" class="w-full p-3 border border-gray-300 rounded-md" min="{{ date('Y-m-d') }}">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="guests" class="block text-sm font-medium text-gray-700 mb-1">Party Size</label>
-                            <select id="guests" name="guests" class="w-full p-3 border border-gray-300 rounded-md">
-                                @for ($i = 1; $i <= 10; $i++)
-                                    <option value="{{ $i }}">{{ $i }} {{ $i === 1 ? 'Person' : 'People' }}</option>
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div class="border-t border-gray-200 my-4 pt-4">
-                            <h3 class="text-md font-medium text-gray-700 mb-3">Filters</h3>
-
-                            <div class="mb-4">
-                                <label for="cuisine" class="block text-sm font-medium text-gray-700 mb-1">Cuisine Type</label>
-                                <select id="cuisine" name="cuisine" class="w-full p-3 border border-gray-300 rounded-md">
-                                    <option value="">All Cuisines</option>
-                                    <option value="italian">Italian</option>
-                                    <option value="chinese">Chinese</option>
-                                    <option value="indian">Indian</option>
-                                    <option value="mexican">Mexican</option>
-                                    <option value="japanese">Japanese</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price Range</label>
-                                <select id="price" name="price" class="w-full p-3 border border-gray-300 rounded-md">
-                                    <option value="">Any Price</option>
-                                    <option value="$">$ (Budget)</option>
-                                    <option value="$$">$$ (Moderate)</option>
-                                    <option value="$$$">$$$ (Expensive)</option>
-                                    <option value="$$$$">$$$$ (Fine Dining)</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="rating" class="block text-sm font-medium text-gray-700 mb-1">Minimum Rating</label>
-                                <select id="rating" name="rating" class="w-full p-3 border border-gray-300 rounded-md">
-                                    <option value="">Any Rating</option>
-                                    <option value="3">3+ Stars</option>
-                                    <option value="4">4+ Stars</option>
-                                    <option value="4.5">4.5+ Stars</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md transition duration-300">
-                            Search Restaurants
-                        </button>
-                    </form>
-                </div>
+            <!-- Main Search Bar with Filters -->
+            <div class="max-w-3xl mx-auto">
+                <form action="{{ route('restaurants.index') }}" method="GET" class="flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-center">
+                    <input type="text" name="search" placeholder="Search restaurants..."
+                        class="flex-1 p-4 pl-12 bg-white border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 shadow-sm"
+                        value="{{ request('search') }}">
+                    <select name="city" class="p-4 bg-white border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 shadow-sm">
+                        <option value="">All Cities</option>
+                        @foreach($cities as $city)
+                            <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>{{ $city }}</option>
+                        @endforeach
+                    </select>
+                    <select name="food_type" class="p-4 bg-white border border-gray-200 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 shadow-sm">
+                        <option value="">All Food Types</option>
+                        @foreach($foodTypes as $foodType)
+                            <option value="{{ $foodType->id }}" {{ request('food_type') == $foodType->id ? 'selected' : '' }}>{{ $foodType->name }}</option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="px-6 py-4 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300">
+                        Search
+                    </button>
+                </form>
             </div>
-
+        </div>
+        <!-- Main Content -->
+        <div class="flex flex-col gap-8">
             <!-- Restaurant Listings -->
             <div class="flex-1">
-                <div class="mb-6">
-                    <h1 class="text-3xl font-bold text-gray-900">Our Restaurants</h1>
-                    <p class="text-gray-600 mt-2">Find your next favorite dining experience</p>
+                <!-- Active Filters -->
+                @if(request()->hasAny(['search', 'city', 'food_type']))
+                    <div class="flex flex-wrap gap-2 mb-6 justify-center">
+                        @if(request('search'))
+                            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
+                                <span>Search: {{ request('search') }}</span>
+                                <a href="{{ route('restaurants.index', array_merge(request()->except('search'), ['page' => 1])) }}"
+                                   class="ml-1 text-yellow-600 hover:text-yellow-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </a>
+                            </div>
+                        @endif
+                        @if(request('city'))
+                            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
+                                <span>City: {{ request('city') }}</span>
+                                <a href="{{ route('restaurants.index', array_merge(request()->except('city'), ['page' => 1])) }}"
+                                   class="ml-1 text-yellow-600 hover:text-yellow-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </a>
+                            </div>
+                        @endif
+                        @if(request('food_type'))
+                            <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
+                                <span>Food Type: {{ optional($foodTypes->firstWhere('id', request('food_type')))->name }}</span>
+                                <a href="{{ route('restaurants.index', array_merge(request()->except('food_type'), ['page' => 1])) }}"
+                                   class="ml-1 text-yellow-600 hover:text-yellow-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
+                <!-- Sorting -->
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">All Restaurants</h2>
+                    <div class="relative">
+                        <select id="sort" name="sort" class="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded-lg focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 text-sm">
+                            <option value="recommended">Sort by: Recommended</option>
+                            <option value="rating_desc">Rating: High to Low</option>
+                            <option value="rating_asc">Rating: Low to High</option>
+                            <option value="name_asc">Name: A to Z</option>
+                            <option value="name_desc">Name: Z to A</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Results Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     @foreach($restaurants as $restaurant)
-                        <div class="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
                             <div class="relative">
-                                <a href="{{ route('restaurants.show', $restaurant->id) }}">
+                                <a href="{{ route('restaurants.show', $restaurant) }}">
                                     <img src="{{ asset('storage/'.$restaurant->cover_image) ?? asset('images/placeholder-300x200.jpg') }}"
                                          alt="{{ $restaurant->name }}"
                                          class="w-full h-48 object-cover"
+                                         loading="lazy"
                                          onerror="this.src='{{ asset('images/restaurant-placeholder-300x200.jpg') }}'; this.onerror='';">
                                 </a>
-                                <div class="absolute top-3 right-3 bg-green-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                <div class="absolute top-3 right-3 bg-white text-yellow-600 text-sm font-bold px-2 py-1 rounded-lg shadow-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
                                     {{ number_format($restaurant->reviews->avg('rating') ?? 4.5, 1) }}
                                 </div>
                             </div>
                             <div class="p-4">
-                                <a href="{{ route('restaurants.show', $restaurant->id) }}" class="font-medium text-lg text-gray-900 hover:text-yellow-600 transition duration-200">{{ $restaurant->name }}</a>
-                                <p class="text-sm text-gray-600 mt-1">{{ $restaurant->city }}</p>
-                                <p class="text-sm text-gray-500 mt-2">{{ Str::limit($restaurant->description, 80) }}</p>
+                                <a href="{{ route('restaurants.show', $restaurant) }}" class="font-bold text-lg text-gray-900 hover:text-yellow-600 transition duration-200">{{ $restaurant->name }}</a>
+                                <div class="flex items-center mt-1 text-sm text-gray-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    {{ $restaurant->city }}
+                                </div>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    @foreach($restaurant->foodTypes as $foodType)
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{{ $foodType->name }}</span>
+                                    @endforeach
+                                </div>
+                                <div class="mt-4 flex justify-between items-center">
+                                    <div class="text-sm text-gray-500">
+                                        <span class="text-yellow-500 font-semibold">{{ str_repeat('$', $restaurant->price_range ?? 2) }}</span>
+                                    </div>
+                                    <a href="{{ route('restaurants.show', $restaurant) }}"
+                                       class="inline-flex items-center text-sm font-medium text-yellow-600 hover:text-yellow-800">
+                                        View Details
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-8">
+                    {{ $restaurants->links() }}
+                </div>
+            </div>
+            <!-- Popular Restaurants Section -->
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-6">Popular Restaurants</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($popularRestaurants as $restaurant)
+                        <div class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+                            <div class="relative">
+                                <a href="{{ route('restaurants.show', $restaurant) }}">
+                                    <img src="{{ asset('storage/'.$restaurant->cover_image) ?? asset('images/placeholder-300x200.jpg') }}"
+                                         alt="{{ $restaurant->name }}"
+                                         class="w-full h-48 object-cover"
+                                         loading="lazy"
+                                         onerror="this.src='{{ asset('images/restaurant-placeholder-300x200.jpg') }}'; this.onerror='';">
+                                </a>
+                                <div class="absolute top-3 right-3 bg-white text-yellow-600 text-sm font-bold px-2 py-1 rounded-lg shadow-sm flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    {{ number_format($restaurant->reviews->avg('rating') ?? 4.5, 1) }}
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <a href="{{ route('restaurants.show', $restaurant) }}" class="font-bold text-lg text-gray-900 hover:text-yellow-600 transition duration-200">{{ $restaurant->name }}</a>
+                                <div class="flex items-center mt-1 text-sm text-gray-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    {{ $restaurant->city }}
+                                </div>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    @foreach($restaurant->foodTypes as $foodType)
+                                        <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">{{ $foodType->name }}</span>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     @endforeach
@@ -104,5 +189,17 @@
             </div>
         </div>
     </div>
+    <!-- JavaScript for interactivity -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sort selection handling
+            const sortSelect = document.getElementById('sort');
+            sortSelect.addEventListener('change', function() {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('sort', this.value);
+                window.location.href = currentUrl.toString();
+            });
+        });
+    </script>
     <x-footer />
 </x-app-layout>

@@ -6,8 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\User;
 use App\Models\Reservation;
+use App\Models\ManagerRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use App\Notifications\ManagerRequestNotification;
+use App\Notifications\BanUnbanManager;
 
 class AdminController extends Controller
 {
@@ -17,193 +22,191 @@ class AdminController extends Controller
         $userCount = User::count();
         $restaurantCount = Restaurant::count();
         $reservationCount = Reservation::count();
+        $managerRequestCount = ManagerRequest::count();
+
+
+        $usersByRole = User::select('role', DB::raw('count(*) as count'))
+            ->groupBy('role')
+            ->get();
+
+        $reservationsByStatus = Reservation::select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get();
+
+
+        $statuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+        $statusLabels = array_map('ucfirst', $statuses);
+
+        $statusCounts = [];
+        $statusColors = [
+            'pending' => '#FCD34D',
+            'confirmed' => '#60A5FA',
+            'completed' => '#34D399',
+            'cancelled' => '#F87171',
+            'declined' => '#9CA3AF'
+        ];
+
+        $statusBgColors = [];
+        $statusBorderColors = [];
+
+        foreach ($statuses as $status) {
+            $count = $reservationsByStatus->where('status', $status)->first();
+            $statusCounts[] = $count ? $count->count : 0;
+            $statusBgColors[] = $statusColors[$status] . 'AA';
+            $statusBorderColors[] = $statusColors[$status];
+        }
+
+        // Get recent reservations
+        $recentReservations = Reservation::with(['restaurant', 'user'])
+            ->latest()
+            ->take(10)
+            ->get();
 
         $latestUsers = User::latest()->take(5)->get();
         $latestRestaurants = Restaurant::latest()->take(5)->get();
-        $latestReservations = Reservation::with(['restaurant', 'user'])
-            ->latest()
-            ->take(5)
-            ->get();
+        $latestManagerRequests = ManagerRequest::latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
             'userCount',
             'restaurantCount',
             'reservationCount',
+            'managerRequestCount',
             'latestUsers',
             'latestRestaurants',
-            'latestReservations'
+            'recentReservations',
+            'latestManagerRequests',
+            'usersByRole',
+            'statusLabels',
+            'statusCounts',
+            'statusBgColors',
+            'statusBorderColors'
         ));
     }
 
-    public function userIndex()
+    // Manager Request Methods
+    public function managerRequestsIndex()
     {
-        $users = User::all();
-        return view('admin.users.index', compact('users'));
+        $managerRequests = ManagerRequest::get();
+        return view('admin.manager-requests.index', compact('managerRequests'));
+    }
+
+    // Approve request
+    public function managerRequestsApprove($id)
+    {
+        $request = ManagerRequest::findOrFail($id);
+        $user = User::where('email', $request->Email)->first();
+
+        if ($user) {
+            $user->role = 'manager';
+            $user->save();
+        }
+        $request->status = 'approved';
+        $request->save();
+
+        $user->notify(new ManagerRequestNotification($request, 'approved'));
+
+        return redirect()->route('admin.manager-requests.index')
+            ->with('success', 'Manager request approved. User has been granted manager privileges and notified.');
     }
 
 
-    public function userCreate()
+    // Reject request
+    public function managerRequestsReject($id)
     {
-        return view('admin.users.create');
+        $request = ManagerRequest::findOrFail($id);
+        $user = User::where('email', $request->Email)->first();
+
+        $request->status = 'rejected';
+        $request->save();
+
+        $user->notify(new ManagerRequestNotification($request, 'rejected'));
+
+        return redirect()->route('admin.manager-requests.index')
+            ->with('success', 'Manager request rejected. The applicant has been notified.');
     }
 
 
-    public function userStore(Request $request)
+    public function managerRequestsDestroy($id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:admin,manager,client',
-        ]);
+        $request = ManagerRequest::findOrFail($id);
+        $request->delete();
 
-        User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
-            'email_verified_at' => now(),
-        ]);
-
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User created successfully.');
+        return redirect()->route('admin.manager-requests.index')
+            ->with('success', 'Manager request deleted permanently.');
     }
 
 
-    public function userEdit($id)
+    public function restaurantManagersIndex()
     {
-        $user = User::findOrFail($id);
-        return view('admin.users.edit', compact('user'));
+        // active managers
+        $activeManagers = User::where('role', 'manager')
+            ->withCount('restaurants')
+            ->get();
+
+        // banned managers
+        $bannedManagers = User::where('role', 'client')
+            ->where('is_banned', true)
+            ->withCount('restaurants')
+            ->get();
+
+        $managers = $activeManagers->concat($bannedManagers);
+
+        return view('admin.restaurant-managers.index', compact('managers'));
     }
 
-
-    public function userUpdate(Request $request, $id)
+    public function restaurantManagersBan($id)
     {
-        $user = User::findOrFail($id);
+        $manager = User::findOrFail($id);
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:admin,manager,client',
-        ]);
-
-        $userData = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'role' => $validated['role'],
-        ];
-
-        // Only update password if provided
-        if (!empty($validated['password'])) {
-            $userData['password'] = Hash::make($validated['password']);
+        if ($manager->role !== 'manager') {
+            return redirect()->route('admin.restaurant-managers.index')
+                ->with('error', 'User is not a restaurant manager.');
         }
 
-        $user->update($userData);
+        $manager->role = 'client';
+        $manager->is_banned = true;
+        $manager->save();
 
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User updated successfully.');
+        // Deactivate associated restaurants
+        $restaurants = Restaurant::where('user_id', $manager->id)->get();
+        foreach ($restaurants as $restaurant) {
+            $restaurant->is_active = false;
+            $restaurant->save();
+        }
+
+        // notify the manager
+        $manager->notify(new BanUnbanManager('ban'));
+
+        return redirect()->route('admin.restaurant-managers.index')
+            ->with('success', 'Manager has been banned successfully. All their restaurants have been deactivated.');
     }
 
-    public function userDestroy($id)
+    public function restaurantManagersUnban($id)
     {
         $user = User::findOrFail($id);
 
-        // Prevent deleting oneself
-        if ($user->id === auth()->id()) {
-            return redirect()->back()->with('error', 'You cannot delete your own account.');
+        if (!$user->is_banned) {
+            return redirect()->route('admin.restaurant-managers.index')
+                ->with('error', 'User is not banned.');
         }
 
-        // Handle associated data or use cascade delete in migration
-        $user->delete();
 
-        return redirect()->route('admin.users.index')
-            ->with('success', 'User deleted successfully.');
-    }
+        $user->role = 'manager';
+        $user->is_banned = false;
+        $user->save();
 
 
-    public function restaurantIndex()
-    {
-        $restaurants = Restaurant::with('user')->get();
-        return view('admin.restaurants.index', compact('restaurants'));
-    }
-
-    public function restaurantEdit($id)
-    {
-        $restaurant = Restaurant::findOrFail($id);
-        $managers = User::where('role', 'manager')->get();
-
-        return view('admin.restaurants.edit', compact('restaurant', 'managers'));
-    }
-
-
-    public function restaurantUpdate(Request $request, $id)
-    {
-        $restaurant = Restaurant::findOrFail($id);
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:100',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'website' => 'nullable|url|max:255',
-            'opening_time' => 'required',
-            'closing_time' => 'required',
-            'opening_days' => 'required|array',
-            'user_id' => 'required|exists:users,id',
-            'is_active' => 'boolean',
-            'cover_image' => 'nullable|image|max:2048',
-        ]);
-
-        // Handle cover image if uploaded
-        if ($request->hasFile('cover_image')) {
-            $path = $request->file('cover_image')->store('restaurants', 'public');
-            $validated['cover_image'] = $path;
+        $restaurants = Restaurant::where('user_id', $user->id)->get();
+        foreach ($restaurants as $restaurant) {
+            $restaurant->is_active = true;
+            $restaurant->save();
         }
 
-        $restaurant->update($validated);
+        // notify the manager
+        $user->notify(new BanUnbanManager('unban'));
 
-        return redirect()->route('admin.restaurants.index')
-            ->with('success', 'Restaurant updated successfully.');
+        return redirect()->route('admin.restaurant-managers.index')
+            ->with('success', 'Manager has been unbanned successfully. All their restaurants have been reactivated.');
     }
 
-
-    public function restaurantDestroy($id)
-    {
-        $restaurant = Restaurant::findOrFail($id);
-
-        // Handle or check related data before deletion
-        $restaurant->delete();
-
-        return redirect()->route('admin.restaurants.index')
-            ->with('success', 'Restaurant deleted successfully.');
-    }
-
-
-    public function settings()
-    {
-        // Get settings from configuration or database
-        $settings = [
-            'site_name' => config('app.name'),
-            'contact_email' => config('mail.from.address', 'contact@example.com'),
-
-        ];
-
-        return view('admin.settings', compact('settings'));
-    }
-
-    public function updateSettings(Request $request)
-    {
-        $validated = $request->validate([
-            'site_name' => 'required|string|max:255',
-            'contact_email' => 'required|email|max:255',
-        ]);
-
-
-
-        return redirect()->route('admin.settings')
-            ->with('success', 'Settings updated successfully.');
-    }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;                
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -30,6 +30,7 @@ class AuthController extends Controller
         // first user is admin
         $role = User::count() === 0 ? 'admin' : 'client';
 
+
         // register the user
         $user = User::create([
             'name' => $request->name,
@@ -50,7 +51,7 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return redirect()->back()->withErrors(['attempt' => 'Invalid credentials.']);
         }
-        // check the user's role and redirect accordingly
+
         $user = Auth::user();
         return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),
@@ -71,6 +72,6 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
 
-        return redirect()->route('login.show')->with('success', 'Logout successful!');
+        return redirect()->route('home')->with('success', 'Logout successful!');
     }
 }

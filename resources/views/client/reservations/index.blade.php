@@ -1,5 +1,7 @@
 <x-app-layout>
-    <div class="py-12 bg-gray-50">
+    <x-header />
+
+    <div class="mt-20 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-3xl font-bold text-gray-900">My Reservations</h1>
@@ -132,9 +134,6 @@
                                                     <h3 class="text-lg font-semibold text-gray-900">{{ $reservation->restaurant->name }}</h3>
                                                     <p class="text-sm text-gray-500">Table: {{ $reservation->table->name }}</p>
                                                 </div>
-                                                <span class="px-2 py-1 rounded text-xs font-semibold bg-gray-100 text-gray-700">
-                                                    Completed
-                                                </span>
                                             </div>
                                         </div>
                                         <div class="px-5 py-4 bg-gray-50">

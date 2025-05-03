@@ -13,3 +13,8 @@ Broadcast::channel('reservation.{id}', function ($user, $id) {
         ->where('user_id', $user->id)
         ->exists();
 });
+
+
+Broadcast::channel('chat', function(){
+
+});

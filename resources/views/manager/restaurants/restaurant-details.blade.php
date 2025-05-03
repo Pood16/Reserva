@@ -111,6 +111,24 @@
                                 </div>
                             </div>
 
+                            <!-- Menus -->
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="p-3 rounded-full bg-amber-100 text-amber-500 mr-4">
+                                            <i class="fas fa-utensils text-xl"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600">Menus</p>
+                                            <p class="text-xl font-semibold">{{ $restaurant->menus->count() }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('manager.menus.index', $restaurant->id) }}" class="text-amber-600 hover:text-amber-800">
+                                        <i class="fas fa-cog mr-1"></i> Manage Menus
+                                    </a>
+                                </div>
+                            </div>
+
                             <!-- Reviews -->
                             <div class="bg-gray-50 rounded-lg p-4">
                                 <div class="flex items-center">

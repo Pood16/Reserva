@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Manager;
+namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -9,19 +9,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
-class ProfileController extends Controller
+class ClientProfileController extends Controller
 {
     public function show()
     {
         $user = Auth::user();
-        return view('manager.profile.show', compact('user'));
+        return view('client.profile.show', compact('user'));
     }
 
-    public function edit()
-    {
-        $user = Auth::user();
-        return view('manager.profile.edit', compact('user'));
-    }
+
 
     public function update(Request $request)
     {
@@ -47,14 +43,10 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->route('manager.profile.show')
-            ->with('success', 'Profile updated successfully.');
+        return redirect()->route('profile.show')->with('success', 'Profile updated successfully.');
     }
 
-    public function showChangePasswordForm()
-    {
-        return view('manager.profile.change-password');
-    }
+
 
     public function updatePassword(Request $request)
     {
@@ -72,7 +64,6 @@ class ProfileController extends Controller
         $user->password = Hash::make($validated['password']);
         $user->save();
 
-        return redirect()->route('manager.profile.show')
-            ->with('success', 'Password updated successfully.');
+        return redirect()->route('profile.show')->with('success', 'Password updated successfully.');
     }
 }

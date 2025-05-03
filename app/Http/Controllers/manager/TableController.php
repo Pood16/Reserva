@@ -34,7 +34,7 @@ class TableController extends Controller
             return redirect()->route('manage.restaurants')->with('error', 'You are not authorized to manage tables for this restaurant.');
         }
         $validated = $request->validate([
-            'name' => 'required|string|max:50',
+            'name' => 'required|string|max:50|unique:tables,name,NULL,id,restaurant_id,'.$restaurantId,
             'capacity' => 'required|integer|min:1|max:20',
             'location' => 'required|string|in:indoors,outdoors,terrace',
             'description' => 'nullable|string|max:255',
@@ -60,7 +60,7 @@ class TableController extends Controller
         $table = Table::where('restaurant_id', $restaurantId)->findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:50',
+            'name' => 'required|string|max:50|unique:tables,name,'.$id.',id,restaurant_id,'.$restaurantId,
             'capacity' => 'required|integer|min:1|max:20',
             'location' => 'required|string|in:indoor,outdoor,terrace',
             'description' => 'nullable|string|max:255',

@@ -23,6 +23,9 @@ class User extends Authenticatable
         'password',
     ];
 
+    /**
+     * Get the restaurants managed by the user.
+     */
     public function restaurants()
     {
         return $this->hasMany(Restaurant::class);
@@ -74,5 +77,10 @@ class User extends Authenticatable
     public function getRoleDisplayAttribute()
     {
         return ucfirst($this->role);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 }
