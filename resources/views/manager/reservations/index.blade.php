@@ -10,17 +10,7 @@
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
-                @if(session('success'))
-                    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
-                        <p>{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                        <p>{{ session('error') }}</p>
-                    </div>
-                @endif
+                <x-flash-messages />
 
                 <!-- Page Header -->
                 <div class="flex justify-between items-center mb-6">
@@ -91,32 +81,53 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex space-x-2">
-                                                <select
-                                                    onchange="handleAction(this, {{ $reservation->id }})"
-                                                    class="text-sm rounded-md border border-gray-300 py-1 px-2 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
-                                                >
-                                                    <option value="">Select action</option>
-                                                    <option value="view">View Details</option>
-                                                    @if($reservation->status === 'pending')
-                                                        <option value="approve">Approve</option>
-                                                        <option value="decline">Decline</option>
-                                                    @endif
-                                                    @if($reservation->status === 'confirmed')
-                                                        <option value="complete">Complete</option>
-                                                    @endif
-                                                </select>
-                                            </div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <a href="{{ url('manager/reservations/' . $reservation->id) }}"
+                                                   class="inline-flex items-center px-2.5 py-1.5 border border-purple-300 shadow-sm text-xs font-medium rounded text-purple-700 bg-purple-50 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                    </svg>
+                                                    View
+                                                </a>
 
-                                            <!-- Hidden forms for actions -->
-                                            <form id="approve-form-{{ $reservation->id }}" action="{{ route('manager.reservations.approve', $reservation->id) }}" method="POST" class="hidden">
-                                                @csrf
-                                                @method('PUT')
-                                            </form>
-                                            <form id="complete-form-{{ $reservation->id }}" action="{{ route('manager.reservations.complete', $reservation->id) }}" method="POST" class="hidden">
-                                                @csrf
-                                                @method('PUT')
-                                            </form>
+                                                @if($reservation->status === 'pending')
+                                                    <form action="{{ route('manager.reservations.approve', $reservation->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit"
+                                                                class="inline-flex items-center px-2.5 py-1.5 border border-emerald-300 shadow-sm text-xs font-medium rounded text-emerald-700 bg-emerald-50 hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                                            </svg>
+                                                            Approve
+                                                        </button>
+                                                    </form>
+
+                                                    <button type="button"
+                                                            onclick="openDeclineModal({{ $reservation->id }})"
+                                                            class="inline-flex items-center px-2.5 py-1.5 border border-rose-300 shadow-sm text-xs font-medium rounded text-rose-700 bg-rose-50 hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                        Decline
+                                                    </button>
+                                                @endif
+
+                                                @if($reservation->status === 'confirmed')
+                                                    <form action="{{ route('manager.reservations.complete', $reservation->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="submit"
+                                                                class="inline-flex items-center px-2.5 py-1.5 border border-amber-300 shadow-sm text-xs font-medium rounded text-amber-700 bg-amber-50 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                            Complete
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -177,34 +188,9 @@
     </div>
 
     @push('scripts')
-
     <script src="{{ asset('resources/js/manager/toggleNav.js') }}"></script>
 
     <script>
-        function handleAction(selectElement, reservationId) {
-            const action = selectElement.value;
-
-            if (!action) return; // No action selected
-
-            // Reset the select
-            setTimeout(() => { selectElement.value = ''; }, 100);
-
-            switch (action) {
-                case 'view':
-                    window.location.href = `{{ url('manager/reservations') }}/${reservationId}`;
-                    break;
-                case 'approve':
-                    document.getElementById(`approve-form-${reservationId}`).submit();
-                    break;
-                case 'decline':
-                    openDeclineModal(reservationId);
-                    break;
-                case 'complete':
-                    document.getElementById(`complete-form-${reservationId}`).submit();
-                    break;
-            }
-        }
-
         function openDeclineModal(reservationId) {
             const modal = document.getElementById('decline-modal');
             const form = document.getElementById('decline-form');

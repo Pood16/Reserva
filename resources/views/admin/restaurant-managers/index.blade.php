@@ -38,6 +38,8 @@
             <!-- content -->
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
+                <x-flash-messages />
+
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
                         <h2 class="text-lg font-semibold text-gray-800">Restaurant Managers</h2>
@@ -50,6 +52,7 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Manager</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Restaurants</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registered</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
@@ -83,39 +86,45 @@
                                                 </span>
                                             </div>
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if($manager->is_banned)
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                    Banned
+                                                </span>
+                                            @else
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Active
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $manager->created_at->format('M d, Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-3">
                                                 @if($manager->is_banned)
-                                                    <form action="{{ route('admin.restaurant-managers.unban', $manager->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="text-green-600 hover:text-green-900" onclick="return confirm('Are you sure you want to unban this manager? This will reactivate their restaurants and restore manager privileges.')">
-                                                            <i class="fas fa-unlock mr-1"></i> Unban
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <form action="{{ route('admin.restaurant-managers.ban', $manager->id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="text-yellow-600 hover:text-yellow-900" onclick="return confirm('Are you sure you want to ban this manager? This will deactivate all their restaurants and change their role to client.')">
-                                                            <i class="fas fa-ban mr-1"></i> Ban
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                                <form action="{{ route('admin.users.destroy', $manager->id) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this manager? This will also affect any associated restaurants.')">
-                                                        <i class="fas fa-trash mr-1"></i> Delete
+                                                    <button type="button"
+                                                            class="text-green-600 hover:text-green-900 action-btn"
+                                                            data-action="unban"
+                                                            data-manager-id="{{ $manager->id }}"
+                                                            data-manager-name="{{ $manager->name }}">
+                                                        <i class="fas fa-unlock mr-1"></i> Unban
                                                     </button>
-                                                </form>
+                                                @else
+                                                    <button type="button"
+                                                            class="text-yellow-600 hover:text-yellow-900 action-btn"
+                                                            data-action="ban"
+                                                            data-manager-id="{{ $manager->id }}"
+                                                            data-manager-name="{{ $manager->name }}">
+                                                        <i class="fas fa-ban mr-1"></i> Ban
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
                                             No restaurant managers found
                                         </td>
                                     </tr>
@@ -128,7 +137,75 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Confirm Action</h3>
+            </div>
+            <div class="px-6 py-4">
+                <p id="modalMessage" class="text-gray-700"></p>
+            </div>
+            <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rounded-b-lg">
+                <button type="button" id="cancelAction" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
+                    Cancel
+                </button>
+                <form id="confirmForm" method="POST">
+                    @csrf
+                    <button type="submit" id="confirmAction" class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600">
+                        Confirm
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
     <script src="{{ asset('resources/js/manager/toggleNav.js') }}"></script>
+    <script>
+        // Handle action button clicks
+        const actionButtons = document.querySelectorAll('.action-btn');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const managerId = this.getAttribute('data-manager-id');
+                const managerName = this.getAttribute('data-manager-name');
+                const action = this.getAttribute('data-action');
+
+                const modal = document.getElementById('confirmationModal');
+                const modalTitle = document.getElementById('modalTitle');
+                const modalMessage = document.getElementById('modalMessage');
+                const confirmForm = document.getElementById('confirmForm');
+
+                // Configure modal based on action
+                switch(action) {
+                    case 'ban':
+                        modalTitle.textContent = 'Confirm Ban';
+                        modalMessage.textContent = `Are you sure you want to ban ${managerName}? This will deactivate all their restaurants and change their role to client.`;
+                        confirmForm.action = "{{ route('admin.restaurant-managers.ban', ':id') }}".replace(':id', managerId);
+                        break;
+                    case 'unban':
+                        modalTitle.textContent = 'Confirm Unban';
+                        modalMessage.textContent = `Are you sure you want to unban ${managerName}? This will reactivate their restaurants and restore manager privileges.`;
+                        confirmForm.action = "{{ route('admin.restaurant-managers.unban', ':id') }}".replace(':id', managerId);
+                        break;
+                }
+
+                // Show modal
+                modal.classList.remove('hidden');
+            });
+        });
+
+        // Close modal on cancel
+        document.getElementById('cancelAction').addEventListener('click', function() {
+            document.getElementById('confirmationModal').classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('confirmationModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                this.classList.add('hidden');
+            }
+        });
+    </script>
     @endpush
 </x-app-layout>

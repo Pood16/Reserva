@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="min-h-screen bg-gray-100 flex flex-col">
-        <main class="flex-1 p-4 sm:p-6 bg-gray-100">
+    <div class="min-h-screen bg-gradient-to-r from-yellow-50 to-amber-100 flex flex-col">
+        <main class="flex-1 p-4 sm:p-6 bg-gradient-to-r from-yellow-50 to-amber-100 ">
             <!-- Flash Messages -->
             <x-flash-messages />
 

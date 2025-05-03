@@ -23,10 +23,8 @@ class ManagerRestaurantController extends Controller {
         $myRestaurants = Restaurant::where('user_id', Auth::id())
             ->with('reviews')
             ->with('tables')
-            ->with('foodTypes')
             ->with('menus')
             ->get();
-
         $foodTypes = FoodType::all();
         return view('manager.restaurants.restaurants', compact('myRestaurants', 'foodTypes'));
     }
@@ -196,7 +194,7 @@ class ManagerRestaurantController extends Controller {
             }
     }
 
-    // Update general information (section: general)
+    // Update general information
     private function updateGeneralInfo(Request $request, Restaurant $restaurant)
     {
         $validated = $request->validate([
@@ -209,7 +207,7 @@ class ManagerRestaurantController extends Controller {
         return redirect()->back()->with('success', 'General information updated successfully.');
     }
 
-    // Update contact information (section: contact)
+    // Update contact information
     private function updateContactInfo(Request $request, Restaurant $restaurant)
     {
 
@@ -226,7 +224,7 @@ class ManagerRestaurantController extends Controller {
         return redirect()->back()->with('success', 'Contact information updated successfully.');
     }
 
-    // Update business hours (section: hours)
+    // Update business hours
     private function updateBusinessHours(Request $request, Restaurant $restaurant)
     {
         $validated = $request->validate([
@@ -236,7 +234,7 @@ class ManagerRestaurantController extends Controller {
             'opening_days.*' => 'string',
         ]);
 
-        // Update only if opening_time or closing_time is present
+
         $timeUpdates = [];
         if ($request->has('opening_time')) {
             $timeUpdates['opening_time'] = $validated['opening_time'];
@@ -248,7 +246,7 @@ class ManagerRestaurantController extends Controller {
             $restaurant->update($timeUpdates);
         }
 
-        // Update opening days only if provided
+        // Update opening days
         if ($request->has('opening_days')) {
             $restaurant->openingDays()->delete();
 
@@ -309,7 +307,7 @@ class ManagerRestaurantController extends Controller {
         return redirect()->back()->with('success', "Restaurant {$statusText} successfully.");
     }
 
-    // Update food types (section: food_types)
+    // Update food types
     private function updateFoodTypes(Request $request, Restaurant $restaurant)
     {
         $validated = $request->validate([

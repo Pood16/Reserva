@@ -15,7 +15,7 @@
                 <!-- Breadcrumbs and back button -->
                 <div class="flex justify-between items-center mb-6">
                     <div>
-                        <a href="{{ route('restaurant.dashboard') }}" class="inline-flex items-center text-gray-700 hover:text-amber-600">
+                        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center text-gray-700 hover:text-blue-600">
                             <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
                         </a>
                     </div>
@@ -23,29 +23,29 @@
 
                 <!-- Profile Header -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-                    <div class="bg-amber-50 border-b border-amber-100 px-6 py-12">
+                    <div class="bg-blue-50 border-b border-blue-100 px-6 py-12">
                         <div class="flex flex-col md:flex-row items-center justify-between">
                             <div class="flex flex-col md:flex-row items-center">
-                                <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-amber-50 p-1 border border-amber-200 shadow-lg mb-4 md:mb-0 md:mr-6">
+                                <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-blue-50 p-1 border border-blue-200 shadow-lg mb-4 md:mb-0 md:mr-6">
                                     @if($user->profile_picture)
                                         <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="{{ $user->name }}" class="rounded-full w-full h-full object-cover">
                                     @else
-                                        <div class="w-full h-full flex items-center justify-center bg-amber-100 rounded-full text-amber-800 text-4xl">
+                                        <div class="w-full h-full flex items-center justify-center bg-blue-100 rounded-full text-blue-800 text-4xl">
                                             {{ strtoupper(substr($user->name, 0, 1)) }}
                                         </div>
                                     @endif
                                 </div>
                                 <div class="text-center md:text-left">
-                                    <h1 class="text-2xl font-bold text-amber-900">{{ $user->name }}</h1>
-                                    <p class="text-amber-800">{{ $user->email }}</p>
-                                    <p class="bg-amber-200 inline-block px-2 py-1 rounded text-xs text-amber-800 mt-2 border border-amber-300">{{ ucfirst($user->role) }}</p>
+                                    <h1 class="text-2xl font-bold text-blue-900">{{ $user->name }}</h1>
+                                    <p class="text-blue-800">{{ $user->email }}</p>
+                                    <p class="bg-blue-200 inline-block px-2 py-1 rounded text-xs text-blue-800 mt-2 border border-blue-300">{{ ucfirst($user->role) }}</p>
                                 </div>
                             </div>
                             <div class="mt-4 md:mt-0 flex space-x-2">
-                                <a href="{{ route('manager.profile.edit') }}" class="bg-amber-100 text-amber-800 border border-amber-200 px-4 py-2 rounded-md hover:bg-amber-200">
+                                <a href="{{ route('admin.profile.edit') }}" class="bg-blue-100 text-blue-800 border border-blue-200 px-4 py-2 rounded-md hover:bg-blue-200">
                                     <i class="fas fa-user-edit mr-2"></i> Edit Profile
                                 </a>
-                                <a href="{{ route('manager.profile.password.edit') }}" class="bg-amber-100 text-amber-800 border border-amber-200 px-4 py-2 rounded-md hover:bg-amber-200">
+                                <a href="{{ route('admin.profile.password.edit') }}" class="bg-blue-100 text-blue-800 border border-blue-200 px-4 py-2 rounded-md hover:bg-blue-200">
                                     <i class="fas fa-key mr-2"></i> Change Password
                                 </a>
                             </div>
@@ -87,22 +87,22 @@
                             </div>
 
                             <div>
-                                <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Restaurant Statistics</h4>
+                                <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">System Statistics</h4>
 
                                 <div class="space-y-4">
                                     <div>
-                                        <p class="text-sm text-gray-500">Total Restaurants</p>
-                                        <p class="font-medium">{{ $user->restaurants->count() }}</p>
+                                        <p class="text-sm text-gray-500">Total Users</p>
+                                        <p class="font-medium">{{ \App\Models\User::count() }}</p>
                                     </div>
 
                                     <div>
-                                        <p class="text-sm text-gray-500">Active Restaurants</p>
-                                        <p class="font-medium">{{ $user->restaurants->where('is_active', true)->count() }}</p>
+                                        <p class="text-sm text-gray-500">Registered Restaurants</p>
+                                        <p class="font-medium">{{ \App\Models\Restaurant::count() }}</p>
                                     </div>
 
                                     <div>
-                                        <p class="text-sm text-gray-500">Total Tables</p>
-                                        <p class="font-medium">{{ $user->restaurants->flatMap->tables->count() }}</p>
+                                        <p class="text-sm text-gray-500">Restaurant Managers</p>
+                                        <p class="font-medium">{{ \App\Models\User::where('role', 'manager')->count() }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -110,37 +110,28 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity (Placeholder) -->
+                <!-- Recent Activity (Admin-specific) -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                        <h3 class="text-lg font-semibold text-gray-800">Recent Activity</h3>
+                        <h3 class="text-lg font-semibold text-gray-800">Admin Activities</h3>
                     </div>
                     <div class="p-6">
                         <div class="space-y-4">
-                            @if($user->restaurants->count() > 0)
-                                <div class="border-l-4 border-green-500 pl-4 py-2">
-                                    <p class="text-sm text-gray-600">You currently manage {{ $user->restaurants->count() }} restaurant(s)</p>
-                                </div>
-
-                                <div class="border-l-4 border-blue-500 pl-4 py-2">
-                                    <p class="text-sm text-gray-600">
-                                        Your most recent restaurant:
-                                        <a href="{{ route('restaurant.details', $user->restaurants->sortByDesc('created_at')->first()->id) }}" class="text-blue-600 hover:underline">
-                                            {{ $user->restaurants->sortByDesc('created_at')->first()->name }}
-                                        </a>
-                                    </p>
-                                </div>
-                            @else
-                                <div class="border-l-4 border-amber-500 pl-4 py-2">
-                                    <p class="text-sm text-gray-600">You haven't added any restaurants yet.</p>
-                                </div>
-
-                                <div class="text-center py-6">
-                                    <a href="{{ route('manage.restaurants') }}" class="inline-flex items-center px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600">
-                                        <i class="fas fa-plus mr-2"></i> Add Your First Restaurant
+                            <div class="border-l-4 border-blue-500 pl-4 py-2">
+                                <p class="text-sm text-gray-600">
+                                    Pending manager requests:
+                                    <a href="{{ route('admin.manager-requests.index') }}" class="text-blue-600 hover:underline">
+                                        {{ \App\Models\ManagerRequest::where('status', 'pending')->count() }}
                                     </a>
-                                </div>
-                            @endif
+                                </p>
+                            </div>
+
+                            <div class="border-l-4 border-green-500 pl-4 py-2">
+                                <p class="text-sm text-gray-600">
+                                    Quick access to <a href="{{ route('admin.restaurants.index') }}" class="text-blue-600 hover:underline">restaurant management</a> or
+                                    <a href="{{ route('admin.users.index') }}" class="text-blue-600 hover:underline">user management</a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

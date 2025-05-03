@@ -1,5 +1,6 @@
 <x-app-layout>
     <x-header />
+    <x-flash-messages />
     <!-- Hero section -->
     <div class="bg-gradient-to-r from-yellow-50 to-amber-100 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,36 +29,25 @@
                              alt="Restaurant dining experience"
                              class="w-full h-auto object-cover">
                     </div>
-                    <div class="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg hidden md:block">
-                        <div class="flex items-center">
-                            <div class="bg-green-500 text-white rounded-full w-12 h-12 flex items-center justify-center mr-4">
-                                <span class="text-xl font-bold">4.8</span>
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-900">Trusted by diners</p>
-                                <p class="text-sm text-gray-600">Over 10 reservations</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- Key stats/features -->
+            <!-- stats/features -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">5+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{$activeRestaurantsCount ?? 0}}+</div>
                     <div class="text-gray-700">Partner Restaurants</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">20+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{$clientCount ?? 0}}+</div>
                     <div class="text-gray-700">Happy Diners</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">5+</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{$citiesCount ?? 0}}+</div>
                     <div class="text-gray-700">Cities Covered</div>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-md text-center">
-                    <div class="text-yellow-500 text-3xl font-bold mb-2">4.8</div>
+                    <div class="text-yellow-500 text-3xl font-bold mb-2">{{number_format($averageRating ?? 0, 1)}}</div>
                     <div class="text-gray-700">Average Rating</div>
                 </div>
             </div>
@@ -245,9 +235,7 @@
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full relative">
             <!-- Close button -->
             <button type="button"
-                onclick="document.getElementById('managerRequestModal').classList.add('hidden');
-                         document.getElementById('managerRequestForm').classList.remove('hidden');
-                         document.getElementById('managerRequestSuccess').classList.add('hidden');"
+                onclick="document.getElementById('managerRequestModal').classList.add('hidden');"
                 class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -284,7 +272,7 @@
 
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                                <input type="email" id="email" name="Email" required
+                                <input type="email" id="email" name="Email" value="{{auth()->user()->email ?? ''}}" readonly
                                     class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
                                 <p class="mt-1 text-xs text-gray-500">We'll contact you at this email address regarding your request.</p>
                             </div>
@@ -301,30 +289,8 @@
                     </form>
                 </div>
             </div>
-
-            <!-- Success Message (Hidden by default) -->
-            <div id="managerRequestSuccess" class="p-6 hidden">
-                <div class="text-center">
-                    <div class="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Request Submitted!</h3>
-                    <p class="text-gray-600 mb-6">
-                        Thank you for your interest in becoming a restaurant manager on QuickTable. Our team will review your request and contact you soon via email.
-                    </p>
-                    <button type="button"
-                        onclick="document.getElementById('managerRequestModal').classList.add('hidden')"
-                        class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md transition duration-300">
-                        Close
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
-
-
 
     <!-- Testimonials -->
     <div class="bg-gray-50 py-16">
@@ -414,43 +380,4 @@
         </div>
     </div>
     <x-footer />
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('restaurantManagerForm');
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                // AJAX form submission
-                fetch(form.action, {
-                    method: 'POST',
-                    body: new FormData(form),
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Show success message
-                        document.getElementById('managerRequestForm').classList.add('hidden');
-                        document.getElementById('managerRequestSuccess').classList.remove('hidden');
-                        // Reset form
-                        form.reset();
-                    } else {
-                        alert('There was an error submitting your request. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            });
-        });
-
-        // test broadcast event
-        window.Echo.channel('chat').listen('TestEvent', (event)=>{
-            console.log(event);
-        })
-    </script>
 </x-app-layout>

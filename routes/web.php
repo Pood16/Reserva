@@ -11,8 +11,8 @@ use App\Http\Controllers\Client\ReservationController;
 use App\Http\Controllers\Client\RestaurantController;
 use App\Http\Controllers\Client\FavoriteController;
 
+use App\Http\Controllers\Admin\AdminProfileController;
 
-// use App\Http\Controllers\Trush\RestaurantController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AdminController;
@@ -140,6 +140,13 @@ Route::middleware(['auth', 'manager'])->group(function () {
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
+    // Admin Profile Routes
+    Route::get('/profile', [AdminProfileController::class, 'show'])->name('admin.profile.show');
+    Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::put('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
+    Route::get('/profile/change-password', [AdminProfileController::class, 'showChangePasswordForm'])->name('admin.profile.password.edit');
+    Route::put('/profile/change-password', [AdminProfileController::class, 'updatePassword'])->name('admin.profile.password.update');
+
     // Manager Requests Management
     Route::get('/manager-requests', [AdminController::class, 'managerRequestsIndex'])->name('admin.manager-requests.index');
     Route::post('/manager-requests/{id}/approve', [AdminController::class, 'managerRequestsApprove'])->name('admin.manager-requests.approve');
@@ -164,10 +171,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/restaurants/{id}/edit', [AdminController::class, 'restaurantEdit'])->name('admin.restaurants.edit');
     Route::put('/restaurants/{id}', [AdminController::class, 'restaurantUpdate'])->name('admin.restaurants.update');
     Route::delete('/restaurants/{id}', [AdminController::class, 'restaurantDestroy'])->name('admin.restaurants.destroy');
-
-    // System settings
-    Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
-    Route::put('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
 });
 
 // Reviews routes

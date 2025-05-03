@@ -96,29 +96,37 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $request->created_at->format('M d, Y') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium flex space-x-2">
                                             @if(!$request->status || $request->status == 'pending')
-                                                <div class="flex items-center space-x-2">
-                                                    <button type="button"
-                                                            class="action-btn bg-green-500 hover:bg-green-600 text-white py-1 px-3 rounded-md text-xs transition-colors"
-                                                            data-action="approve"
-                                                            data-request-id="{{ $request->id }}">
-                                                        <i class="fas fa-check mr-1"></i> Approve
+                                                <form method="POST" action="{{ route('admin.manager-requests.approve', $request->id) }}" class="inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                            class="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md text-xs transition-colors"
+                                                            title="Approve">
+                                                        <i class="fas fa-check"></i>
                                                     </button>
-                                                    <button type="button"
-                                                            class="action-btn bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md text-xs transition-colors"
-                                                            data-action="reject"
-                                                            data-request-id="{{ $request->id }}">
-                                                        <i class="fas fa-times mr-1"></i> Reject
+                                                </form>
+
+                                                <form method="POST" action="{{ route('admin.manager-requests.reject', $request->id) }}" class="inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                            class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-md text-xs transition-colors"
+                                                            title="Reject">
+                                                        <i class="fas fa-times"></i>
                                                     </button>
-                                                </div>
+                                                </form>
                                             @endif
-                                            <button type="button"
-                                                    class="action-btn mt-1 bg-gray-500 hover:bg-gray-600 text-white py-1 px-3 rounded-md text-xs transition-colors"
-                                                    data-action="delete"
-                                                    data-request-id="{{ $request->id }}">
-                                                <i class="fas fa-trash mr-1"></i> Delete
-                                            </button>
+                                            @if($request->status === 'rejected')
+                                            <form method="POST" action="{{ route('admin.manager-requests.destroy', $request->id) }}" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        class="bg-gray-500 hover:bg-gray-600 text-white p-2 rounded-md text-xs transition-colors"
+                                                        title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
@@ -136,113 +144,7 @@
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmationModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Confirm Action</h3>
-            </div>
-            <div class="px-6 py-4">
-                <p id="modalMessage" class="text-gray-700"></p>
-            </div>
-            <div class="px-6 py-4 bg-gray-50 flex justify-end space-x-3 rounded-b-lg">
-                <button type="button" id="cancelAction" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">
-                    Cancel
-                </button>
-                <form id="confirmForm" method="POST">
-                    @csrf
-                    <input type="hidden" name="_method" id="formMethod" value="POST">
-                    <button type="submit" id="confirmAction" class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600">
-                        Confirm
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-
     @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar toggle functionality
-            const toggleSidebar = document.getElementById('toggleSidebar');
-            const sidebar = document.querySelector('#sidebar');
-
-            if (toggleSidebar && sidebar) {
-                toggleSidebar.addEventListener('click', function() {
-                    sidebar.classList.toggle('-translate-x-full');
-                });
-            }
-
-            // User menu dropdown toggle
-            const toggleUserMenu = document.getElementById('toggleUserMenu');
-            const userMenuDropdown = document.getElementById('userMenuDropdown');
-
-            if (toggleUserMenu && userMenuDropdown) {
-                toggleUserMenu.addEventListener('click', function() {
-                    userMenuDropdown.classList.toggle('hidden');
-                });
-
-                // Close user menu when clicking outside
-                document.addEventListener('click', function(event) {
-                    const userMenu = document.getElementById('userMenu');
-                    if (userMenu && !userMenu.contains(event.target)) {
-                        userMenuDropdown.classList.add('hidden');
-                    }
-                });
-            }
-
-            // Handle action button clicks
-            const actionButtons = document.querySelectorAll('.action-btn');
-            actionButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const requestId = this.getAttribute('data-request-id');
-                    const action = this.getAttribute('data-action');
-
-                    const modal = document.getElementById('confirmationModal');
-                    const modalTitle = document.getElementById('modalTitle');
-                    const modalMessage = document.getElementById('modalMessage');
-                    const confirmForm = document.getElementById('confirmForm');
-                    const formMethod = document.getElementById('formMethod');
-
-                    // Configure modal based on action
-                    switch(action) {
-                        case 'approve':
-                            modalTitle.textContent = 'Confirm Approval';
-                            modalMessage.textContent = 'Are you sure you want to approve this manager request? The applicant will be notified via email.';
-                            confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId + "/approve";
-                            formMethod.value = 'POST';
-                            break;
-                        case 'reject':
-                            modalTitle.textContent = 'Confirm Rejection';
-                            modalMessage.textContent = 'Are you sure you want to reject this manager request? The applicant will be notified via email.';
-                            confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId + "/reject";
-                            formMethod.value = 'POST';
-                            break;
-                        case 'delete':
-                            modalTitle.textContent = 'Confirm Deletion';
-                            modalMessage.textContent = 'Are you sure you want to delete this manager request? This action cannot be undone.';
-                            confirmForm.action = "{{ url('admin/manager-requests') }}/" + requestId;
-                            formMethod.value = 'DELETE';
-                            break;
-                    }
-
-                    // Show modal
-                    modal.classList.remove('hidden');
-                });
-            });
-
-            // Close modal on cancel
-            document.getElementById('cancelAction').addEventListener('click', function() {
-                document.getElementById('confirmationModal').classList.add('hidden');
-            });
-
-            // Close modal when clicking outside
-            document.getElementById('confirmationModal').addEventListener('click', function(event) {
-                if (event.target === this) {
-                    this.classList.add('hidden');
-                }
-            });
-        });
-    </script>
+    <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
     @endpush
 </x-app-layout>

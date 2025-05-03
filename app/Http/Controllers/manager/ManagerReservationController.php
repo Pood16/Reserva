@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ManagerReservationController extends Controller
 {
-    // list of reservations
+    // list reservations
     public function index()
     {
         $restaurants = Restaurant::where('user_id', Auth::id())->pluck('id');
@@ -23,7 +23,7 @@ class ManagerReservationController extends Controller
         return view('manager.reservations.index', compact('reservations'));
     }
 
-    // show reservation details
+    // reservation details
     public function show($id)
     {
         $restaurants = Restaurant::where('user_id', Auth::id())->pluck('id');
@@ -48,11 +48,8 @@ class ManagerReservationController extends Controller
 
         $reservation->update(['status' => 'confirmed']);
 
-        // Send notification
+        // notify the user
         $reservation->user->notify(new ReservationStatusChanged($reservation, 'confirmed'));
-
-        // Broadcast event
-        // event(new ReservationStatusChangedEvent($reservation, 'confirmed'));
 
         return redirect()->back()->with('success', 'Reservation has been approved and customer has been notified.');
     }
@@ -68,8 +65,12 @@ class ManagerReservationController extends Controller
             ->with(['restaurant', 'table', 'user'])
             ->findOrFail($id);
 
-        if ($reservation->status === 'cancelled' || $reservation->status === 'completed') {
-            return redirect()->back()->with('error', 'Cannot decline a reservation that is already cancelled or completed.');
+        if ($reservation->status === 'cancelled') {
+            return redirect()->back()->with('error', 'Cannot decline a reservation that is already cancelled.');
+        }
+
+        if ($reservation->status === 'completed') {
+            return redirect()->back()->with('error', 'Cannot decline a reservation that is already completed.');
         }
 
         $reservation->update([
@@ -83,9 +84,6 @@ class ManagerReservationController extends Controller
             'declined',
             $validated['reason']
         ));
-
-        // Broadcast event
-        event(new ReservationStatusChangedEvent($reservation, 'declined', $validated['reason']));
 
         return redirect()->back()->with('success', 'Reservation has been declined and customer has been notified.');
     }
@@ -103,11 +101,10 @@ class ManagerReservationController extends Controller
 
         $reservation->update(['status' => 'completed']);
 
+        $reservation->table->update(['is_available' => true]);
+
         // Send notification
         $reservation->user->notify(new ReservationStatusChanged($reservation, 'completed'));
-
-        // Broadcast event
-        // event(new ReservationStatusChangedEvent($reservation, 'completed'));
 
         return redirect()->back()->with('success', 'Reservation has been marked as completed and customer has been notified.');
     }

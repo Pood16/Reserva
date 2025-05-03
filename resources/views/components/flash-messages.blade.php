@@ -1,17 +1,17 @@
 @if(session('success'))
-<div id="success-alert" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
+<div id="success-alert" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 absolute z-20" role="alert">
     <p>{{ session('success') }}</p>
 </div>
 @endif
 
 @if(session('error'))
-<div id="error-alert" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+<div id="error-alert" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 absolute z-20" role="alert">
     <p>{{ session('error') }}</p>
 </div>
 @endif
 
 @if(session('unauthorized'))
-<div id="unauthorized-alert" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6" role="alert">
+<div id="unauthorized-alert" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6 absolute z-20" role="alert">
     <p>{{ session('unauthorized') }}</p>
 </div>
 @endif

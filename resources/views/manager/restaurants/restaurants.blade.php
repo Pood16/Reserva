@@ -219,7 +219,7 @@
                                 @endforeach
                             </div>
                         </div>
-                                                <!-- Food Types -->
+                        <!-- Food Types -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Food Types <span class="text-red-500">*</span></label>
                             <div class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 border border-gray-300 rounded-md">

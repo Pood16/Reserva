@@ -38,14 +38,6 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
             'role' => $role,
         ]);
-
-
-        // Check if is_manager is requested
-        if ($request->has('is_manager') && $request->is_manager) {
-            return redirect()->route('login.show')->with('success', 'Your manager account request has been received. You will be notified about its status via email.');
-        }
-
-        // Standard registration redirect
         return redirect()->route('login.show')->with('success', 'Registration successful! Please log in.');
     }
     public function handleLogin(Request $request)
@@ -59,7 +51,7 @@ class AuthController extends Controller
         if (!Auth::attempt($request->only('email', 'password'))) {
             return redirect()->back()->withErrors(['attempt' => 'Invalid credentials.']);
         }
-        // check the user's role and redirect accordingly
+
         $user = Auth::user();
         return match ($user->role) {
             'admin' => redirect()->route('admin.dashboard'),

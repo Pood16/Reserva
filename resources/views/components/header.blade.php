@@ -38,35 +38,36 @@
         <div class="flex items-center gap-2 sm:gap-3">
             @auth
                 <div class="relative flex items-center">
-                    <!-- Role badges with responsive adjustments -->
+
                     @if(auth()->user()->role === 'admin')
-                        <div class="hidden md:flex px-2 py-1 bg-red-100 text-red-700 rounded-md mr-2 items-center text-xs">
+                        <div class="hidden md:flex px-3 py-3 bg-red-100 text-red-700 rounded-md mr-2 items-center text-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                             <span class="hidden lg:inline">Admin</span>
                         </div>
                     @elseif(auth()->user()->role === 'manager')
-                        <div class="hidden md:flex px-2 py-1 bg-blue-100 text-blue-700 rounded-md mr-2 items-center text-xs">
+                        <div class="hidden md:flex px-3 py-3 bg-blue-100 text-blue-700 rounded-md mr-2 items-center text-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
                             <span class="hidden lg:inline">Manager</span>
                         </div>
                     @endif
-
+                    @if(auth()->user()->role !== 'admin')
                     @include('components.notifications')
+                    @endif
 
-                    <!-- User Dropdown with responsive adjustments -->
+                    <!-- User Dropdown -->
                     <div class="relative inline-block text-left">
-                        <button id="user-menu-button" type="button" class="flex items-center gap-1 sm:gap-2 py-2 px-2 sm:px-3 lg:px-4 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm">
+                        <button id="user-menu-button" type="button" class="flex items-center gap-1 sm:gap-2 py-3 px-3 sm:px-3 lg:px-4 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <span class="hidden sm:inline max-w-[80px] lg:max-w-[120px] truncate">{{ auth()->user()->name }}</span>
                         </button>
 
-                        <!-- Dropdown menu with responsive width -->
+                        <!-- Dropdown menu -->
                         <div id="user-dropdown-menu" class="origin-top-right absolute right-0 mt-2 w-48 sm:w-56 lg:w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden">
                             <div class="px-4 py-3" role="none">
                                 <p class="text-sm text-gray-500">Signed in as</p>
@@ -106,7 +107,13 @@
                             </div>
 
                             <div class="py-1" role="none">
-                                <a href="{{ route('profile.show') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                @if(auth()->user()->role === 'admin')
+                                    <a href="{{ route('admin.profile.show') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                @elseif(auth()->user()->role === 'manager')
+                                    <a href="{{ route('manager.profile.show') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                @else
+                                    <a href="{{ route('profile.show') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                @endif
                                     <svg class="mr-3 h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                     </svg>
@@ -141,7 +148,7 @@
         </div>
     </div>
 
-    <!-- Mobile menu button with improved touch target -->
+    <!-- Mobile menu button  -->
     <div class="md:hidden border-t border-gray-100">
         <button id="mobile-menu-button" class="flex w-full items-center justify-between px-4 py-3 text-gray-500 hover:bg-gray-50">
             <span class="text-sm font-medium">Menu</span>
@@ -150,7 +157,7 @@
             </svg>
         </button>
 
-        <!-- Mobile menu with better spacing -->
+        <!-- Mobile menu  -->
         <div id="mobile-menu" class="hidden px-2 pb-3">
             <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-200">Home</a>
             <a href="{{ route('restaurants.index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-200">Find Restaurants</a>
@@ -163,7 +170,7 @@
         </div>
     </div>
 </div>
-<!-- Responsive spacer -->
+<!-- spacer -->
 <div id="header-spacer" class="h-[64px] sm:h-[72px] md:h-[60px]"></div>
 @push('scripts')
 <script>

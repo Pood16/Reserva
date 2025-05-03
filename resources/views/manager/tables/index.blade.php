@@ -246,8 +246,8 @@
                         <label for="edit_location" class="block text-sm font-medium text-gray-700 mb-1">Location <span class="text-red-500">*</span></label>
                         <select name="location" id="edit_location" class="p-1 shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
                             <option value="">Select location</option>
-                            <option value="indoor">Indoor</option>
-                            <option value="outdoor">Outdoor</option>
+                            <option value="indoors">Indoor</option>
+                            <option value="outdoors">Outdoor</option>
                             <option value="terrace">Terrace</option>
                         </select>
                         @error('location')
@@ -331,5 +331,24 @@
     @push('scripts')
     <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
     <script src="{{asset('resources/js/manager/tables.js')}}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formHasErrors = {{ $errors->any() && old('_token') ? 'true' : 'false' }};
+
+            if (formHasErrors) {
+                if ("{{ old('_method') }}" === "PUT") {
+                    const editModal = document.getElementById('editTableModal');
+                    if (editModal) {
+                        editModal.classList.remove('hidden');
+                    }
+                } else {
+                    const addModal = document.getElementById('addTableModal');
+                    if (addModal) {
+                        addModal.classList.remove('hidden');
+                    }
+                }
+            }
+        });
+    </script>
     @endpush
 </x-app-layout>
