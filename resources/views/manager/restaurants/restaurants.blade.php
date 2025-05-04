@@ -1,7 +1,8 @@
 <x-app-layout>
     <div class="flex h-screen bg-gray-100">
-        <!-- Navbar -->
+
         <x-admin-manager-nav />
+
         <div class="flex flex-col flex-1 lg:ml-64">
             <!-- Fixed Header -->
             <x-dashboard-header />
@@ -28,7 +29,6 @@
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reviews</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tables</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Menus</th>
-
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                             <th class="px-4 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                         </tr>
@@ -261,9 +261,9 @@
                             hover:file:bg-amber-100">
                     </div>
                 </div>
-                <!-- Hidden User ID Field -->
+
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
-                <!-- Form Actions -->
+
                 <div class="mt-8 flex justify-end space-x-3">
                     <button type="button" id="cancelRestaurant" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500" onclick="document.getElementById('addRestaurantModal').classList.add('hidden')">
                         Cancel
@@ -275,42 +275,6 @@
             </form>
         </div>
     </div>
-
-    @push('scripts')
     <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
     <script src="{{asset('resources/js/manager/restaurantsList.js')}}"></script>
-    <script>
-        // Food type checkboxes functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const allFoodTypesCheckbox = document.getElementById('all-food-types');
-            const foodTypeCheckboxes = document.querySelectorAll('.food-type-checkbox');
-
-            // Handle "All" checkbox
-            allFoodTypesCheckbox.addEventListener('change', function() {
-                foodTypeCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
-                });
-            });
-
-            // Update "All" checkbox state based on individual selections
-            foodTypeCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const allChecked = Array.from(foodTypeCheckboxes).every(cb => cb.checked);
-                    const noneChecked = Array.from(foodTypeCheckboxes).every(cb => !cb.checked);
-
-                    if (allChecked) {
-                        allFoodTypesCheckbox.checked = true;
-                        allFoodTypesCheckbox.indeterminate = false;
-                    } else if (noneChecked) {
-                        allFoodTypesCheckbox.checked = false;
-                        allFoodTypesCheckbox.indeterminate = false;
-                    } else {
-                        allFoodTypesCheckbox.checked = false;
-                        allFoodTypesCheckbox.indeterminate = true;
-                    }
-                });
-            });
-        });
-    </script>
-    @endpush
 </x-app-layout>
