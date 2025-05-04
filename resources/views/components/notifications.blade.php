@@ -8,10 +8,10 @@
     </button>
 
     <!-- Notification Dropdown -->
-    <div id="notification-dropdown" class="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50">
+    <div id="notification-dropdown" class="fixed md:absolute inset-x-0 md:right-0 md:left-auto mx-auto md:mx-0 top-16 md:mt-2 w-5/6 md:w-80 max-w-sm rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden z-50">
         <div class="py-2">
             <div class="px-4 py-2 text-sm text-gray-700 font-medium border-b border-gray-100 flex justify-between items-center">
-                <span>Notifications</span>
+                <span class="text-red-500">Notifications</span>
                 <button id="mark-all-read" class="text-xs text-blue-600 hover:text-blue-800">Mark all as read</button>
             </div>
 
@@ -20,10 +20,7 @@
                 <div class="text-center text-gray-500 text-sm py-6">Loading notifications...</div>
             </div>
 
-            <!-- Notifications Footer -->
-            <div class="border-t border-gray-100 mt-1 text-center">
-                <a href="#" class="block w-full text-sm text-blue-600 hover:text-blue-800 py-2">View all notifications</a>
-            </div>
+
         </div>
     </div>
 </div>

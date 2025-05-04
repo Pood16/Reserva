@@ -1,146 +1,10 @@
 <x-app-layout>
     <x-header />
     <div class="bg-gray-50 min-h-screen">
-        <!-- Success message -->
+        <!-- message -->
         <x-flash-messages />
 
-        {{-- <!-- Reservation  -->
-        @if(session('show_confirmation_modal') && session('reservation_details'))
-        <div id="reservation-confirmation-modal" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <!-- overlay -->
-                <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
-
-                <!-- Modal panel -->
-                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <!-- Success icon -->
-                                <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                                    Reservation Confirmed!
-                                </h3>
-                                <div class="mt-4">
-                                    <div class="border-b border-gray-200 pb-2 mb-4">
-                                        <p class="text-sm text-gray-500">
-                                            Your reservation has been submitted successfully and is awaiting confirmation from the restaurant.
-                                        </p>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <div class="flex justify-between py-2 text-sm">
-                                            <span class="font-medium text-gray-500">Restaurant:</span>
-                                            <span class="text-gray-900">{{ session('reservation_details.restaurant_name') }}</span>
-                                        </div>
-                                        <div class="flex justify-between py-2 text-sm border-t border-gray-100">
-                                            <span class="font-medium text-gray-500">Date:</span>
-                                            <span class="text-gray-900">{{ session('reservation_details.booking_date') }}</span>
-                                        </div>
-                                        <div class="flex justify-between py-2 text-sm border-t border-gray-100">
-                                            <span class="font-medium text-gray-500">Time:</span>
-                                            <span class="text-gray-900">{{ session('reservation_details.booking_time') }} - {{ session('reservation_details.end_time') }}</span>
-                                        </div>
-                                        <div class="flex justify-between py-2 text-sm border-t border-gray-100">
-                                            <span class="font-medium text-gray-500">Table:</span>
-                                            <span class="text-gray-900">{{ session('reservation_details.table_name') }} ({{ session('reservation_details.table_location') }})</span>
-                                        </div>
-                                        <div class="flex justify-between py-2 text-sm border-t border-gray-100">
-                                            <span class="font-medium text-gray-500">Guests:</span>
-                                            <span class="text-gray-900">{{ session('reservation_details.guests_number') }} {{ session('reservation_details.guests_number') === 1 ? 'person' : 'people' }}</span>
-                                        </div>
-                                        <div class="flex justify-between py-2 text-sm border-t border-gray-100">
-                                            <span class="font-medium text-gray-500">Status:</span>
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                {{ session('reservation_details.status') }}
-                                            </span>
-                                        </div>
-                                        <div class="flex justify-between py-2 text-sm border-t border-gray-100">
-                                            <span class="font-medium text-gray-500">Reference Number:</span>
-                                            <span class="text-gray-900 font-mono">{{ session('reservation_details.reference_number') }}</span>
-                                        </div>
-                                        @if(session('reservation_details.special_requests'))
-                                        <div class="py-2 text-sm border-t border-gray-100">
-                                            <span class="font-medium text-gray-500 block mb-1">Special Requests:</span>
-                                            <p class="text-gray-900 italic">{{ session('reservation_details.special_requests') }}</p>
-                                        </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="rounded-md bg-blue-50 p-4 mt-4">
-                                        <div class="flex">
-                                            <div class="flex-shrink-0">
-                                                <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                                </svg>
-                                            </div>
-                                            <div class="ml-3">
-                                                <h3 class="text-sm font-medium text-blue-800">Note</h3>
-                                                <div class="mt-2 text-sm text-blue-700">
-                                                    <p>Please save your reference number. You may need it if you contact the restaurant about your reservation.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="button" id="close-modal-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Close
-                        </button>
-                        <a href="#" id="download-details-button" class="mt-3 sm:mt-0 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            Download Details
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @endif --}}
-
-        <!-- Custom Notification Popup -->
-        <div id="notification-popup" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                <!-- Background overlay -->
-                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
-                <!-- Modal panel -->
-                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div id="notification-icon" class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
-                                <!-- Icon will be inserted here dynamically -->
-                            </div>
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="notification-title">
-                                    Notification
-                                </h3>
-                                <div class="mt-2">
-                                    <p class="text-sm text-gray-500" id="notification-message">
-                                        <!-- Message will be inserted here dynamically -->
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="button" id="notification-action-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm hidden">
-                            Log in
-                        </button>
-                        <button type="button" id="notification-close-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-                            OK
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Restaurant Header - Updated design -->
+        <!-- header-->
         <div class="relative mb-8">
             <div class="h-[28rem] w-full overflow-hidden">
                 <img
@@ -160,7 +24,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
-                                    <span>{{ number_format($restaurant->reviews->avg('rating') ?? 4.5, 1) }} ({{ $restaurant->reviews->count() }} {{ Str::plural('review', $restaurant->reviews->count()) }})</span>
+                                    <span>{{ number_format($restaurant->reviews->avg('rating') ?? 0.0, 1) }} ({{ $restaurant->reviews->count() }} {{ Str::plural('review', $restaurant->reviews->count()) }})</span>
                                 </div>
                                 <div class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/90 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,16 +40,6 @@
                                     <span>{{ $restaurant->opening_time->format('g:i A') }} - {{ $restaurant->closing_time->format('g:i A') }}</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="flex flex-wrap gap-2 mt-2 md:mt-0">
-                            <a href="{{ auth()->check() ? route('client.reservations.create', ['restaurant' => $restaurant->id]) : '#' }}"
-                               class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 flex items-center shadow-lg reservation-btn"
-                               data-auth="{{ auth()->check() ? 'true' : 'false' }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                Book Now
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -208,7 +62,7 @@
                             @if($restaurant->foodTypes->count() > 0)
                                 {{ $restaurant->foodTypes->pluck('name')->join(', ') }}
                             @else
-                                Various
+                                No Food Type for now!
                             @endif
                         </p>
                     </div>
@@ -238,7 +92,7 @@
             </div>
 
             <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Left Column -->
+                <!-- Left  -->
                 <div class="lg:w-2/3">
                     <!-- Tabbed Navigation -->
                     <div class="mb-8">
@@ -341,8 +195,7 @@
                             <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
                                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Menu</h2>
 
-                                @if(($restaurant->menus ?? collect())->count())
-                                    <!-- Menu category tabs if multiple menus -->
+                                @if(($restaurant->menus))
                                     @if($restaurant->menus->count() > 1)
                                     <div class="mb-6">
                                         <div class="flex flex-wrap gap-2">
@@ -357,7 +210,7 @@
                                     </div>
                                     @endif
 
-                                    <!-- Menu items by category -->
+                                    <!-- Menu items  -->
                                     @foreach($restaurant->menus as $index => $menu)
                                     <div id="menu-category-{{ $menu->id }}" class="menu-category {{ $index === 0 ? 'block' : 'hidden' }}">
                                         @if($restaurant->menus->count() === 1)
@@ -448,7 +301,6 @@
                                             </div>
                                         @endforeach
                                     @else
-                                        <!-- Sample placeholder images if no gallery exists -->
                                         @for($i = 1; $i <= 6; $i++)
                                             <div class="rounded-lg overflow-hidden aspect-w-4 aspect-h-3 bg-gray-200 flex items-center justify-center">
                                                 <span class="text-gray-500 text-sm">Restaurant Image {{ $i }}</span>
@@ -524,6 +376,7 @@
                                         </div>
 
                                         <div class="flex flex-col justify-center items-center">
+                                            @auth
                                             <p class="mb-2 text-sm text-gray-500">Have you dined at this restaurant?</p>
                                             <button type="button" id="open-review-modal" class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 inline-flex items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -531,6 +384,7 @@
                                                 </svg>
                                                 Write a Review
                                             </button>
+                                            @endauth
                                         </div>
                                     </div>
                                 </div>
@@ -596,9 +450,9 @@
                     </div>
                 </div>
 
-                <!-- Right Column -->
+                <!-- Right  -->
                 <div class="lg:w-1/3">
-                    <!-- Reservation Card -->
+                    <!-- Reservation  -->
                     <div class="bg-white rounded-xl shadow-sm p-6 mb-8 sticky top-4">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Make a Reservation</h3>
                         <a href="{{ auth()->check() ? route('client.reservations.create', ['restaurant' => $restaurant->id]) : '#' }}"
@@ -634,18 +488,49 @@
                 </div>
             </div>
         </div>
+
+        <!-- not authenticated -->
+        <div id="notification-popup" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+                <!-- notification modal -->
+                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div id="notification-icon" class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
+
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="notification-title">
+                                    Notification
+                                </h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500" id="notification-message">
+                                        <!-- message-->
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="button" id="notification-action-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm hidden">
+                            Log in
+                        </button>
+                        <button type="button" id="notification-close-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <x-footer />
 
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Image fallback
-            document.querySelectorAll('.restaurant-image, .menu-item-image').forEach(img => {
-                img.addEventListener('error', function() {
-                    this.src = this.getAttribute('data-fallback');
-                });
-            });
 
             // Authentication check for reservation buttons
             document.querySelectorAll('.reservation-btn').forEach(btn => {
@@ -653,8 +538,7 @@
                     const isAuthenticated = this.getAttribute('data-auth') === 'true';
                     if (!isAuthenticated) {
                         e.preventDefault();
-                        showNotification(
-                            'Authentication Required',
+                        showNotification('Authentication Required',
                             'You need to log in or register to make a reservation at this restaurant. Would you like to log in now?',
                             'info',
                             true
@@ -828,7 +712,7 @@
                 });
             }
 
-            // Custom notification popup functionality
+            // notification popup
             const notificationPopup = document.getElementById('notification-popup');
             const notificationTitle = document.getElementById('notification-title');
             const notificationMessage = document.getElementById('notification-message');

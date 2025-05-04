@@ -49,21 +49,23 @@ Route::get('/restaurants/{restaurant}', [RestaurantController::class, 'show'])->
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 
+// Reviews routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('restaurants/{restaurant}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::delete('restaurants/{restaurant}/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+
 // Auth required routes
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('/broadcast', function(){
-        broadcast(new \App\Events\TestEvent());
-    })->name('broadcast');
 
-    // Notifications : client
+    // Notifications
     Route::get('/notifications', [NotificationsController::class, 'getNotifications'])->name('notifications.get');
     Route::post('/notifications/read', [NotificationsController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationsController::class, 'markAllAsRead'])->name('notifications.read-all');
 
     // client reservations
     Route::prefix('client')->name('client.')->group(function () {
-        // Use the ReservationController for client reservations
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
         Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
@@ -97,7 +99,7 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::post('/manager/restaurant/{id}/images', [ManagerRestaurantController::class, 'addRestaurantImage'])->name('restaurant.images.add');
     Route::delete('/manager/restaurant/{id}/images/{imageId}', [ManagerRestaurantController::class, 'deleteRestaurantImage'])->name('restaurant.images.delete');
 
-    // Table management routes
+    // Tables
     Route::get('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'index'])->name('manager.tables.index');
     Route::post('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'store'])->name('manager.tables.store');
     Route::get('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'show'])->name('manager.tables.edit');
@@ -106,7 +108,7 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-availability', [TableController::class, 'toggleAvailability'])->name('manager.tables.toggle-availability');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-active', [TableController::class, 'toggleActive'])->name('manager.tables.toggle-active');
 
-    // Menu management routes
+    // Menus
     Route::get('/manager/restaurant/{restaurantId}/menus', [MenuController::class, 'index'])->name('manager.menus.index');
     Route::get('/manager/restaurant/{restaurantId}/menus/create', [MenuController::class, 'create'])->name('manager.menus.create');
     Route::post('/manager/restaurant/{restaurantId}/menus', [MenuController::class, 'store'])->name('manager.menus.store');
@@ -114,7 +116,7 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::put('/manager/restaurant/{restaurantId}/menus/{menuId}', [MenuController::class, 'update'])->name('manager.menus.update');
     Route::delete('/manager/restaurant/{restaurantId}/menus/{menuId}', [MenuController::class, 'destroy'])->name('manager.menus.destroy');
 
-    // Menu items management routes
+    // Menu items
     Route::get('/manager/restaurant/{restaurantId}/menus/{menuId}/items', [MenuController::class, 'showItems'])->name('manager.menus.items');
     Route::post('/manager/restaurant/{restaurantId}/menus/{menuId}/items', [MenuController::class, 'storeItem'])->name('manager.menus.items.store');
     Route::get('/manager/restaurant/{restaurantId}/menus/{menuId}/items/{itemId}/edit', [MenuController::class, 'editItem'])->name('manager.menus.items.edit');
@@ -122,14 +124,14 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::delete('/manager/restaurant/{restaurantId}/menus/{menuId}/items/{itemId}', [MenuController::class, 'destroyItem'])->name('manager.menus.items.destroy');
     Route::put('/manager/restaurant/{restaurantId}/menus/{menuId}/items/{itemId}/toggle', [MenuController::class, 'toggleItemAvailability'])->name('manager.menus.items.toggle');
 
-    // Manager Profile Routes
+    // Manager Profile
     Route::get('/manager/profile', [ManagerProfileController::class, 'show'])->name('manager.profile.show');
     Route::get('/manager/profile/edit', [ManagerProfileController::class, 'edit'])->name('manager.profile.edit');
     Route::put('/manager/profile', [ManagerProfileController::class, 'update'])->name('manager.profile.update');
     Route::get('/manager/profile/change-password', [ManagerProfileController::class, 'showChangePasswordForm'])->name('manager.profile.password.edit');
     Route::put('/manager/profile/change-password', [ManagerProfileController::class, 'updatePassword'])->name('manager.profile.password.update');
 
-    // Manager Reservation Routes
+    // manage reservations
     Route::get('/manager/reservations', [ManagerReservationController::class, 'index'])->name('manager.reservations');
     Route::get('/manager/reservations/{id}', [ManagerReservationController::class, 'show'])->name('manager.reservations.show');
     Route::put('/manager/reservations/{id}/approve', [ManagerReservationController::class, 'approve'])->name('manager.reservations.approve');
@@ -137,11 +139,11 @@ Route::middleware(['auth', 'manager'])->group(function () {
     Route::put('/manager/reservations/{id}/complete', [ManagerReservationController::class, 'complete'])->name('manager.reservations.complete');
 });
 
-// Admin routes
+// Admin
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    // Admin Profile Routes
+    // Admin Profile
     Route::get('/profile', [AdminProfileController::class, 'show'])->name('admin.profile.show');
     Route::get('/profile/edit', [AdminProfileController::class, 'edit'])->name('admin.profile.edit');
     Route::put('/profile', [AdminProfileController::class, 'update'])->name('admin.profile.update');
@@ -174,8 +176,4 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/restaurants/{id}', [AdminController::class, 'restaurantDestroy'])->name('admin.restaurants.destroy');
 });
 
-// Reviews routes
-Route::middleware(['auth'])->group(function () {
-    Route::post('restaurants/{restaurant}/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::delete('restaurants/{restaurant}/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
-});
+

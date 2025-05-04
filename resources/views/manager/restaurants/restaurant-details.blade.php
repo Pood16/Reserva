@@ -177,7 +177,7 @@
                     </div>
                 </div>
 
-                <!-- Restaurant Gallery -->
+                <!-- Restaurant Images -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
                         <h3 class="text-lg font-semibold text-gray-800">Restaurant Gallery</h3>
@@ -222,7 +222,7 @@
         </div>
     </div>
 
-    <!-- Add Image Modal -->
+    <!-- Add Image -->
     <div id="addImageModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden">
         <div class="bg-white rounded-lg w-full max-w-md max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center border-b px-6 py-4">
@@ -244,7 +244,7 @@
                                 file:bg-amber-50 file:text-amber-700
                                 hover:file:bg-amber-100" required>
                         </div>
-                        <p class="text-xs text-gray-500 mt-1">Upload a high-quality image to showcase your restaurant. Max size 2MB.</p>
+                        <p class="text-xs text-gray-500 mt-1">Upload a high-quality image to showcase your restaurant.</p>
                     </div>
 
 
@@ -261,8 +261,7 @@
         </div>
     </div>
 
-    @push('scripts')
+
     <script src="{{asset('resources/js/manager/toggleNav.js')}}"></script>
     <script src="{{asset('resources/js/manager/restaurant-details.js')}}"></script>
-    @endpush
 </x-app-layout>
