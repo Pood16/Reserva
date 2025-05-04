@@ -1,12 +1,12 @@
 <x-app-layout>
     <x-header />
     <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Hero Section with Search and Filters -->
+        <!-- header -->
         <div class="mb-10 text-center">
             <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Discover Amazing Restaurants</h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">Find your next culinary adventure with our curated selection of the finest restaurants</p>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">Find your next adventure with our curated selection of the finest restaurants</p>
 
-            <!-- Main Search Bar with Filters -->
+            <!-- search + filters -->
             <div class="max-w-3xl mx-auto">
                 <form action="{{ route('restaurants.index') }}" method="GET" class="flex flex-col md:flex-row gap-2 md:gap-4 items-center justify-center">
                     <input type="text" name="search" placeholder="Search restaurants..."
@@ -40,7 +40,7 @@
                         @if(request('search'))
                             <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
                                 <span>Search: {{ request('search') }}</span>
-                                <a href="{{ route('restaurants.index', array_merge(request()->except('search'), ['page' => 1])) }}"
+                                <a href="{{ route('restaurants.index', request()->except('search')) }}"
                                    class="ml-1 text-yellow-600 hover:text-yellow-800">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -51,7 +51,7 @@
                         @if(request('city'))
                             <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
                                 <span>City: {{ request('city') }}</span>
-                                <a href="{{ route('restaurants.index', array_merge(request()->except('city'), ['page' => 1])) }}"
+                                <a href="{{ route('restaurants.index', request()->except('city')) }}"
                                    class="ml-1 text-yellow-600 hover:text-yellow-800">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -62,7 +62,7 @@
                         @if(request('food_type'))
                             <div class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
                                 <span>Food Type: {{ optional($foodTypes->firstWhere('id', request('food_type')))->name }}</span>
-                                <a href="{{ route('restaurants.index', array_merge(request()->except('food_type'), ['page' => 1])) }}"
+                                <a href="{{ route('restaurants.index', request()->except('food_type')) }}"
                                    class="ml-1 text-yellow-600 hover:text-yellow-800">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -72,25 +72,6 @@
                         @endif
                     </div>
                 @endif
-
-                <!-- Sorting -->
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">All Restaurants</h2>
-                    <div class="relative">
-                        <select id="sort" name="sort" class="appearance-none bg-gray-50 border border-gray-200 text-gray-700 py-2 px-3 pr-8 rounded-lg focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 text-sm">
-                            <option value="recommended">Sort by: Recommended</option>
-                            <option value="rating_desc">Rating: High to Low</option>
-                            <option value="rating_asc">Rating: Low to High</option>
-                            <option value="name_asc">Name: A to Z</option>
-                            <option value="name_desc">Name: Z to A</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Results Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -108,7 +89,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
-                                    {{ number_format($restaurant->reviews->avg('rating') ?? 4.5, 1) }}
+                                    {{ number_format($restaurant->reviews->avg('rating') ?? 0.0, 1) }}
                                 </div>
                             </div>
                             <div class="p-4">
@@ -184,16 +165,6 @@
             </div>
         </div>
     </div>
-    <!-- JavaScript  -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sortSelect = document.getElementById('sort');
-            sortSelect.addEventListener('change', function() {
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('sort', this.value);
-                window.location.href = currentUrl.toString();
-            });
-        });
-    </script>
+
     <x-footer />
 </x-app-layout>
