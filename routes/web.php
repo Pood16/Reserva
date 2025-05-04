@@ -100,6 +100,7 @@ Route::middleware(['auth', 'manager'])->group(function () {
     // Table management routes
     Route::get('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'index'])->name('manager.tables.index');
     Route::post('/manager/restaurant/{restaurantId}/tables', [TableController::class, 'store'])->name('manager.tables.store');
+    Route::get('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'show'])->name('manager.tables.edit');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'update'])->name('manager.tables.update');
     Route::delete('/manager/restaurant/{restaurantId}/tables/{id}', [TableController::class, 'destroy'])->name('manager.tables.destroy');
     Route::put('/manager/restaurant/{restaurantId}/tables/{id}/toggle-availability', [TableController::class, 'toggleAvailability'])->name('manager.tables.toggle-availability');

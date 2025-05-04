@@ -141,11 +141,6 @@
                         </div>
                     @endforeach
                 </div>
-
-                <!-- Pagination -->
-                <div class="mt-8">
-                    {{ $restaurants->links() }}
-                </div>
             </div>
             <!-- Popular Restaurants Section -->
             <div class="mb-12">
@@ -189,10 +184,9 @@
             </div>
         </div>
     </div>
-    <!-- JavaScript for interactivity -->
+    <!-- JavaScript  -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sort selection handling
             const sortSelect = document.getElementById('sort');
             sortSelect.addEventListener('change', function() {
                 const currentUrl = new URL(window.location.href);

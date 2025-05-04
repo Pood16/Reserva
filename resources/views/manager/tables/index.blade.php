@@ -11,7 +11,7 @@
             <main class="flex-1 overflow-y-auto p-6 bg-gray-100">
                 <!-- Flash Messages -->
                 <x-flash-messages />
-                <!-- Breadcrumbs and back button -->
+
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <a href="{{ route('restaurant.details', $restaurant->id) }}" class="inline-flex items-center text-gray-700 hover:text-amber-600">
@@ -25,14 +25,14 @@
                     </div>
                 </div>
 
-                <!-- Restaurant Name -->
+
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-800">Tables for {{ $restaurant->name }} <i class="fas fa-utensils mr-1"></i></h3>
                     </div>
                 </div>
 
-                <!-- Tables List -->
+                <!-- Tables -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="overflow-x-auto">
                         @if(count($restaurant->tables) > 0)
@@ -82,17 +82,9 @@
                                                 </form>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                                                <button type="button" class="text-indigo-600 hover:text-indigo-900 edit-table-btn"
-                                                    data-table-id="{{ $table->id }}"
-                                                    data-table-name="{{ $table->name }}"
-                                                    data-table-capacity="{{ $table->capacity }}"
-                                                    data-table-location="{{ $table->location }}"
-                                                    data-table-description="{{ $table->description }}"
-                                                    data-table-available="{{ $table->is_available ? 'true' : 'false' }}"
-                                                    data-table-active="{{ $table->is_active ? 'true' : 'false' }}"
-                                                    data-edit-url="{{ route('manager.tables.update', ['restaurantId' => $restaurant->id, 'id' => $table->id]) }}">
+                                                <a href="{{ route('manager.tables.edit', ['restaurantId' => $restaurant->id, 'id' => $table->id]) }}" class="text-indigo-600 hover:text-indigo-900">
                                                     <i class="fas fa-edit"></i>
-                                                </button>
+                                                </a>
                                                 <button type="button" class="text-red-600 hover:text-red-900 delete-table-btn"
                                                     data-table-id="{{ $table->id }}"
                                                     data-table-name="{{ $table->name }}"
@@ -116,7 +108,7 @@
         </div>
     </div>
 
-    <!-- Add Table Modal -->
+    <!-- Add Table  -->
     <div id="addTableModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden">
         <div class="bg-white rounded-lg w-full max-w-md max-h-screen overflow-y-auto">
             <div class="flex justify-between items-center border-b px-6 py-4">
@@ -130,7 +122,7 @@
                 @csrf
 
                 <div class="space-y-6">
-                    <!-- Table Name -->
+                    <!-- Name -->
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Table Name <span class="text-red-500">*</span></label>
                         <input type="text" name="name" id="name" value="{{ old('name') }}" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md p-1" placeholder="e.g. Table 1" required>
@@ -208,99 +200,6 @@
         </div>
     </div>
 
-    <!-- Edit Table Modal -->
-    <div id="editTableModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-lg w-full max-w-md max-h-screen overflow-y-auto">
-            <div class="flex justify-between items-center border-b px-6 py-4">
-                <h3 class="text-lg font-semibold text-gray-800">Edit Table: <span id="editTableTitle"></span></h3>
-                <button id="closeEditModal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <form id="editTableForm" method="POST" class="p-6">
-                @csrf
-                @method('PUT')
-
-                <div class="space-y-6">
-                    <!-- Table Name -->
-                    <div>
-                        <label for="edit_name" class="block text-sm font-medium text-gray-700 mb-1">Table Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="name" id="edit_name" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md p-1" placeholder="e.g. Table 1" required>
-                        @error('name')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Capacity -->
-                    <div>
-                        <label for="edit_capacity" class="block text-sm font-medium text-gray-700 mb-1">Capacity <span class="text-red-500">*</span></label>
-                        <input type="number" name="capacity" id="edit_capacity" min="1" max="20" class="p-1 shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
-                        @error('capacity')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Location -->
-                    <div>
-                        <label for="edit_location" class="block text-sm font-medium text-gray-700 mb-1">Location <span class="text-red-500">*</span></label>
-                        <select name="location" id="edit_location" class="p-1 shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" required>
-                            <option value="">Select location</option>
-                            <option value="indoors">Indoor</option>
-                            <option value="outdoors">Outdoor</option>
-                            <option value="terrace">Terrace</option>
-                        </select>
-                        @error('location')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Description -->
-                    <div>
-                        <label for="edit_description" class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
-                        <textarea name="description" id="edit_description" rows="3" class="shadow-sm focus:ring-amber-500 focus:border-amber-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="e.g. Near the window with a nice view"></textarea>
-                        @error('description')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Is Available -->
-                        <div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="is_available" id="edit_is_available" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
-                                <label for="edit_is_available" class="ml-2 block text-sm font-medium text-gray-700">
-                                    Available for booking
-                                </label>
-                            </div>
-                            <p class="mt-1 text-xs text-gray-500">Customers can book this table if checked</p>
-                        </div>
-
-                        <!-- Is Active -->
-                        <div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="is_active" id="edit_is_active" class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded">
-                                <label for="edit_is_active" class="ml-2 block text-sm font-medium text-gray-700">
-                                    Active
-                                </label>
-                            </div>
-                            <p class="mt-1 text-xs text-gray-500">Table is active and displayed on the site</p>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" id="cancelEdit" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
-                            Cancel
-                        </button>
-                        <button type="submit" class="bg-amber-500 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
-                            Update Table
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- Delete Table Confirmation Modal -->
     <div id="deleteTableModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center hidden">
         <div class="bg-white rounded-lg w-full max-w-md">
@@ -336,12 +235,7 @@
             const formHasErrors = {{ $errors->any() && old('_token') ? 'true' : 'false' }};
 
             if (formHasErrors) {
-                if ("{{ old('_method') }}" === "PUT") {
-                    const editModal = document.getElementById('editTableModal');
-                    if (editModal) {
-                        editModal.classList.remove('hidden');
-                    }
-                } else {
+                if ("{{ old('_method') }}" !== "PUT") {
                     const addModal = document.getElementById('addTableModal');
                     if (addModal) {
                         addModal.classList.remove('hidden');

@@ -4,7 +4,7 @@
         <!-- Success message -->
         <x-flash-messages />
 
-        <!-- Reservation Confirmation Modal -->
+        {{-- <!-- Reservation  -->
         @if(session('show_confirmation_modal') && session('reservation_details'))
         <div id="reservation-confirmation-modal" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -101,7 +101,7 @@
                 </div>
             </div>
         </div>
-        @endif
+        @endif --}}
 
         <!-- Custom Notification Popup -->
         <div id="notification-popup" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -129,6 +129,9 @@
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="button" id="notification-action-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm hidden">
+                            Log in
+                        </button>
                         <button type="button" id="notification-close-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
                             OK
                         </button>
@@ -175,8 +178,9 @@
                             </div>
                         </div>
                         <div class="flex flex-wrap gap-2 mt-2 md:mt-0">
-                            <a href="{{ route('client.reservations.create', ['restaurant' => $restaurant->id]) }}"
-                               class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 flex items-center shadow-lg">
+                            <a href="{{ auth()->check() ? route('client.reservations.create', ['restaurant' => $restaurant->id]) : '#' }}"
+                               class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 flex items-center shadow-lg reservation-btn"
+                               data-auth="{{ auth()->check() ? 'true' : 'false' }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
@@ -296,7 +300,7 @@
                                             @if($restaurant->website)
                                                 <div class="flex items-center text-gray-600">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c-1.657 0-3-4.03-3-9s1.343-9 3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                                                     </svg>
                                                     <a href="{{ $restaurant->website }}" target="_blank" class="text-yellow-600 hover:text-yellow-800">Visit Website</a>
                                                 </div>
@@ -597,8 +601,9 @@
                     <!-- Reservation Card -->
                     <div class="bg-white rounded-xl shadow-sm p-6 mb-8 sticky top-4">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Make a Reservation</h3>
-                        <a href="{{ route('client.reservations.create', ['restaurant' => $restaurant->id]) }}"
-                           class="w-full px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 flex justify-center items-center">
+                        <a href="{{ auth()->check() ? route('client.reservations.create', ['restaurant' => $restaurant->id]) : '#' }}"
+                           class="w-full px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-lg transition duration-300 flex justify-center items-center reservation-btn"
+                           data-auth="{{ auth()->check() ? 'true' : 'false' }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
@@ -639,6 +644,22 @@
             document.querySelectorAll('.restaurant-image, .menu-item-image').forEach(img => {
                 img.addEventListener('error', function() {
                     this.src = this.getAttribute('data-fallback');
+                });
+            });
+
+            // Authentication check for reservation buttons
+            document.querySelectorAll('.reservation-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const isAuthenticated = this.getAttribute('data-auth') === 'true';
+                    if (!isAuthenticated) {
+                        e.preventDefault();
+                        showNotification(
+                            'Authentication Required',
+                            'You need to log in or register to make a reservation at this restaurant. Would you like to log in now?',
+                            'info',
+                            true
+                        );
+                    }
                 });
             });
 
@@ -813,8 +834,9 @@
             const notificationMessage = document.getElementById('notification-message');
             const notificationIcon = document.getElementById('notification-icon');
             const notificationCloseButton = document.getElementById('notification-close-button');
+            const notificationActionButton = document.getElementById('notification-action-button');
 
-            function showNotification(title, message, type) {
+            function showNotification(title, message, type, showLoginButton = false) {
                 notificationTitle.textContent = title;
                 notificationMessage.textContent = message;
 
@@ -828,8 +850,15 @@
                     notificationIcon.classList.add('bg-red-100');
                     notificationIcon.innerHTML = '<svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
                 } else {
-                    notificationIcon.classList.add('bg-yellow-100');
-                    notificationIcon.innerHTML = '<svg class="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m-1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path></svg>';
+                    notificationIcon.classList.add('bg-blue-100');
+                    notificationIcon.innerHTML = '<svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m-1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"></path></svg>';
+                }
+
+                // Show or hide login button
+                if (showLoginButton) {
+                    notificationActionButton.classList.remove('hidden');
+                } else {
+                    notificationActionButton.classList.add('hidden');
                 }
 
                 notificationPopup.classList.remove('hidden');
@@ -838,6 +867,12 @@
             if (notificationCloseButton) {
                 notificationCloseButton.addEventListener('click', function() {
                     notificationPopup.classList.add('hidden');
+                });
+            }
+
+            if (notificationActionButton) {
+                notificationActionButton.addEventListener('click', function() {
+                    window.location.href = "{{ route('login.show') }}";
                 });
             }
 

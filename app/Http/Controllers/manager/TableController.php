@@ -15,13 +15,10 @@ class TableController extends Controller
     public function index($restaurantId)
     {
         $restaurant = Restaurant::with('tables')->findOrFail($restaurantId);
-
-        // Check if the authenticated user owns this restaurant
         if ($restaurant->user_id !== Auth::id()) {
             return redirect()->route('manage.restaurants')
                 ->with('error', 'You are not authorized to manage tables for this restaurant.');
         }
-
         return view('manager.tables.index', compact('restaurant'));
     }
 
@@ -46,6 +43,20 @@ class TableController extends Controller
         $validated['restaurant_id'] = $restaurantId;
         $table = Table::create($validated);
         return redirect()->back()->with('success', 'Table created successfully.');
+    }
+
+    public function show($restaurantId, $tableId)
+    {
+        $restaurant = Restaurant::findOrFail($restaurantId);
+        if ($restaurant->user_id !== Auth::id()) {
+            return redirect()->route('manage.restaurants')
+                ->with('error', 'You are not authorized to view this table.');
+        }
+
+        $table = Table::where('restaurant_id', $restaurantId)
+                      ->findOrFail($tableId);
+
+        return view('manager.tables.edit', compact('restaurant', 'table'));
     }
 
 

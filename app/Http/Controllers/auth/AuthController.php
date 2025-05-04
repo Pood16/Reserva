@@ -11,15 +11,23 @@ class AuthController extends Controller
 {
     public function showRegister()
     {
+        if (Auth::check()) {
+            return redirect()->back()->with('success', 'You are already logged in.');
+        }
         return view('auth.register');
     }
     public function showLogin()
     {
+
+        if (Auth::check()) {
+            return redirect()->back()->with('success', 'You are already logged in.');
+        }
         return view('auth.login');
     }
 
     public function handleRegister(Request $request)
     {
+
         // validate the inputs
         $request->validate([
             'name' => 'required|string|max:255',
