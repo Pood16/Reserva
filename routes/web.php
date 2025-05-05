@@ -161,13 +161,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/restaurant-managers/{id}/ban', [AdminController::class, 'restaurantManagersBan'])->name('admin.restaurant-managers.ban');
     Route::post('/restaurant-managers/{id}/unban', [AdminController::class, 'restaurantManagersUnban'])->name('admin.restaurant-managers.unban');
 
-    // User management
-    Route::get('/users', [AdminController::class, 'userIndex'])->name('admin.users.index');
-    Route::get('/users/create', [AdminController::class, 'userCreate'])->name('admin.users.create');
-    Route::post('/users', [AdminController::class, 'userStore'])->name('admin.users.store');
-    Route::get('/users/{id}/edit', [AdminController::class, 'userEdit'])->name('admin.users.edit');
-    Route::put('/users/{id}', [AdminController::class, 'userUpdate'])->name('admin.users.update');
-    Route::delete('/users/{id}', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
 
     // Restaurant management
     Route::get('/restaurants', [AdminController::class, 'restaurantIndex'])->name('admin.restaurants.index');

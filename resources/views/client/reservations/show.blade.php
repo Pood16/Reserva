@@ -112,25 +112,9 @@
                                 <p class="text-sm text-gray-700">{{ $reservation->special_requests }}</p>
                             </div>
                         @endif
-
-                        @if(in_array($reservation->status, ['pending', 'confirmed']) && $reservation->booking_date > now())
-                            <div class="mt-8 flex justify-end">
-                                <form action="{{ route('client.reservations.cancel', $reservation->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-100 border border-transparent rounded-md font-semibold text-xs text-red-700 uppercase tracking-widest hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                        </svg>
-                                        Cancel Reservation
-                                    </button>
-                                </form>
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
-
             @if($reservation->status === 'confirmed' && $reservation->booking_date > now())
                 <div class="mt-6 bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 border-b border-gray-200">

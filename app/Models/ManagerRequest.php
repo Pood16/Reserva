@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 class ManagerRequest extends Model
 {
     use Notifiable;
-    
+
     protected $fillable = [
         'FirstName',
         'LastName',
@@ -16,16 +16,6 @@ class ManagerRequest extends Model
         'status'
     ];
 
-    public function getFullNameAttribute()
-    {
-        return $this->FirstName . ' ' . $this->LastName;
-    }
     
-    /**
-     * Route notifications for the mail channel.
-     */
-    public function routeNotificationForMail(): string
-    {
-        return $this->Email;
-    }
+
 }

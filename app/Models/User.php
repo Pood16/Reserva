@@ -29,13 +29,6 @@ class User extends Authenticatable
         return $this->hasMany(Restaurant::class);
     }
 
-
-    public function favoriteRestaurants()
-    {
-        return $this->belongsToMany(Restaurant::class, 'favorites')->withTimestamps();
-    }
-
-
     public function hasFavorited(Restaurant $restaurant)
     {
         return $this->favoriteRestaurants()->where('restaurant_id', $restaurant->id)->exists();
@@ -44,5 +37,10 @@ class User extends Authenticatable
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function favoriteRestaurants()
+    {
+        return $this->belongsToMany(Restaurant::class, 'favorites')->withTimestamps();
     }
 }
