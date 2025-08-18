@@ -45,30 +45,4 @@ class Reservation extends Model
         return $this->belongsTo(Restaurant::class);
     }
 
-
-    public function withStatus($query, $status)
-    {
-        return $query->where('status', $status);
-    }
-
-
-    public function isPending()
-    {
-        return $this->status === 'pending';
-    }
-
-    public function isConfirmed()
-    {
-        return $this->status === 'confirmed';
-    }
-
-    public function isCancelled()
-    {
-        return $this->status === 'cancelled';
-    }
-
-    public function isCompleted()
-    {
-        return $this->status === 'completed';
-    }
 }

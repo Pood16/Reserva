@@ -78,7 +78,7 @@ class ManagerReservationController extends Controller
             'decline_reason' => $validated['reason']
         ]);
 
-        // Send notification
+        // notify the client
         $reservation->user->notify(new ReservationStatusChanged(
             $reservation,
             'declined',

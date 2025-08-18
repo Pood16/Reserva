@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class MenuController extends Controller
 {
-    // List all menus for a specific restaurant
+    // List my menus
     public function index($restaurantId)
     {
         $restaurant = Restaurant::where('id', $restaurantId)
@@ -24,7 +24,7 @@ class MenuController extends Controller
         return view('manager.menus.index', compact('restaurant'));
     }
 
-    // Show the form to create a new menu
+    // Show create menu
     public function create($restaurantId)
     {
         $restaurant = Restaurant::where('id', $restaurantId)
@@ -54,7 +54,7 @@ class MenuController extends Controller
             ->with('success', 'Menu created successfully.');
     }
 
-    // Show the form to edit a menu
+    // Show edit menu
     public function edit($restaurantId, $menuId)
     {
         $restaurant = Restaurant::where('id', $restaurantId)
@@ -101,17 +101,14 @@ class MenuController extends Controller
             ->where('restaurant_id', $restaurant->id)
             ->firstOrFail();
 
-        // Delete all menu items first
         $menu->items()->delete();
-
-        // Then delete the menu
         $menu->delete();
 
         return redirect()->route('manager.menus.index', $restaurant->id)
             ->with('success', 'Menu deleted successfully.');
     }
 
-    // Show menu items for a specific menu
+    // Show menu items
     public function showItems($restaurantId, $menuId)
     {
         $restaurant = Restaurant::where('id', $restaurantId)
@@ -204,7 +201,6 @@ class MenuController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists
             if ($item->image && Storage::disk('public')->exists($item->image)) {
                 Storage::disk('public')->delete($item->image);
             }
@@ -220,7 +216,7 @@ class MenuController extends Controller
             ->with('success', 'Menu item updated successfully.');
     }
 
-    // Delete a menu item
+
     public function destroyItem($restaurantId, $menuId, $itemId)
     {
         $restaurant = Restaurant::where('id', $restaurantId)
@@ -235,7 +231,6 @@ class MenuController extends Controller
             ->where('menu_id', $menu->id)
             ->firstOrFail();
 
-        // Delete image if exists
         if ($item->image && Storage::disk('public')->exists($item->image)) {
             Storage::disk('public')->delete($item->image);
         }
@@ -246,7 +241,7 @@ class MenuController extends Controller
             ->with('success', 'Menu item deleted successfully.');
     }
 
-    // Toggle menu item availability
+
     public function toggleItemAvailability($restaurantId, $menuId, $itemId)
     {
         $restaurant = Restaurant::where('id', $restaurantId)

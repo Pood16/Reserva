@@ -103,7 +103,7 @@ class AdminController extends Controller
         $request->status = 'approved';
         $request->save();
 
-        $user->notify(new ManagerRequestNotification($request, 'approved'));
+        // $user->notify(new ManagerRequestNotification($request, 'approved'));
 
         return redirect()->route('admin.manager-requests.index')
             ->with('success', 'Manager request approved. User has been granted manager privileges and notified.');
@@ -119,7 +119,7 @@ class AdminController extends Controller
         $request->status = 'rejected';
         $request->save();
 
-        $user->notify(new ManagerRequestNotification($request, 'rejected'));
+        // $user->notify(new ManagerRequestNotification($request, 'rejected'));
 
         return redirect()->route('admin.manager-requests.index')
             ->with('success', 'Manager request rejected. The applicant has been notified.');
@@ -175,7 +175,7 @@ class AdminController extends Controller
         }
 
         // notify the manager
-        $manager->notify(new BanUnbanManager('ban'));
+        // $manager->notify(new BanUnbanManager('ban'));
 
         return redirect()->route('admin.restaurant-managers.index')
             ->with('success', 'Manager has been banned successfully. All their restaurants have been deactivated.');
@@ -203,7 +203,7 @@ class AdminController extends Controller
         }
 
         // notify the manager
-        $user->notify(new BanUnbanManager('unban'));
+        // $user->notify(new BanUnbanManager('unban'));
 
         return redirect()->route('admin.restaurant-managers.index')
             ->with('success', 'Manager has been unbanned successfully. All their restaurants have been reactivated.');

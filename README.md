@@ -1,66 +1,153 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🍽️ QuickTable - Restaurant Reservation System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-38B2AC.svg)](https://tailwindcss.com)
+[![SQLite](https://img.shields.io/badge/SQLite-Database-003B57.svg)](https://sqlite.org)
 
-## About Laravel
+QuickTable is a modern, full-featured restaurant reservation system that connects diners with restaurants for seamless table booking experiences. Built with Laravel 11 and featuring a responsive design with Tailwind CSS.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌟 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### For Customers
+- **Easy Restaurant Discovery**: Browse restaurants by location, cuisine, and availability
+- **Instant Reservations**: Book tables in seconds with real-time availability
+- **Reservation Management**: View, modify, and cancel reservations
+- **Restaurant Reviews**: Read and write reviews for restaurants
+- **Favorites System**: Save favorite restaurants for quick access
+- **Real-time Notifications**: Get updates on reservation status
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### For Restaurant Managers
+- **Restaurant Profile Management**: Complete restaurant setup with images, menus, and operating hours
+- **Table Management**: Configure tables with capacity and availability
+- **Reservation Control**: Approve, decline, or manage customer reservations
+- **Menu Management**: Create and manage restaurant menus with food categories
+- **Dashboard Analytics**: View reservation statistics and restaurant performance
+- **Notification System**: Receive alerts for new reservations
 
-## Learning Laravel
+### For Administrators
+- **User Management**: Manage customers and restaurant managers
+- **Restaurant Approval**: Review and approve new restaurant registrations
+- **Platform Analytics**: Monitor platform usage and performance
+- **Content Moderation**: Manage reviews and restaurant content
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🏗️ System Architecture
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+The application follows Laravel's MVC architecture with the following key components:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Models
+- **User**: Handles authentication for customers, managers, and admins
+- **Restaurant**: Restaurant information and settings
+- **Table**: Restaurant table configurations
+- **Reservation**: Booking management system
+- **Menu & MenuItem**: Restaurant menu system
+- **Review**: Customer review system
+- **Favorite**: User favorites functionality
 
-## Laravel Sponsors
+### Controllers
+- **Client Controllers**: Handle customer-facing operations
+- **Manager Controllers**: Restaurant management operations
+- **Admin Controllers**: Administrative functions
+- **Auth Controllers**: Authentication and authorization
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 📸 Screenshots
+![alt login](screenshots/5.png)
+![alt connect](screenshots/6.png)
+![alt home](screenshots/1.png)
+![alt restaurants list](screenshots/8.png)
+![alt restaurant details](screenshots/9.png)
+![alt reservation form](screenshots/11.png)
+![alt reservation bill](screenshots/12.png)
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## 🚀 Installation & Setup
 
-## Contributing
+### Prerequisites
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/Pood16/Reserva.git
+cd newQuickTable
+```
 
-## Code of Conduct
+### Step 2: Install Dependencies
+```bash
+# Install PHP dependencies
+composer install
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Install Node.js dependencies
+npm install
+```
 
-## Security Vulnerabilities
+### Step 3: Environment Configuration
+```bash
+# Copy environment file
+cp .env.example .env
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Generate application key
+php artisan key:generate
+```
 
-## License
+### Step 4: Database Setup
+```bash
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Run migrations
+php artisan migrate
+
+# Seed the database (optional)
+php artisan db:seed
+```
+
+### Step 5: Build Assets
+```bash
+# Build frontend assets
+npm run build
+
+# Or for development with hot reload
+npm run dev
+```
+
+### Step 6: Storage Setup
+```bash
+# Create storage symlink for file uploads
+php artisan storage:link
+```
+
+### Step 7: Start the Application
+```bash
+# Start the Laravel development server
+php artisan serve
+```
+
+The application will be available at `http://localhost:8000`
+
+
+
+
+## 🎯 Usage Guide
+
+### For Customers
+1. **Registration**: Create an account as a customer
+2. **Browse Restaurants**: Use the search and filter features
+3. **Make Reservations**: Select date, time, and party size
+4. **Manage Bookings**: View and manage your reservations in your profile
+
+### For Restaurant Managers
+1. **Registration**: Request manager access through the platform
+2. **Restaurant Setup**: Create your restaurant profile with details and images
+3. **Table Configuration**: Set up your restaurant tables and capacity
+4. **Menu Management**: Add menus and menu items
+5. **Reservation Management**: Handle incoming reservations
+
+### For Administrators
+1. **Manager Approval**: Review and approve restaurant manager requests
+2. **Platform Monitoring**: Monitor system usage and performance
+3. **Content Management**: Moderate reviews and restaurant content
+
+
+
+**QuickTable** - Connecting diners with restaurants, one reservation at a time. 🍽️✨

@@ -161,7 +161,7 @@
                                         </svg>
                                         <span class="font-medium">No tables available</span>
                                     </div>
-                                    <p>No tables are available for your party size at the selected time. Please try a different time or date.</p>
+                                    <p>No tables are available for your party size at the selected time.</p>
                                 </div>
 
                                 <div id="tables-grid" class="grid grid-cols-1 gap-3 sm:grid-cols-2"></div>
@@ -195,8 +195,9 @@
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-    // Get restaurant data
+    // restaurant data
     var openingDays = {!! json_encode($openingDays) !!};
+    console.log(openingTime);
     var openingTime ='{{ $restaurant->opening_time->format('H:i') }}';
     var closingTime = '{{ $restaurant->closing_time->format('H:i') }}';
     var tables = {!! json_encode($tables) !!};
@@ -279,7 +280,7 @@
         });
     }
 
-    // Generate time slots based on restaurant hours and selected date
+    // time slotes
     function generateTimeSlots(selectedDate) {
         if (!timeSlotsCont) return;
 
@@ -315,7 +316,7 @@
         const timeSlots = [];
         const currentTime = new Date(startTime);
 
-        // Ensure we don't create slots after closing or less than 1 hour before closing
+
         const lastSlotTime = new Date(endTime);
         lastSlotTime.setHours(lastSlotTime.getHours() - 1);
 
@@ -364,7 +365,7 @@
         });
     }
 
-    // Function to render the calendar
+    // render the calendar
     function renderCalendar(month, year) {
         if (!calendarDays || !currentMonthDisplay) return;
 
@@ -488,12 +489,6 @@
         tablesLoading.classList.remove('hidden');
 
 
-        // console.log('Finding tables for:', {
-        //     guests: guestsNumber,
-        //     date: bookingDate,
-        //     time: bookingTime,
-        //     availableTables: tables
-        // });
 
 
         setTimeout(() => {

@@ -12,7 +12,7 @@
                 <!-- Flash Messages -->
                 <x-flash-messages />
 
-                <!-- Breadcrumbs and back button -->
+
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <a href="{{ route('manage.restaurants') }}" class="inline-flex items-center text-gray-700 hover:text-amber-600">
@@ -26,7 +26,7 @@
                     </div>
                 </div>
 
-                <!-- Restaurant Name and Main Info -->
+                <!-- main -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-800">Edit Restaurant: {{ $restaurant->name }}</h3>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
 
-                <!-- General Information Section -->
+                <!-- General info -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6" id="general-section">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-800">General Information</h3>
@@ -160,15 +160,16 @@
                                     <div>
                                         <label for="opening_time" class="block text-sm font-medium text-gray-700">Opening Time <span class="text-red-500">*</span></label>
                                         <div class="flex items-center">
-                                            <input type="time" name="opening_time" id="opening_time" value="{{ old('opening_time', $restaurant->opening_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
-                                            <span class="ml-2 text-sm text-gray-500">
-                                                @php
-                                                    if($restaurant->opening_time) {
-                                                        $time = new DateTime($restaurant->opening_time);
-                                                        echo $time->format('g:i A');
-                                                    }
-                                                @endphp
-                                            </span>
+                                            @php
+                                                $formattedTime = '';
+                                                if($restaurant->opening_time) {
+                                                    $time = new DateTime($restaurant->opening_time);
+                                                    $formattedTime = $time->format('g:i A');
+                                                    $inputTime = $time->format('H:i');
+                                                }
+                                            @endphp
+                                            <input type="time" name="opening_time" id="opening_time" value="{{ old('opening_time', $inputTime ?? $restaurant->opening_time) }}"
+                                                   class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
                                         </div>
                                         @error('opening_time')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -179,15 +180,16 @@
                                     <div>
                                         <label for="closing_time" class="block text-sm font-medium text-gray-700">Closing Time <span class="text-red-500">*</span></label>
                                         <div class="flex items-center">
-                                            <input type="time" name="closing_time" id="closing_time" value="{{ old('closing_time', $restaurant->closing_time) }}" class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
-                                            <span class="ml-2 text-sm text-gray-500">
-                                                @php
-                                                    if($restaurant->closing_time) {
-                                                        $time = new DateTime($restaurant->closing_time);
-                                                        echo $time->format('g:i A');
-                                                    }
-                                                @endphp
-                                            </span>
+                                            @php
+                                                $formattedClosingTime = '';
+                                                if($restaurant->closing_time) {
+                                                    $time = new DateTime($restaurant->closing_time);
+                                                    $formattedClosingTime = $time->format('g:i A');
+                                                    $inputClosingTime = $time->format('H:i');
+                                                }
+                                            @endphp
+                                            <input type="time" name="closing_time" id="closing_time" value="{{ old('closing_time', $inputClosingTime ?? $restaurant->closing_time) }}"
+                                                   class="mt-1 block rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50">
                                         </div>
                                         @error('closing_time')
                                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -270,7 +272,6 @@
                                             file:border-0 file:text-sm file:font-semibold
                                             file:bg-amber-50 file:text-amber-700
                                             hover:file:bg-amber-100">
-                                        <p class="text-xs text-gray-500 mt-1">You can select multiple images to upload at once.</p>
                                     </div>
                                     @error('additional_images')
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -280,7 +281,7 @@
                                     @enderror
                                 </div>
 
-                                <!-- Current Additional Images -->
+                                <!-- Additional Images -->
                                 <div>
                                     <h4 class="text-md font-medium text-gray-700 mb-2">Current Images</h4>
                                     @if(count($restaurant->images) > 0)
@@ -290,8 +291,8 @@
                                                     <img src="{{ asset('storage/' . $image->image_path) }}" alt="Restaurant Image" class="h-32 w-full object-cover rounded">
                                                     <button type="button"
                                                         onclick="deleteImage('{{ $restaurant->id }}', '{{ $image->id }}')"
-                                                        class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <i class="fas fa-times"></i>
+                                                        class="absolute top-2 right-2  text-white p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <i class="fas fa-times text-red-600"></i>
                                                     </button>
                                                 </div>
                                             @endforeach
@@ -360,7 +361,7 @@
                     </div>
                 </div>
 
-                <!-- Status Section -->
+                <!-- Status -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6" id="status-section">
                     <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-semibold text-gray-800">Restaurant Status</h3>
@@ -414,60 +415,39 @@
         </div>
     </div>
 
+    <!-- Hidden form for image deletion -->
+    <form id="delete-image-form" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
+
     @push('scripts')
     <script src="{{ asset('resources/js/manager/toggleNav.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle image deletion
+
             window.deleteImage = function(restaurantId, imageId) {
-                if (confirm('Are you sure you want to delete this image?')) {
-                    // Create a form and submit it
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = `/manager/restaurant/${restaurantId}/images/${imageId}`;
-
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-                    const csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = '_token';
-                    csrfInput.value = csrfToken;
-
-                    const methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'DELETE';
-
-                    form.appendChild(csrfInput);
-                    form.appendChild(methodInput);
-                    document.body.appendChild(form);
-                    form.submit();
-                }
+                const form = document.getElementById('delete-image-form');
+                form.action = `/manager/restaurant/${restaurantId}/images/${imageId}`;
+                form.submit();
             }
 
-            // Handle anchor links for sections
-            if (window.location.hash) {
-                const id = window.location.hash.substring(1);
-                const element = document.getElementById(id);
-                if (element) {
-                    element.scrollIntoView();
-                }
-            }
 
-            // Handle food type checkboxes
+            // food type checkboxes
             const allFoodTypesCheckbox = document.getElementById('edit-all-food-types');
             const foodTypeCheckboxes = document.querySelectorAll('.edit-food-type-checkbox');
 
-            // Set initial state of "All" checkbox
+
             updateAllCheckboxState();
 
-            // Handle "All" checkbox
+            // all
             allFoodTypesCheckbox.addEventListener('change', function() {
                 foodTypeCheckboxes.forEach(checkbox => {
                     checkbox.checked = this.checked;
                 });
             });
 
-            // Update "All" checkbox state based on individual selections
+
             foodTypeCheckboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', updateAllCheckboxState);
             });

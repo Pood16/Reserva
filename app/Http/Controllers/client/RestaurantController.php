@@ -15,12 +15,11 @@ class RestaurantController extends Controller
         $foodTypes = FoodType::all();
         $cities = Restaurant::select('city')->distinct()->pluck('city');
 
-        // Search by name or description
+        // Search by name
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                $q->where('name', 'like', "%{$search}%");
             });
         }
 
@@ -39,13 +38,13 @@ class RestaurantController extends Controller
         // Get popular restaurants
         $popularRestaurants = Restaurant::with(['reviews', 'foodTypes', 'images'])
             ->where('is_active', true)
-            ->withCount('reviews')
-            ->orderBy('reviews_count', 'desc')
-            ->take(6)
+            ->withAvg('reviews', 'rating')
+            ->orderBy('reviews_avg_rating', 'desc')
+            ->take(3)
             ->get();
 
-        // Get all restaurants with pagination
-        $restaurants = $query->paginate(12);
+        // all restaurants
+        $restaurants = $query->get();
 
         return view('restaurants.explore-restaurants', compact('restaurants', 'popularRestaurants', 'foodTypes', 'cities'));
     }

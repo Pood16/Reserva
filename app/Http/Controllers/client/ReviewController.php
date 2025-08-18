@@ -12,31 +12,27 @@ class ReviewController extends Controller
 {
 
 
-    // store new review
+
     public function store(Request $request, Restaurant $restaurant)
     {
         $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'required|string|min:10|max:500',
         ]);
-
-        // Check if user has already reviewed this restaurant
         $existingReview = Review::where('user_id', Auth::id())
             ->where('restaurant_id', $restaurant->id)
             ->first();
 
         if ($existingReview) {
-            // Update existing review
             $existingReview->update([
                 'rating' => $validated['rating'],
                 'comment' => $validated['comment'],
         ]);
-
             return redirect()->route('restaurants.show', $restaurant)
                 ->with('success', 'Your review has been updated successfully!');
         }
 
-        // Create new review
+        // Create review
         Review::create([
             'user_id' => Auth::id(),
             'restaurant_id' => $restaurant->id,

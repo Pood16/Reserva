@@ -19,4 +19,33 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.classList.add('hidden');
         }
     });
+
+    const allFoodTypesCheckbox = document.getElementById('all-food-types');
+    const foodTypeCheckboxes = document.querySelectorAll('.food-type-checkbox');
+
+
+    allFoodTypesCheckbox.addEventListener('change', function() {
+        foodTypeCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+    });
+
+
+    foodTypeCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const allChecked = Array.from(foodTypeCheckboxes).every(cb => cb.checked);
+            const noneChecked = Array.from(foodTypeCheckboxes).every(cb => !cb.checked);
+
+            if (allChecked) {
+                allFoodTypesCheckbox.checked = true;
+                allFoodTypesCheckbox.indeterminate = false;
+            } else if (noneChecked) {
+                allFoodTypesCheckbox.checked = false;
+                allFoodTypesCheckbox.indeterminate = false;
+            } else {
+                allFoodTypesCheckbox.checked = false;
+                allFoodTypesCheckbox.indeterminate = true;
+            }
+        });
+    });
 });

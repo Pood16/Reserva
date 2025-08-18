@@ -19,8 +19,4 @@ class RestaurantImage extends Model
     }
 
 
-    public function getLatest($query)
-    {
-        return $query->orderBy('created_at', 'desc');
-    }
 }

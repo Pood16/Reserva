@@ -36,27 +36,4 @@ class Table extends Model
         return $this->hasMany(Restaurant::class);
     }
 
-
-    public function availableTables($query)
-    {
-        return $query->where('is_available', true);
-    }
-
-
-    public function activeTables($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-
-    public function whereLocationIs($query, $location)
-    {
-        return $query->where('location', $location);
-    }
-
-
-    public function whereCapacityIs($query, $capacity)
-    {
-        return $query->where('capacity', '>=', $capacity);
-    }
 }
